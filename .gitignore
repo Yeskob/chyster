@@ -1,3 +1,4 @@
 
 # Ignorer tous les fichiers sublimes
 *.sublime*
+.DS_Store
