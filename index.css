@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'introheadr-base';
+    src: url('fonts/introheadr-base-webfont.woff2') format('woff2'),
+         url('fonts/introheadr-base-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+     font-family: 'introrustg-base2line';
+    src: url('fonts/introrustg-base2line-webfont.woff2') format('woff2'),
+         url('fonts/introrustg-base2line-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+p {
+	font-size: 1,5em;
+	font-family: 'introrustg-base2line';
+	text-align: justify;
+
+
+}
+
+p + ul {
+	font-size: 1em;
+	font-family: 'introrustg-base2line';
+	text-align: left;
+}
+
+h1 {
+	font-family: 'introheadr-base';
+}
