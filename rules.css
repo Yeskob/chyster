@@ -13,22 +13,48 @@
 }
 
 #logo {
-    max-width: 50%;
+    max-width: 35%;
     height: auto;
-    text-align: center;
 }  
 
 p {
 	font-size: 1,5em;
-	font-family: 'introrustg-base2line';
+	font-family: 'avenir';
 	text-align: justify;
+
+
 }
 
-a {
-    font-size: 1,5em;
-    font-family: 'introrustg-base2line';
-    text-align: justify;
+li {
+	font-size: 1,5em;
+	font-family: 'avenir';
+	text-align: left;
 }
+
+h1 {
+	font-family: 'impact';
+}
+
+h2 {
+    font-family: 'impact';
+    font-size: 1,5em;
+}
+
+h3 {
+    font-family: 'impact';
+    font-size: 1,5em;
+}
+
+
+img {
+    max-width: 50%
+    height: auto;
+}
+
+
+}
+
+
 
 
 .test {
