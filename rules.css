@@ -18,7 +18,7 @@
 }  
 
 p {
-	font-size: 1,5em;
+	font-size: 1em;
 	font-family: 'avenir';
 	text-align: justify;
 
@@ -26,7 +26,7 @@ p {
 }
 
 li {
-	font-size: 1,5em;
+	font-size: 1em;
 	font-family: 'avenir';
 	text-align: left;
 }
@@ -37,30 +37,28 @@ h1 {
 
 h2 {
     font-family: 'impact';
-    font-size: 1,5em;
+    font-size: 1em;
 }
 
 h3 {
     font-family: 'impact';
-    font-size: 1,5em;
+    font-size: 1em;
 }
 
 
 img {
     max-width: 50%
     height: auto;
-}
-
 
 }
 
 
-
-
-.test {
-    font-family: 
 }
 
-#toto {
-    color: 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
+
+
