@@ -10,24 +10,27 @@
          url('fonts/introrustg-base2line-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+
+    font-family: 'Farro', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    src: url(https://fonts.googleapis.com/css2?family=Farro:wght@500&family=Roboto&display=swap');
 }
 
-#logo {
-    max-width: 35%;
-    height: auto;
-}  
-
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+ 
 p {
 	font-size: 1em;
-	font-family: 'avenir';
+	font-family: 'trebuchet MS';
 	text-align: justify;
-
 
 }
 
 li {
 	font-size: 1em;
-	font-family: 'avenir';
+	font-family: 'trebuchet MS';
 	text-align: left;
 }
 
@@ -45,20 +48,14 @@ h3 {
     font-size: 1em;
 }
 
-
-img {
-    max-width: 50%
+#matrix {
+    max-width: 25%;
     height: auto;
-
 }
 
 
-}
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
+
 
 
 
