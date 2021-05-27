@@ -1,5 +1,5 @@
 * {
- font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 #logo {
@@ -12,6 +12,9 @@
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
+    display: block;
+
+}
   
   /* padding-bottom : pour inclure un espacement
      margin-bottom : pour créer un espacement sans l'inclure */
@@ -25,6 +28,14 @@ p  {
     margin: 0 auto;
     text-align: center;
     line-height: 3em;
+}
+#bloc_image {
+    display: block;
+    margin-block-start: 5em;
+    margin-block-end: 5em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+
 }
 
 a {
