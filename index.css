@@ -12,7 +12,7 @@
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
-    display: block;
+ 
 
 }
   
@@ -30,11 +30,9 @@ p  {
     line-height: 3em;
 }
 #bloc_image {
-    display: block;
-    margin-block-start: 5em;
+
+    margin-block-start: 15em;
     margin-block-end: 5em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
 
 }
 
