@@ -76,46 +76,51 @@
             <!-- Basic Rules -->
             <div class="rules__section">
                 <h3>Règles de Base</h3>
-                <div class="card-grid">
-                    <div class="card-3d" data-rule="guess">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--red">
-                                    <span class="card-3d__symbol">♥</span>
-                                </div>
+                <div class="game-flow">
+                    <div class="game-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Début du tour</h4>
+                            <ul class="step-list">
+                                <li><span class="icon">🎴</span> Piochez une carte</li>
+                                <li><span class="icon">🗣️</span> Annoncez votre prédiction : Rouge ou Noir</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="game-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Résolution</h4>
+                            <div class="resolution-block">
+                                <h5>Première carte ou sans carte devant vous :</h5>
+                                <ul class="step-list">
+                                    <li class="success"><span class="icon">✅</span> Bonne couleur → Posez la carte devant vous</li>
+                                    <li class="failure"><span class="icon">❌</span> Mauvaise couleur → Buvez 1 gorgée</li>
+                                </ul>
                             </div>
-                            <div class="card-3d__back">
-                                <h4>Deviner la Couleur</h4>
-                                <p>Rouge ou Noir ? Devinez correctement pour poser votre carte.</p>
+                            <div class="resolution-block">
+                                <h5>Avec des cartes devant vous :</h5>
+                                <ul class="step-list choice-list">
+                                    <li><span class="icon">🎯</span> Devinez la couleur</li>
+                                    <li><span class="icon">🍺</span> <br>Donnez des gorgées (nombre = cartes devant vous)</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card-3d" data-rule="drink">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--black">
-                                    <span class="card-3d__symbol">♠</span>
-                                </div>
+                    <div class="game-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Système de tentatives</h4>
+                            <div class="bonus-block">
+                                <p class="bonus-text"><span class="icon">⭐</span> Bonus : Si mauvaise couleur mais numéro supérieur à votre dernière carte → Nouvelle chance !</p>
                             </div>
-                            <div class="card-3d__back">
-                                <h4>Mauvaise Couleur</h4>
-                                <p>Buvez le nombre de gorgées équivalent à vos cartes posées.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-3d" data-rule="higher">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--red">
-                                    <span class="card-3d__number">10</span>
-                                </div>
-                            </div>
-                            <div class="card-3d__back">
-                                <h4>Carte Supérieure</h4>
-                                <p>Une carte de valeur supérieure vous donne une nouvelle chance !</p>
-                            </div>
+                            <ul class="step-list">
+                                <li><span class="icon">🎲</span> 3 essais maximum pour trouver la bonne couleur</li>
+                                <li class="warning"><span class="icon">⚠️</span> En cas d'égalité, c'est perdu !</li>
+                                <li class="failure"><span class="icon">☠️</span> Si échec après 3 essais → Buvez autant de gorgées que de cartes devant vous</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
