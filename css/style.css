@@ -1,0 +1,560 @@
+/* Base Variables */
+:root {
+    /* Colors */
+    --color-background: #0A0A0A;
+    --color-neon-red: #FF2E63;
+    --color-neon-blue: #08F7FE;
+    --color-white: #FFFFFF;
+    
+    /* Fonts */
+    --font-main: 'Montserrat', sans-serif;
+    --font-neon: 'Press Start 2P', cursive;
+    
+    /* Animations */
+    --transition-speed: 0.3s;
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-white);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* Neon Text Effects */
+.neon-text {
+    font-family: var(--font-neon);
+    color: var(--color-white);
+    text-shadow: 0 0 5px var(--color-neon-red),
+                 0 0 10px var(--color-neon-red),
+                 0 0 20px var(--color-neon-red),
+                 0 0 40px var(--color-neon-blue);
+    animation: neon-pulse 1.5s infinite alternate;
+}
+
+.neon-text-small {
+    font-family: var(--font-neon);
+    color: var(--color-white);
+    text-shadow: 0 0 3px var(--color-neon-blue),
+                 0 0 6px var(--color-neon-blue);
+    font-size: 0.8em;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at center, 
+                rgba(255, 46, 99, 0.1) 0%, 
+                rgba(10, 10, 10, 1) 70%);
+}
+
+.hero__neon-logo {
+    text-align: center;
+    z-index: 2;
+}
+
+.hero__neon-logo h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.hero__cards-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Animations */
+@keyframes neon-pulse {
+    from {
+        text-shadow: 0 0 5px var(--color-neon-red),
+                     0 0 10px var(--color-neon-red),
+                     0 0 20px var(--color-neon-red),
+                     0 0 40px var(--color-neon-blue);
+    }
+    to {
+        text-shadow: 0 0 5px var(--color-neon-red),
+                     0 0 15px var(--color-neon-red),
+                     0 0 25px var(--color-neon-red),
+                     0 0 50px var(--color-neon-blue);
+    }
+}
+
+/* Sections Common Styles */
+section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Concept Section */
+.concept {
+    text-align: center;
+}
+
+.concept__tagline {
+    font-size: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto 4rem;  /* Augmentation de la marge bottom à 4rem */
+    line-height: 1.6;
+    color: var(--color-white);
+    text-shadow: 0 0 10px rgba(255, 46, 99, 0.3);
+}
+
+.concept__highlight {
+    color: var(--color-neon-red);
+    font-weight: 600;
+    display: inline-block;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.concept__highlight:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 0 15px var(--color-neon-red);
+}
+
+.counter-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 400px;
+}
+
+.counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.counter__btn {
+    background: none;
+    border: 2px solid var(--color-neon-blue);
+    color: var(--color-neon-blue);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all var(--transition-speed);
+}
+
+.counter__btn:hover {
+    background: var(--color-neon-blue);
+    color: var(--color-background);
+}
+
+.counter__value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-neon-red);
+    min-width: 3rem;
+    text-align: center;
+}
+
+.counter__target {
+    margin-top: 2rem;
+}
+
+.counter__target-title {
+    color: var(--color-neon-blue);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.counter__cards {
+    font-size: 1.1rem;
+    color: var(--color-white);
+}
+
+.counter__warning {
+    color: var(--color-neon-red);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    min-height: 1.5em;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.counter__warning.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Quick Start Section */
+.quickstart {
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(255, 46, 99, 0.1);
+}
+
+.quickstart__title {
+    color: var(--color-neon-blue);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    gap: 1rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    height: 2px;
+    background: var(--color-neon-red);
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.timeline__item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline__step {
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-background);
+    border: 2px solid var(--color-neon-red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-weight: bold;
+    color: var(--color-neon-red);
+    transition: all 0.3s ease;
+}
+
+.timeline__item p {
+    color: var(--color-white);
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0 0.5rem;
+}
+
+
+
+/* Timeline hover effects */
+.timeline__item:hover .timeline__step {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 46, 99, 0.3);
+}
+
+.timeline__item:hover .timeline__emoji {
+    transform: translateY(-2px) rotate(-12deg);
+}
+
+/* Responsive timeline */
+@media (max-width: 768px) {
+    .timeline {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .timeline::before {
+        top: 0;
+        bottom: 0;
+        left: 1.5rem;
+        right: auto;
+        width: 2px;
+        height: auto;
+    }
+
+    .timeline__item {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 1.5rem;
+    }
+
+    .timeline__step {
+        margin: 0;
+    }
+}
+
+/* Falling Cards Animation */
+.falling-card {
+    position: absolute;
+    width: 60px;
+    height: 85px;
+    background: linear-gradient(135deg, var(--color-neon-red) 0%, #ff0000 100%);
+    border-radius: 8px;
+    opacity: 0.1;
+    box-shadow: 0 0 10px var(--color-neon-red),
+                0 0 20px var(--color-neon-blue);
+    pointer-events: none;
+}
+
+.falling-card::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.hero__neon-logo {
+    background: rgba(10, 10, 10, 0.5);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+}
+
+.hero__neon-logo h1 {
+    font-size: clamp(3rem, 10vw, 6rem);
+    letter-spacing: 0.2em;
+    animation: neon-pulse 1.5s infinite alternate;
+}
+
+.hero__neon-logo p {
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade-in-up 0.8s ease forwards 0.5s;
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Neon Effect */
+.neon-text {
+    filter: brightness(1.2);
+    position: relative;
+}
+
+.neon-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    filter: blur(15px);
+    opacity: 0.8;
+}
+
+/* Rules Section */
+.rules {
+    background: linear-gradient(to bottom, 
+                rgba(10, 10, 10, 0.8),
+                rgba(255, 46, 99, 0.05));
+    padding: 4rem 2rem;
+}
+
+.rules h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.rules-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.rules__section {
+    margin-bottom: 4rem;
+}
+
+.rules__section h3 {
+    color: var(--color-neon-blue);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    perspective: 1000px;
+}
+
+/* 3D Card Styles */
+.card-3d {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    cursor: pointer;
+}
+
+.card-3d__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.card-3d:hover .card-3d__inner {
+    transform: rotateY(180deg);
+}
+
+.card-3d__front,
+.card-3d__back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 46, 99, 0.2);
+}
+
+.card-3d__front {
+    background: var(--color-background);
+    padding: 20px;
+}
+
+.card-3d__back {
+    background: var(--color-background);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    border: 2px solid var(--color-neon-blue);
+}
+
+.card-3d__content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    position: relative;
+    border: 2px solid currentColor;
+}
+
+.card-3d__content--red {
+    color: var(--color-neon-red);
+}
+
+.card-3d__content--black {
+    color: var(--color-white);
+}
+
+.card-3d__content--gold {
+    color: #FFD700;
+    border-color: #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.card-3d__symbol,
+.card-3d__rank {
+    font-size: 5rem;
+    font-weight: bold;
+}
+
+.card-3d__number {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.card-3d__crown {
+    font-size: 6rem;
+}
+
+.card-3d__back h4 {
+    color: var(--color-neon-red);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.card-3d__back p {
+    color: var(--color-white);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.rules__section--royale {
+    text-align: center;
+}
+
+.card-3d--royale {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Card Hover Effects */
+.card-3d:hover {
+    transform: translateY(-10px);
+}
+
+.card-3d__content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: currentColor;
+    opacity: 0.1;
+    border-radius: 8px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .hero__neon-logo h1 {
+        font-size: 3rem;
+    }
+    
+    section {
+        padding: 2rem 1rem;
+    }
+}

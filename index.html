@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UT                                
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chyster - Un jeu de cartes qui met l'amitié à l'épreuve">
+    <title>Chyster | Le jeu qui pousse à la limite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero__neon-logo">
+            <h1 class="neon-text" data-text="CHYSTER">CHYSTER</h1>
+            <p class="neon-text-small">Oseras-tu atteindre la Chyster ?</p>
+        </div>
+        <div class="hero__cards-animation">
+            <!-- Les cartes animées seront injectées en JS -->
+        </div>
+    </section>
+
+    <!-- Concept Section -->
+    <section class="concept" id="concept">
+        <h2>Le Concept</h2>
+        <p class="concept__tagline">
+            🎯 Posez vos cartes, atteignez la Chyster, et prouvez votre amitié... 
+            <span class="concept__highlight">en faisant boire vos potes jusqu'à l'oubli !</span>
+        </p>
+        <div class="concept__player-counter">
+            <div class="counter-container">
+                <h3>Nombre de joueurs</h3>
+                <div class="counter">
+                    <button class="counter__btn" id="decreasePlayers">-</button>
+                    <span class="counter__value" id="playerCount">2</span>
+                    <button class="counter__btn" id="increasePlayers">+</button>
+                </div>
+                <div class="counter__target">
+                    <h4 class="counter__target-title">Pour atteindre la Chyster</h4>
+                    <p class="counter__cards">Il vous faut <span id="cardTarget">11</span> cartes</p>
+                    <p class="counter__warning" id="playerWarning"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Section -->
+        <div class="quickstart">
+            <h3 class="quickstart__title">Comment Commencer</h3>
+            <div class="timeline">
+                <div class="timeline__item">
+                    <div class="timeline__step">1</div>
+                    <p>Rassemblez vos amis (2-10 joueurs)</p>
+                </div>
+                <div class="timeline__item">
+                    <div class="timeline__step">2</div>
+                    <p>Préparez un jeu de 52 cartes</p>
+                </div>
+                <div class="timeline__item">
+                    <div class="timeline__step">3</div>
+                    <p>Désignez un dealer qui mènera la danse</p>
+                </div>
+                <div class="timeline__item">
+                    <div class="timeline__step">4</div>
+                    <p>En route pour la <strong>Chyster</strong> !</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules Section -->
+    <section class="rules" id="rules">
+        <h2 class="neon-text-small">Les Règles du Jeu</h2>
+        <div class="rules-container">
+            <!-- Basic Rules -->
+            <div class="rules__section">
+                <h3>Règles de Base</h3>
+                <div class="card-grid">
+                    <div class="card-3d" data-rule="guess">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--red">
+                                    <span class="card-3d__symbol">♥</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Deviner la Couleur</h4>
+                                <p>Rouge ou Noir ? Devinez correctement pour poser votre carte.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-3d" data-rule="drink">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--black">
+                                    <span class="card-3d__symbol">♠</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Mauvaise Couleur</h4>
+                                <p>Buvez le nombre de gorgées équivalent à vos cartes posées.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-3d" data-rule="higher">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--red">
+                                    <span class="card-3d__number">10</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Carte Supérieure</h4>
+                                <p>Une carte de valeur supérieure vous donne une nouvelle chance !</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Cards -->
+            <div class="rules__section">
+                <h3>Cartes Spéciales</h3>
+                <div class="card-grid">
+                    <div class="card-3d" data-rule="jack">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--black">
+                                    <span class="card-3d__rank">J</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Valet</h4>
+                                <p>Désignez 2 personnes pour un shifu-bois !</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-3d" data-rule="queen">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--red">
+                                    <span class="card-3d__rank">Q</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Dame</h4>
+                                <p>Le dernier à dire "pute" boit !</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-3d" data-rule="king">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--black">
+                                    <span class="card-3d__rank">K</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>Roi</h4>
+                                <p>JOKER ! Éliminez votre dernière carte !</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-3d" data-rule="ace">
+                        <div class="card-3d__inner">
+                            <div class="card-3d__front">
+                                <div class="card-3d__content card-3d__content--red">
+                                    <span class="card-3d__rank">A</span>
+                                </div>
+                            </div>
+                            <div class="card-3d__back">
+                                <h4>As</h4>
+                                <p>Vaut 1 pour vous ou 10 pour un adversaire !</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chyster Royale -->
+            <div class="rules__section rules__section--royale">
+                <h3 class="neon-text">Chyster Royale</h3>
+                <div class="card-3d card-3d--royale" data-rule="royale">
+                    <div class="card-3d__inner">
+                        <div class="card-3d__front">
+                            <div class="card-3d__content card-3d__content--gold">
+                                <span class="card-3d__crown">👑</span>
+                            </div>
+                        </div>
+                        <div class="card-3d__back">
+                            <h4>Chyster Royale</h4>
+                            <p>Toutes les cartes de la même couleur ?<br>Distribution x2 et destruction de 2 jeux !</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+    <script src="js/cards-animation.js"></script>
+    <script src="js/counter.js"></script>
+</body>
+</html>
