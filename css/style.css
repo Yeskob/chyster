@@ -570,16 +570,25 @@ section {
     .game-step {
         flex-direction: column;
         gap: 1rem;
+        margin-left: 1rem;
+        padding-left: 1rem;
     }
 
     .game-step:not(:last-child)::after {
-        left: 25px;
+        left: -0.5rem;
         top: 60px;
         height: calc(100% + 20px);
+        width: 2px;
     }
 
     .step-number {
         margin-bottom: 1rem;
+        align-self: flex-start;
+        margin-left: -1.5rem;
+    }
+    
+    .step-content {
+        margin-left: 0;
     }
 }
 
@@ -724,11 +733,51 @@ section {
 
 /* Media Queries */
 @media (max-width: 768px) {
+    .hero {
+        height: 60vh;
+        min-height: 400px;
+    }
+    
+    .hero__cards-animation {
+        display: none;
+    }
+    
+    .hero__neon-logo {
+        padding: 1.5rem;
+    }
+    
     .hero__neon-logo h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
+        letter-spacing: 0.1em;
+    }
+    
+    .hero__neon-logo p {
+        font-size: 1rem;
     }
     
     section {
         padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        height: 50vh;
+        min-height: 350px;
+    }
+    
+    .hero__neon-logo {
+        padding: 1rem;
+        margin: 0 0.5rem;
+    }
+    
+    .hero__neon-logo h1 {
+        font-size: 2rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .hero__neon-logo p {
+        font-size: 0.9rem;
+        margin-top: 0.8rem;
     }
 }
