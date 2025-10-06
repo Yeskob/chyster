@@ -852,6 +852,38 @@ section {
     transform: translate3d(0, 0, 0);
 }
 
+/* Fallback CSS pour navigateurs avec problèmes JS */
+.concept.fallback-visible {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+    animation: fadeInFallback 0.6s ease-out;
+}
+
+@keyframes fadeInFallback {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fallback automatique après 3 secondes (sans JS) */
+@media screen {
+    .concept {
+        animation: autoShow 0.1s ease-out 3s forwards;
+    }
+}
+
+@keyframes autoShow {
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
 /* Rules section sans effets parallax */
 .rules {
     opacity: 1;
