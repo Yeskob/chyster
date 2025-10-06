@@ -8,7 +8,7 @@
 
     // State management
     const state = {
-        playerCount: 3,
+        playerCount: 4,
         mobileNavOpen: false,
         isTouch: false
     };
@@ -22,6 +22,7 @@
         playerDecrement: null,
         playerIncrement: null,
         cardTarget: null,
+        warningMessage: null,
         ruleHeaders: null
     };
 
@@ -38,10 +39,11 @@
         elements.navToggle = document.querySelector('.nav__toggle');
         elements.navMenu = document.querySelector('.nav__menu');
         elements.hamburger = document.querySelector('.hamburger');
-        elements.playerCountDisplay = document.querySelector('.player-count');
-        elements.playerDecrement = document.querySelector('[data-action="decrement"]');
-        elements.playerIncrement = document.querySelector('[data-action="increment"]');
-        elements.cardTarget = document.querySelector('.card-target');
+        elements.playerCountDisplay = document.querySelector('#player-count');
+        elements.playerDecrement = document.querySelector('#decrease-players');
+        elements.playerIncrement = document.querySelector('#increase-players');
+        elements.cardTarget = document.querySelector('#cards-needed');
+        elements.warningMessage = document.querySelector('#warning-message');
         elements.ruleHeaders = document.querySelectorAll('.rule-header');
     }
 
@@ -102,24 +104,41 @@
     // Update player count display and card calculation
     function updatePlayerDisplay() {
         if (elements.playerCountDisplay) {
-            elements.playerCountDisplay.textContent = state.playerCount;
+            elements.playerCountDisplay.value = state.playerCount;
         }
         
         if (elements.cardTarget) {
-            const cardsNeeded = calculateCardsNeeded(state.playerCount);
-            elements.cardTarget.innerHTML = `
-                Sortir <strong>${cardsNeeded}</strong> cartes du jeu
-            `;
+            elements.cardTarget.textContent = calculateCardsForChyster(state.playerCount);
+        }
+        
+        // Gérer l'avertissement
+        if (elements.warningMessage) {
+            if (state.playerCount >= 8) {
+                elements.warningMessage.textContent = "À autant, ça risque d'être le bordel (on t'aura prévenu)";
+                elements.warningMessage.style.display = 'block';
+                elements.warningMessage.classList.add('visible');
+            } else {
+                elements.warningMessage.textContent = '';
+                elements.warningMessage.style.display = 'none';
+                elements.warningMessage.classList.remove('visible');
+            }
         }
     }
 
-    // Calculate cards needed based on players
-    function calculateCardsNeeded(players) {
-        // Logic: 52 cards total, remove some based on player count
-        // to ensure even distribution
-        const totalCards = 52;
-        const cardsPerPlayer = Math.floor(totalCards / players);
-        return cardsPerPlayer * players;
+    // Calculate cards needed to reach Chyster based on players
+    function calculateCardsForChyster(players) {
+        const cardMapping = {
+            2: 11,
+            3: 10,
+            4: 9,
+            5: 8,
+            6: 7,
+            7: 6,
+            8: 5,
+            9: 5,
+            10: 5
+        };
+        return cardMapping[players] || 5;
     }
 
     // Accordion functionality for rules

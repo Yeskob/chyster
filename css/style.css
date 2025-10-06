@@ -334,6 +334,50 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--text-lg);
 }
 
+/* Warning message */
+.warning-message {
+    background: linear-gradient(135deg, rgba(220, 38, 127, 0.1), rgba(220, 38, 127, 0.2));
+    border: 1px solid rgba(220, 38, 127, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-top: var(--space-4);
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all var(--transition-smooth);
+}
+
+.warning-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.warning-message::before {
+    content: '⚠️';
+    font-size: var(--text-lg);
+    margin-right: var(--space-2);
+}
+
+.warning-message::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
 /* Buttons - Touch friendly */
 .btn {
     display: inline-flex;
