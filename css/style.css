@@ -511,6 +511,36 @@ section {
     font-weight: 600;
 }
 
+.exception-block {
+    background: rgba(255, 67, 54, 0.08);
+    border: 1px solid rgba(255, 67, 54, 0.3);
+    border-left: 4px solid #FF4336;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.exception-block h5 {
+    color: #FFD700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.exception-text {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+}
+
+.exception-text:last-child {
+    margin-bottom: 0;
+}
+
+.exception-text strong {
+    color: var(--color-neon-red);
+}
+
 .success {
     color: #4CAF50;
 }
@@ -665,6 +695,14 @@ section {
 .card-3d--royale {
     max-width: 300px;
     margin: 0 auto;
+}
+
+.dealer-rule {
+    margin-top: 3rem;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-white);
+    text-align: center;
 }
 
 /* Card Hover Effects */
