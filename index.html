@@ -3,225 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Chyster - Un jeu de cartes qui met l'amitié à l'épreuve">
+    <meta name="description" content="Chyster - Le jeu de cartes qui teste l'amitié. Règles officielles, conseils et défis pour 2-10 joueurs.">
+    <meta name="keywords" content="chyster, jeu de cartes, drinking game, amis, soirée">
+    <meta name="theme-color" content="#FF2E63">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chyster.fr/">
+    <meta property="og:title" content="Chyster Corp 2016 - Le jeu qui teste l'amitié">
+    <meta property="og:description" content="Découvrez les règles officielles du Chyster, le jeu de cartes addictif jusqu'à 10 joueurs.">
+    
     <title>Chyster Corp 2016</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.css" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero__neon-logo parallax-container parallax-element">
-            <h1 class="neon-text" data-text="CHYSTER">CHYSTER</h1>
-            <p class="neon-text-small">Oseras-tu atteindre la Chyster ?</p>
-        </div>
-        <div class="hero__cards-animation parallax-container parallax-element">
-            <!-- Les cartes animées seront injectées en JS -->
-        </div>
-    </section>
-
-    <!-- Concept Section -->
-    <section class="concept" id="concept">
-        <h2 class="neon-text">Le Concept</h2>
-        <p class="concept__tagline">
-            🎯 Posez vos cartes, atteignez la Chyster, et prouvez votre amitié... 
-            <span class="concept__highlight">en faisant boire vos potes jusqu'à l'oubli !</span>
-        </p>
-        <div class="concept__player-counter">
-            <div class="counter-container">
-                <h3>Nombre de joueurs</h3>
-                <div class="counter">
-                    <button class="counter__btn" id="decreasePlayers">-</button>
-                    <span class="counter__value" id="playerCount">2</span>
-                    <button class="counter__btn" id="increasePlayers">+</button>
-                </div>
-                <div class="counter__target">
-                    <h4 class="counter__target-title">Pour atteindre la Chyster</h4>
-                    <p class="counter__cards">Il vous faut <span id="cardTarget">11</span> cartes</p>
-                    <p class="counter__warning" id="playerWarning"></p>
-                </div>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- Mobile-first header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="header__brand">
+                <h1 class="logo">
+                    <span class="logo__text" aria-label="Chyster">CHYSTER</span>
+                    <span class="logo__subtitle">Corp 2016</span>
+                </h1>
             </div>
+            <nav class="nav" role="navigation" aria-label="Menu principal">
+                <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Ouvrir le menu">
+                    <span class="hamburger"></span>
+                </button>
+                <ul class="nav__menu" id="nav-menu">
+                    <li><a href="#rules" class="nav__link">Règles</a></li>
+                    <li><a href="#cards" class="nav__link">Cartes</a></li>
+                    <li><a href="#start" class="nav__link">Commencer</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
 
-        <!-- Quick Start Section -->
-        <div class="quickstart">
-            <h3 class="quickstart__title">Comment Commencer</h3>
-            <div class="timeline">
-                <div class="timeline__item">
-                    <div class="timeline__step">1</div>
-                    <p>Rassemblez vos amis (2-10 joueurs)</p>
-                </div>
-                <div class="timeline__item">
-                    <div class="timeline__step">2</div>
-                    <p>Préparez un jeu de 52 cartes</p>
-                </div>
-                <div class="timeline__item">
-                    <div class="timeline__step">3</div>
-                    <p>Désignez un dealer qui mènera la danse</p>
-                </div>
-                <div class="timeline__item">
-                    <div class="timeline__step">4</div>
-                    <p>En route pour la <strong>Chyster</strong> !</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Rules Section -->
-    <section class="rules" id="rules">
-        <h2 class="neon-text">Les Règles du Jeu</h2>
-        <div class="rules-container">
-            <!-- Basic Rules -->
-            <div class="rules__section">
-                <h3>Règles de Base</h3>
-                <div class="game-flow">
-                    <div class="game-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h4>Début du tour</h4>
-                            <ul class="step-list">
-                                <li><span class="icon">🎴</span> Piochez une carte</li>
-                                <li><span class="icon">🗣️</span> Annoncez votre prédiction : Rouge ou Noir</li>
-                            </ul>
+    <main id="main" role="main">
+        <!-- Hero section - Mobile optimized -->
+        <section class="hero" aria-label="Présentation du jeu">
+            <div class="container">
+                <div class="hero__content">
+                    <h2 class="hero__title">
+                        Le jeu qui teste 
+                        <span class="highlight">l'amitié</span>
+                    </h2>
+                    <p class="hero__subtitle">
+                        Un jeu de cartes addictif pour 2-10 joueurs. 
+                        Oseras-tu atteindre la Chyster ?
+                    </p>
+                    
+                    <!-- Player counter - Touch optimized -->
+                    <div class="player-selector" role="region" aria-label="Sélection du nombre de joueurs">
+                        <label for="player-count" class="player-selector__label">Joueurs</label>
+                        <div class="player-selector__controls">
+                            <button class="btn btn--counter" id="decrease-players" aria-label="Diminuer le nombre de joueurs">-</button>
+                            <input type="number" id="player-count" class="player-count" value="4" min="2" max="10" readonly>
+                            <button class="btn btn--counter" id="increase-players" aria-label="Augmenter le nombre de joueurs">+</button>
+                        </div>
+                        <div class="card-target" role="status" aria-live="polite">
+                            <strong id="cards-needed">21</strong> cartes nécessaires pour la Chyster
                         </div>
                     </div>
 
-                    <div class="game-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h4>Résolution</h4>
-                            <div class="resolution-block">
-                                <h5>Première carte ou sans carte devant vous :</h5>
-                                <ul class="step-list">
-                                    <li class="success"><span class="icon">✅</span> Bonne couleur → Posez la carte devant vous</li>
-                                    <li class="failure"><span class="icon">❌</span> Mauvaise couleur → Buvez 1 gorgée</li>
-                                </ul>
-                            </div>
-                            <div class="resolution-block">
-                                <h5>Avec des cartes devant vous :</h5>
-                                <ul class="step-list choice-list">
-                                    <li><span class="icon">🎯</span> Devinez la couleur</li>
-                                    <li class="choice-separator">OU</li>
-                                    <li><span class="icon">🍺</span> Donnez des gorgées (nombre = cartes devant vous)</li>
-                                </ul>
-                            </div>
+                    <div class="cta-group">
+                        <a href="#start" class="btn btn--primary">Commencer à jouer</a>
+                        <a href="#rules" class="btn btn--secondary">Voir les règles</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick start - Mobile first -->
+        <section id="start" class="quick-start" aria-label="Guide de démarrage rapide">
+            <div class="container">
+                <h2 class="section-title">Démarrage rapide</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step__number" aria-hidden="true">1</div>
+                        <div class="step__content">
+                            <h3 class="step__title">Rassemblez-vous</h3>
+                            <p>2 à 10 joueurs, un jeu de 52 cartes</p>
                         </div>
                     </div>
-
-                    <div class="game-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h4>Système de tentatives</h4>
-                            <div class="bonus-block">
-                                <p class="bonus-text"><span class="icon">⭐</span> Bonus : Si mauvaise couleur mais numéro supérieur à votre dernière carte → Nouvelle chance !</p>
-                            </div>
-                            <ul class="step-list">
-                                <li><span class="icon">🎲</span> 3 essais maximum pour trouver la bonne couleur</li>
-                                <li class="warning"><span class="icon">⚠️</span> En cas d'égalité, c'est perdu !</li>
-                                <li class="failure"><span class="icon">☠️</span> Si échec après 3 essais → Buvez autant de gorgées que de cartes devant vous</li>
-                            </ul>
-                            
-                            <div class="exception-block">
-                                <h5>⚠️ EXCEPTIONS : Cartes Spéciales</h5>
-                                <p class="exception-text">🔄 <strong>Valet & Dame :</strong> Ne comptent PAS dans tes 3 essais + repartent dans la défausse</p>
-                                <p class="exception-text">👑 <strong>Roi & As :</strong> Victoire automatique (peu importe la couleur prédite)</p>
-                            </div>
+                    <div class="step">
+                        <div class="step__number" aria-hidden="true">2</div>
+                        <div class="step__content">
+                            <h3 class="step__title">Choisissez un dealer</h3>
+                            <p>Celui qui mènera la partie</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step__number" aria-hidden="true">3</div>
+                        <div class="step__content">
+                            <h3 class="step__title">C'est parti !</h3>
+                            <p>Piochez, prédisez, atteignez la Chyster</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Special Cards -->
-            <div class="rules__section">
-                <h3>Cartes Spéciales</h3>
-                <div class="card-grid">
-                    <div class="card-3d card-3d--royale" data-rule="jack">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--black">
-                                    <span class="card-3d__rank">J</span>
-                                </div>
-                            </div>
-                            <div class="card-3d__back">
-                                <h4>Valet</h4>
-                                <p>Désignez 2 personnes pour un shifu-bois !</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-3d card-3d--royale" data-rule="queen">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--red">
-                                    <span class="card-3d__rank">Q</span>
-                                </div>
-                            </div>
-                            <div class="card-3d__back">
-                                <h4>Dame</h4>
-                                <p>Le dernier à dire "pute" boit !<br><em>(le mot peut être modifié au début de jeu si tu joues avec des enfants)</em> 👶</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-3d card-3d--royale" data-rule="king">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--black">
-                                    <span class="card-3d__rank">K</span>
-                                </div>
-                            </div>
-                            <div class="card-3d__back">
-                                <h4>Roi</h4>
-                                <p>JOKER ! Posez-le au-dessus de votre jeu. Il élimine votre dernière carte au début de votre tour ou quand vous devriez perdre. <em>Ne compte pas pour la Chyster.</em></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-3d card-3d--royale" data-rule="ace">
-                        <div class="card-3d__inner">
-                            <div class="card-3d__front">
-                                <div class="card-3d__content card-3d__content--red">
-                                    <span class="card-3d__rank">A</span>
-                                </div>
-                            </div>
-                            <div class="card-3d__back">
-                                <h4>As</h4>
-                                <p>Vaut 1 pour vous ou 10 pour un adversaire !</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chyster Royale -->
-            <div class="rules__section rules__section--royale">
-                <h3 class="neon-text">Chyster Royale</h3>
-                <div class="card-3d card-3d--royale" data-rule="royale">
-                    <div class="card-3d__inner">
-                        <div class="card-3d__front">
-                            <div class="card-3d__content card-3d__content--gold">
-                                <span class="card-3d__crown">👑</span>
-                            </div>
-                        </div>
-                        <div class="card-3d__back">
-                            <h4>Chyster Royale</h4>
-                            <p>Toutes les cartes de la même couleur ?<br>Distribution x2 et destruction de 2 jeux !</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Rules section - Optimized for mobile reading -->
+        <section id="rules" class="rules" aria-label="Règles du jeu">
+            <div class="container">
+                <h2 class="section-title">Règles essentielles</h2>
                 
-                <blockquote class="dealer-rule">
-                    À chaque Chyster, le dealer est dans l'obligation de mélanger le paquet.
-                </blockquote>
+                <!-- Collapsible rules for mobile -->
+                <div class="rule-accordion">
+                    <div class="rule-item">
+                        <button class="rule-header" aria-expanded="false" aria-controls="rule-basic">
+                            <h3>Règles de base</h3>
+                            <span class="rule-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="rule-content" id="rule-basic">
+                            <div class="rule-steps">
+                                <div class="rule-step">
+                                    <span class="rule-step__number">1</span>
+                                    <p>Piochez une carte et annoncez : Rouge ou Noir</p>
+                                </div>
+                                <div class="rule-step">
+                                    <span class="rule-step__number">2</span>
+                                    <p><strong>Bonne couleur</strong> → Posez devant vous<br>
+                                    <strong>Mauvaise couleur</strong> → Buvez 1 gorgée</p>
+                                </div>
+                                <div class="rule-step">
+                                    <span class="rule-step__number">3</span>
+                                    <p>Avec des cartes devant vous : Devinez OU Distribuez</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <button class="rule-header" aria-expanded="false" aria-controls="rule-attempts">
+                            <h3>Système de tentatives</h3>
+                            <span class="rule-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="rule-content" id="rule-attempts">
+                            <ul class="rule-list">
+                                <li>🎯 3 essais maximum</li>
+                                <li>⭐ Bonus : Numéro supérieur = nouvelle chance</li>
+                                <li>⚠️ Égalité = perdu</li>
+                                <li>💀 Échec = Buvez le nombre de cartes devant vous</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rule-item">
+                        <button class="rule-header" aria-expanded="false" aria-controls="rule-chyster">
+                            <h3>La Chyster</h3>
+                            <span class="rule-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="rule-content" id="rule-chyster">
+                            <p class="highlight-text">
+                                🏆 Atteignez le nombre de cartes requis pour votre groupe et distribuez à volonté !
+                            </p>
+                            <div class="chyster-bonus">
+                                <strong>Chyster Royale :</strong> Même couleur sur toutes vos cartes = Distribution x2 et destruction de 2 jeux !
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special cards - Mobile optimized grid -->
+        <section id="cards" class="special-cards" aria-label="Cartes spéciales">
+            <div class="container">
+                <h2 class="section-title">Cartes spéciales</h2>
+                <div class="cards-grid">
+                    <div class="card-simple" role="button" tabindex="0">
+                        <div class="card-simple__front">
+                            <span class="card-rank">J</span>
+                        </div>
+                        <div class="card-simple__info">
+                            <h4>Valet</h4>
+                            <p>Shifu-bois entre 2 personnes</p>
+                        </div>
+                    </div>
+
+                    <div class="card-simple" role="button" tabindex="0">
+                        <div class="card-simple__front">
+                            <span class="card-rank card-rank--red">Q</span>
+                        </div>
+                        <div class="card-simple__info">
+                            <h4>Dame</h4>
+                            <p>Le dernier à dire "pute" boit</p>
+                        </div>
+                    </div>
+
+                    <div class="card-simple" role="button" tabindex="0">
+                        <div class="card-simple__front">
+                            <span class="card-rank">K</span>
+                        </div>
+                        <div class="card-simple__info">
+                            <h4>Roi</h4>
+                            <p>JOKER ! Sauve une carte</p>
+                        </div>
+                    </div>
+
+                    <div class="card-simple" role="button" tabindex="0">
+                        <div class="card-simple__front">
+                            <span class="card-rank card-rank--red">A</span>
+                        </div>
+                        <div class="card-simple__info">
+                            <h4>As</h4>
+                            <p>1 pour vous, 10 pour un adversaire</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Mobile-first footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer__content">
+                <p class="footer__text">
+                    <strong>Chyster Corp 2016</strong><br>
+                    Buvez avec modération 🍻
+                </p>
+                <p class="footer__legal">
+                    <small>Ce jeu est destiné aux adultes. Respectez les lois locales.</small>
+                </p>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/cards-animation.js"></script>
-    <script src="js/counter.js"></script>
-    <script src="js/parallax.js"></script>
+    <!-- Scripts optimized for mobile -->
+    <script src="js/mobile-app.js" defer></script>
 </body>
 </html>

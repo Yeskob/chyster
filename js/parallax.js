@@ -38,50 +38,26 @@ class ParallaxScroll {
     }
 
     setupIntersectionObserver() {
-        // Vérifier la disponibilité de l'Intersection Observer
-        if (!window.IntersectionObserver) {
-            // Fallback pour navigateurs sans support
-            document.querySelectorAll('.concept').forEach(section => {
-                section.classList.add('in-view', 'fallback-visible');
-            });
-            return;
-        }
-
         const options = {
             threshold: [0, 0.1, 0.25, 0.5],
             rootMargin: '100px 0px -50px 0px'
         };
 
-        try {
-            this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-                        entry.target.classList.add('in-view');
-                    } else if (!entry.isIntersecting) {
-                        // Optionnel: retirer la classe si on sort de la vue
-                        // entry.target.classList.remove('in-view');
-                    }
-                });
-            }, options);
-
-            // Observer les sections avec gestion d'erreur
-            document.querySelectorAll('.concept').forEach(section => {
-                try {
-                    this.observer.observe(section);
-                } catch (error) {
-                    console.warn('Failed to observe section:', error);
-                    // Fallback : afficher immédiatement
-                    section.classList.add('in-view', 'fallback-visible');
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+                    entry.target.classList.add('in-view');
+                } else if (!entry.isIntersecting) {
+                    // Optionnel: retirer la classe si on sort de la vue
+                    // entry.target.classList.remove('in-view');
                 }
             });
-            
-        } catch (error) {
-            console.warn('IntersectionObserver creation failed:', error);
-            // Fallback : afficher toutes les sections
-            document.querySelectorAll('.concept').forEach(section => {
-                section.classList.add('in-view', 'fallback-visible');
-            });
-        }
+        }, options);
+
+        // Observer les sections avec un déclenchement plus précoce (seulement concept)
+        document.querySelectorAll('.concept').forEach(section => {
+            this.observer.observe(section);
+        });
     }
 
     bindScrollEvents() {
@@ -134,42 +110,10 @@ class ParallaxScroll {
 
 // Initialiser le parallax quand la page est chargée
 document.addEventListener('DOMContentLoaded', () => {
-    // Détection plus robuste du navigateur et du device
+    // Vérifier si on est sur mobile pour optimiser
     const isMobile = window.innerWidth <= 768;
-    const isBrave = navigator.brave && navigator.brave.isBrave;
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
-    // Fallback CSS pour assurer la visibilité des sections
-    const ensureVisibility = () => {
-        const conceptSection = document.querySelector('.concept');
-        if (conceptSection && !conceptSection.classList.contains('in-view')) {
-            // Forcer l'affichage après 2 secondes si le parallax ne fonctionne pas
-            setTimeout(() => {
-                if (!conceptSection.classList.contains('in-view')) {
-                    conceptSection.classList.add('in-view', 'fallback-visible');
-                }
-            }, 2000);
-        }
-    };
-    
-    // Initialiser le parallax avec gestion d'erreur
-    try {
-        // Désactiver sur Brave mobile pour éviter les bugs
-        if (isBrave && isMobile) {
-            console.log('Brave mobile detected: using fallback visibility');
-            ensureVisibility();
-        } else if (!isMobile || isTouch) {
-            new ParallaxScroll();
-        }
-        
-        // Toujours activer le fallback de sécurité
-        ensureVisibility();
-        
-    } catch (error) {
-        console.warn('Parallax initialization failed:', error);
-        // Fallback : afficher toutes les sections immédiatement
-        document.querySelectorAll('.concept').forEach(section => {
-            section.classList.add('in-view', 'fallback-visible');
-        });
+    if (!isMobile || window.DeviceMotionEvent) {
+        new ParallaxScroll();
     }
 });
