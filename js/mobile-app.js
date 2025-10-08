@@ -190,9 +190,9 @@
         }
     }
 
-    // Smooth scroll for anchor links
+    // Smooth scroll for anchor links and rule navigation
     function smoothScrollToAnchor(e) {
-        const target = e.target.getAttribute('href');
+        const target = e.target.closest('a')?.getAttribute('href');
         
         if (target && target.startsWith('#')) {
             e.preventDefault();
@@ -275,14 +275,9 @@
             elements.playerIncrement.addEventListener('click', () => updatePlayerCount('increment'));
         }
 
-        // Rule accordions
-        elements.ruleHeaders.forEach(header => {
-            header.addEventListener('click', () => toggleRuleAccordion(header));
-        });
-
-        // Navigation links
+        // Navigation links (main nav and rule nav)
         document.addEventListener('click', (e) => {
-            if (e.target.matches('.nav__link')) {
+            if (e.target.matches('.nav__link') || e.target.closest('.rule-nav__link')) {
                 smoothScrollToAnchor(e);
             }
         });
@@ -359,7 +354,48 @@
             addPassiveListeners();
             initAccessibility();
             initIntersectionObserver();
+            initSubSections();
         }, 'initialization');
+    }
+
+    // Initialize sub-sections functionality
+    function initSubSections() {
+        // Make toggleSubSection globally available
+        window.toggleSubSection = function(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const isVisible = section.style.display !== 'none';
+                
+                // Remove active state from all sub-situation cards
+                document.querySelectorAll('.sub-situation-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                
+                // Hide all other sub-sections
+                document.querySelectorAll('.sub-section').forEach(s => {
+                    s.style.display = 'none';
+                });
+                
+                // Toggle current section
+                if (!isVisible) {
+                    section.style.display = 'block';
+                    
+                    // Add active state to the corresponding card
+                    const activeCard = document.querySelector(`[onclick="toggleSubSection('${sectionId}')"]`);
+                    if (activeCard) {
+                        activeCard.classList.add('active');
+                    }
+                    
+                    // Smooth scroll to section
+                    setTimeout(() => {
+                        section.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest' 
+                        });
+                    }, 100);
+                }
+            }
+        };
     }
 
     // Wait for DOM to be ready

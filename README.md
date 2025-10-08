@@ -1,40 +1,66 @@
-# README.md content
+# Chyster Website
 
-# Chyster Game Website
+Site web pour le jeu de cartes Chyster avec design mobile-first et navigation par arbre de décision.
 
-Welcome to the Chyster Game website! This website provides all the necessary information about the Chyster game, including its rules and how to play.
+## ✨ Nouvelle Version - Navigation par Situation
 
-## Project Overview
+Le site a été repensé avec une approche centrée sur l'utilisateur :
 
-Chyster is an engaging card game designed to test friendships. This website serves as a resource for players to learn about the game and its rules.
+### 🎯 Navigation intuitive par situation
+- **"Je n'ai pas de carte devant moi"** - Pour les débutants
+- **"J'ai des cartes devant moi"** - Pour les choix stratégiques  
+- **"J'ai atteint la Chyster"** - Pour la victoire
+- **"Cartes spéciales"** - Pour les exceptions
 
-## File Structure
+### 📱 Design Mobile-First
+- Interface optimisée pour les écrans tactiles
+- Navigation fluide entre les sections
+- Cartes interactives pour chaque situation
 
-- `src/css/main.css`: Main styles for layout, typography, and color schemes.
-- `src/css/theme.css`: Theme-related styles, including dark and light modes.
-- `src/js/theme.js`: JavaScript for theme switching functionality.
-- `src/pages/index.html`: Homepage introducing the Chyster game.
-- `src/pages/rules.html`: Detailed rules of the Chyster game.
-- `src/components/navbar.html`: Navigation bar structure for consistent navigation.
-- `src/components/footer.html`: Footer structure for consistency across pages.
+## 🚀 Fonctionnalités
 
-## Setup Instructions
+- Design responsive et moderne
+- Navigation par arbre de décision basée sur les situations de jeu
+- Animations fluides
+- Interface intuitive et accessible
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```
-   cd chyster-website
-   ```
-3. Open the project in your preferred code editor.
+## 📂 Structure
 
-## Usage Guidelines
+```
+├── index.html              # Page principale (version timeline)
+├── css/
+│   └── style.css           # Styles pour la timeline
+├── js/
+│   ├── mobile-app.js      # Navigation mobile (actif)
+│   ├── main.js            # JavaScript principal (legacy)
+│   ├── cards-animation.js # Animations des cartes (legacy)
+│   ├── counter.js         # Compteurs animés (legacy)
+│   └── parallax.js        # Effets parallax (legacy)
+└── backup files/
+    ├── index_decision_tree_backup.html  # Version arbre de décision
+    └── index_backup.html                # Version originale
+```
 
-- Open `src/pages/index.html` in your browser to view the homepage.
-- Navigate to `src/pages/rules.html` to read the rules of the game.
+## 🎮 Comment naviguer
 
-## License
+1. **Situation** : Choisissez votre situation actuelle dans le jeu
+2. **Action** : Suivez les étapes correspondantes
+3. **Résultat** : Consultez les conséquences et actions suivantes
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+## 💻 Développement
+
+Pour modifier le site :
+1. Ouvrez avec VS Code
+2. Utilisez Live Server pour le développement
+3. Les styles sont dans `css/style.css`
+4. La logique JavaScript est répartie dans le dossier `js/`
+
+## 🔄 Historique des versions
+
+- **v2.0** - Timeline des règles (actuelle sur mobile-adaptation)
+- **v3.0** - Arbre de décision par situation (sauvegardée)
+- **v1.0** - Design original (sauvegardée)
+
+---
+
+*Créé avec ❤️ pour des soirées inoubliables*

@@ -109,71 +109,249 @@
                         <div class="step__number" aria-hidden="true">3</div>
                         <div class="step__content">
                             <h3 class="step__title">C'est parti !</h3>
-                            <p>Piochez, prédisez, atteignez la Chyster</p>
+                            <p>Piochez, choisissez, atteignez la Chyster</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Rules section - Optimized for mobile reading -->
+        <!-- Rules section - Decision tree design -->
         <section id="rules" class="rules" aria-label="Règles du jeu">
             <div class="container">
                 <h2 class="section-title">Règles essentielles</h2>
+                <p class="rules-intro">Dans quelle situation êtes-vous ?</p>
                 
-                <!-- Collapsible rules for mobile -->
-                <div class="rule-accordion">
-                    <div class="rule-item">
-                        <button class="rule-header" aria-expanded="false" aria-controls="rule-basic">
-                            <h3>Règles de base</h3>
-                            <span class="rule-toggle" aria-hidden="true">+</span>
-                        </button>
-                        <div class="rule-content" id="rule-basic">
-                            <div class="rule-steps">
-                                <div class="rule-step">
-                                    <span class="rule-step__number">1</span>
-                                    <p>Piochez une carte et annoncez : Rouge ou Noir</p>
+                <!-- Game flow timeline -->
+                <div class="game-timeline">
+                    <!-- Étape 1 -->
+                    <div class="timeline-step" id="step-situation">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">🤔 DÉBUT DE TOUR</h3>
+                        </div>
+                        <div class="step-content">
+                            <p class="step-question">Avez-vous des cartes déjà posées ?</p>
+                            
+                            <div class="choice-branches">
+                                <div class="branch branch-a">
+                                    <div class="branch-header">
+                                        <span class="branch-label">NON</span>
+                                    </div>
+                                    <div class="branch-content">
+                                        <h4>📋 ROUGE OU NOIR ?</h4>
+                                        <p>Annoncez votre prédiction</p>
+                                        <div class="color-choices">
+                                            <span class="color-choice color-red">🔴 Rouge</span>
+                                            <span class="choice-or">ou</span>
+                                            <span class="color-choice color-black">⚫ Noir</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="rule-step">
-                                    <span class="rule-step__number">2</span>
-                                    <p><strong>Bonne couleur</strong> → Posez devant vous<br>
-                                    <strong>Mauvaise couleur</strong> → Buvez 1 gorgée</p>
-                                </div>
-                                <div class="rule-step">
-                                    <span class="rule-step__number">3</span>
-                                    <p>Avec des cartes devant vous : Devinez OU Distribuez</p>
+
+                                <div class="branch branch-b">
+                                    <div class="branch-header">
+                                        <span class="branch-label">OUI</span>
+                                    </div>
+                                    <div class="branch-content">
+                                        <h4>🎯 CHOIX STRATÉGIQUE</h4>
+                                        <div class="strategic-choices">
+                                            <div class="choice-option">
+                                                <h5>🔴⚫ ROUGE OU NOIR</h5>
+                                                <p>(deviner)</p>
+                                            </div>
+                                            <div class="choice-or">OU</div>
+                                            <div class="choice-option">
+                                                <h5>🍻 DISTRIBUER</h5>
+                                                <p>gorgées à un SEUL joueur (= nombre de cartes déjà posées)</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="rule-item">
-                        <button class="rule-header" aria-expanded="false" aria-controls="rule-attempts">
-                            <h3>Système de tentatives</h3>
-                            <span class="rule-toggle" aria-hidden="true">+</span>
-                        </button>
-                        <div class="rule-content" id="rule-attempts">
-                            <ul class="rule-list">
-                                <li>🎯 3 essais maximum</li>
-                                <li>⭐ Bonus : Numéro supérieur = nouvelle chance</li>
-                                <li>⚠️ Égalité = perdu</li>
-                                <li>💀 Échec = Buvez le nombre de cartes devant vous</li>
-                            </ul>
+                    <!-- Étape 2 -->
+                    <div class="timeline-step" id="step-result">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">🎰 RÉSULTAT</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="result-outcomes">
+                                <div class="outcome outcome-success">
+                                    <h4>✅ BONNE COULEUR</h4>
+                                    <div class="choice-option">
+                                        <p>→ Posez la carte avec vos cartes déjà posées (en haut de votre rangée)</p>
+                                    </div>
+                                    <div class="choice-option">
+                                        <p>→ On passe au joueur suivant !</p>
+                                    </div>
+                                </div>
+
+                                <div class="outcome outcome-failure">
+                                    <h4>❌ MAUVAISE COULEUR</h4>
+                                    
+                                    <!-- Sous-navigation cliquable -->
+                                    <div class="sub-situation-nav">
+                                        <div class="sub-situation-card" onclick="toggleSubSection('no-cards-failure')">
+                                            <h5>Pas de carte déjà posée</h5>
+                                            <p>Cliquez pour voir les actions</p>
+                                            <span class="expand-indicator">▼</span>
+                                        </div>
+                                        <div class="sub-situation-card" onclick="toggleSubSection('with-cards-failure')">
+                                            <h5>J'ai déjà des cartes posées</h5>
+                                            <p>Cliquez pour voir les options</p>
+                                            <span class="expand-indicator">▼</span>
+                                        </div>
+                                        <div class="sub-situation-card" onclick="toggleSubSection('special-cards-section')">
+                                            <h5>Cartes spéciales</h5>
+                                            <p>Exceptions et pouvoirs</p>
+                                            <span class="expand-indicator">▼</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Section: Pas de cartes -->
+                                    <div class="sub-section" id="no-cards-failure" style="display: none;">
+                                        <h5>Pas de carte déjà posée</h5>
+                                        <div class="choice-option">
+                                            <p>→ Buvez 1 gorgée</p>
+                                        </div>
+                                        <div class="choice-option">
+                                            <p>⚠️ Carte spéciale piochée ? → <a href="#" class="special-link" onclick="toggleSubSection('special-cards-section'); return false;">Voir les cartes spéciales</a></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Section: Avec des cartes -->
+                                    <div class="sub-section" id="with-cards-failure" style="display: none;">
+                                        <h5>J'ai déjà des cartes posées</h5>
+                                        
+                                        <div class="bonus-explanation">
+                                            <h6>⭐ BONUS</h6>
+                                            <p>Mauvaise couleur MAIS numéro supérieur à votre dernière carte → <strong>NOUVELLE CHANCE !</strong></p>
+                                        </div>
+
+                                        <div class="system-explanation">
+                                            <h6>🎲 SYSTÈME D'ESSAIS</h6>
+                                            <div class="choice-option">
+                                                <p>→ 3 essais maximum</p>
+                                            </div>
+                                            <div class="choice-option sub-bullet">
+                                                <p>⚠️ Égalité = perdu</p>
+                                            </div>
+                                            <div class="choice-option sub-bullet">
+                                                <p>☠️ Échec total = buvez le nombre de cartes déjà posées</p>
+                                            </div>
+                                        </div>
+
+                                        <p>⚠️ Carte spéciale piochée ? → <a href="#" class="special-link" onclick="toggleSubSection('special-cards-section'); return false;">Voir les cartes spéciales</a></p>
+                                    </div>
+
+                                    <!-- Section: Cartes spéciales intégrée -->
+                                    <div class="sub-section" id="special-cards-section" style="display: none;">
+                                        <h5>CARTES SPÉCIALES</h5>
+                                        
+                                        <!-- Exceptions -->
+                                        <div class="exceptions-section">
+                                            <h6>� EXCEPTIONS</h6>
+                                            <div class="exception-grid">
+                                                <div class="exception-item">
+                                                    <h6>🔄 VALET & DAME</h6>
+                                                    <div class="choice-option">
+                                                        <p>→ Ne comptent PAS dans vos 3 essais</p>
+                                                    </div>
+                                                    <div class="choice-option">
+                                                        <p>→ Repartent automatiquement dans la défausse</p>
+                                                    </div>
+                                                    <div class="choice-option">
+                                                        <p>→ Vous pouvez retenter immédiatement</p>
+                                                    </div>
+                                                </div>
+                                                <div class="exception-item">
+                                                    <h6>👑 ROI & AS</h6>
+                                                    <div class="choice-option">
+                                                        <p>→ Victoire automatique du tour</p>
+                                                    </div>
+                                                    <div class="choice-option">
+                                                        <p>→ Peu importe la couleur prédite</p>
+                                                    </div>
+                                                    <div class="choice-option">
+                                                        <p>→ Ajoutés automatiquement à votre collection</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pouvoirs détaillés -->
+                                        <div class="powers-section">
+                                            <h6>💎 POUVOIRS DÉTAILLÉS</h6>
+                                            <div class="power-details">
+                                                <div class="power-item">
+                                                    <h6>🃏 Valet (J)</h6>
+                                                    <p><em>Désignez 2 personnes pour un shifu-bois !</em><br>
+                                                    Carte neutre, ne compte pas dans les essais</p>
+                                                </div>
+                                                <div class="power-item">
+                                                    <h6>👸 Dame (Q)</h6>
+                                                    <p><em>Le dernier à dire "pute" boit !</em><br>
+                                                    <em>(le mot peut être modifié au début de jeu si tu joues avec des enfants)</em> 👶<br>
+                                                    Carte neutre, ne compte pas dans les essais</p>
+                                                </div>
+                                                <div class="power-item">
+                                                    <h6>👑 Roi (K)</h6>
+                                                    <p><em>JOKER ! Posez-le au-dessus de votre jeu. Il élimine votre dernière carte au début de votre tour ou quand vous devriez perdre.</em> <em>Ne compte pas pour la Chyster</em><br>
+                                                    Victoire automatique (peu importe la couleur prédite)</p>
+                                                </div>
+                                                <div class="power-item">
+                                                    <h6>🅰️ As (A)</h6>
+                                                    <p><em>Vaut 1 dans votre rangée ou 10 pour un adversaire !</em><br>
+                                                    Victoire automatique (peu importe la couleur prédite)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
 
-                    <div class="rule-item">
-                        <button class="rule-header" aria-expanded="false" aria-controls="rule-chyster">
-                            <h3>La Chyster</h3>
-                            <span class="rule-toggle" aria-hidden="true">+</span>
-                        </button>
-                        <div class="rule-content" id="rule-chyster">
-                            <p class="highlight-text">
-                                🏆 Atteignez le nombre de cartes requis pour votre groupe et distribuez à volonté !
-                            </p>
-                            <div class="chyster-bonus">
-                                <strong>Chyster Royale :</strong> Même couleur sur toutes vos cartes = Distribution x2 et destruction de 2 jeux !
+                    <!-- La Chyster -->
+                    <div class="timeline-step timeline-step--chyster" id="step-chyster">
+                        <div class="step-header">
+                            <div class="step-number">🏆</div>
+                            <h3 class="step-title">🏆 LA CHYSTER</h3>
+                        </div>
+                        <div class="step-content">
+                            <div class="chyster-objective">
+                                <h4>� OBJECTIF</h4>
+                                <p>Atteignez le nombre de cartes requis pour votre groupe</p>
                             </div>
+
+                            <div class="chyster-power">
+                                <h4>💥 POUVOIR CHYSTER</h4>
+                                <div class="choice-option">
+                                    <p>→ Distribuez TOUTES vos gorgées à 1 seul joueur (1 carte = 1 gorgée)</p>
+                                </div>
+                                <div class="choice-option">
+                                    <p>→ Détruisez l'ENSEMBLE de son jeu (rangée de cartes + jokers)</p>
+                                </div>
+                            </div>
+
+                            <div class="chyster-royale">
+                                <h4>✨ CHYSTER ROYALE</h4>
+                                <p>Même couleur sur toutes vos cartes = <strong>Distribution x2</strong> et <strong>destruction de 2 jeux !</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fin de tour -->
+                    <div class="timeline-step timeline-step--final">
+                        <div class="step-header">
+                            <div class="step-number">🔄</div>
+                            <h3 class="step-title">🔄 SUIVANT</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Tour du joueur suivant (sens horaire)</p>
                         </div>
                     </div>
                 </div>
