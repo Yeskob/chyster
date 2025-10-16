@@ -355,6 +355,7 @@
             initAccessibility();
             initIntersectionObserver();
             initSubSections();
+            initAccordion();
         }, 'initialization');
     }
 
@@ -405,12 +406,83 @@
         init();
     }
 
+    // ===================================
+    // ACCORDION FUNCTIONALITY
+    // ===================================
+    
+    function initAccordion() {
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                toggleAccordion(header);
+            });
+            
+            // Keyboard accessibility
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleAccordion(header);
+                }
+            });
+        });
+    }
+    
+    function toggleAccordion(header) {
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        const content = document.getElementById(header.getAttribute('aria-controls'));
+        
+        // Close other accordions for better mobile UX
+        const allHeaders = document.querySelectorAll('.accordion-header');
+        const allContents = document.querySelectorAll('.accordion-content');
+        
+        allHeaders.forEach(h => {
+            if (h !== header) {
+                h.setAttribute('aria-expanded', 'false');
+            }
+        });
+        
+        allContents.forEach(c => {
+            if (c !== content) {
+                c.classList.remove('expanded');
+                c.style.display = 'none';
+            }
+        });
+        
+        // Toggle current accordion
+        if (isExpanded) {
+            header.setAttribute('aria-expanded', 'false');
+            content.classList.remove('expanded');
+            setTimeout(() => {
+                content.style.display = 'none';
+            }, 300);
+        } else {
+            header.setAttribute('aria-expanded', 'true');
+            content.style.display = 'block';
+            setTimeout(() => {
+                content.classList.add('expanded');
+            }, 10);
+            
+            // Smooth scroll to accordion header on mobile
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    header.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start',
+                        inline: 'nearest'
+                    });
+                }, 150);
+            }
+        }
+    }
+
     // Expose limited API for debugging (development only)
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
         window.ChysterApp = {
             state,
             updatePlayerCount,
-            toggleMobileNav
+            toggleMobileNav,
+            toggleAccordion
         };
     }
 

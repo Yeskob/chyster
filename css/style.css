@@ -1818,3 +1818,134 @@ h1, h2, h3, h4, h5, h6 {
         min-height: var(--touch-target);
     }
 }
+
+/* ===================================
+   ACCORDION PROGRESSIVE ENHANCEMENT
+   =================================== */
+
+.accordion-step {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+}
+
+.accordion-step:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.accordion-header {
+    width: 100%;
+    background: var(--color-surface);
+    border: none;
+    padding: var(--space-5) var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    min-height: var(--touch-target);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordion-header:hover {
+    background: linear-gradient(135deg, var(--color-surface), rgba(255, 46, 99, 0.05));
+}
+
+.accordion-header[aria-expanded="true"] {
+    background: linear-gradient(135deg, var(--color-surface), rgba(255, 46, 99, 0.1));
+}
+
+.accordion-header .step-number {
+    background: var(--color-primary);
+    color: var(--color-text);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: var(--text-lg);
+    flex-shrink: 0;
+}
+
+.accordion-header .step-title {
+    flex: 1;
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-xl);
+    font-weight: 600;
+}
+
+.accordion-icon {
+    color: var(--color-primary);
+    font-size: var(--text-lg);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.accordion-header[aria-expanded="true"] .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    background: var(--color-surface);
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.accordion-content.expanded {
+    display: block !important;
+    max-height: 2000px;
+    padding: var(--space-6);
+    animation: accordionSlide 0.3s ease;
+}
+
+@keyframes accordionSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .accordion-header {
+        padding: var(--space-4) var(--space-5);
+        gap: var(--space-3);
+    }
+    
+    .accordion-header .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: var(--text-base);
+    }
+    
+    .accordion-header .step-title {
+        font-size: var(--text-lg);
+    }
+    
+    .accordion-content.expanded {
+        padding: var(--space-4);
+    }
+}
+
+/* Focus and active states */
+.accordion-header:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    background: linear-gradient(135deg, var(--color-surface), rgba(255, 46, 99, 0.1));
+}
+
+.accordion-header:active {
+    transform: translateY(1px);
+}

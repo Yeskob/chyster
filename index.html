@@ -128,12 +128,13 @@
                 <!-- Game flow timeline -->
                 <div class="game-timeline">
                     <!-- Étape 1 -->
-                    <div class="timeline-step" id="step-situation">
-                        <div class="step-header">
+                    <div class="timeline-step accordion-step" id="step-situation">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-situation-content">
                             <div class="step-number">1</div>
                             <h3 class="step-title">🤔 DÉBUT DE TOUR</h3>
-                        </div>
-                        <div class="step-content">
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-situation-content" style="display: none;">
                             <p class="step-question">Avez-vous des cartes déjà posées ?</p>
                             
                             <div class="choice-branches">
@@ -176,12 +177,13 @@
                     </div>
 
                     <!-- Étape 2 -->
-                    <div class="timeline-step" id="step-result">
-                        <div class="step-header">
+                    <div class="timeline-step accordion-step" id="step-result">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-result-content">
                             <div class="step-number">2</div>
                             <h3 class="step-title">🎰 RÉSULTAT</h3>
-                        </div>
-                        <div class="step-content">
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-result-content" style="display: none;">
                             <div class="result-outcomes">
                                 <div class="outcome outcome-success">
                                     <h4>✅ BONNE COULEUR</h4>
@@ -285,16 +287,18 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- La Chyster -->
-                    <div class="timeline-step timeline-step--chyster" id="step-chyster">
-                        <div class="step-header">
+                    <div class="timeline-step timeline-step--chyster accordion-step" id="step-chyster">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-chyster-content">
                             <div class="step-number">🏆</div>
                             <h3 class="step-title">LA CHYSTER</h3>
-                        </div>
-                        <div class="step-content">
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-chyster-content" style="display: none;">
                             <div class="chyster-objective">
                                 <h4>🎯 OBJECTIF</h4>
                                 <p>Atteignez le nombre de cartes requis pour votre groupe</p>
