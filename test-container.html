@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Minimal Chyster</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #app { border: 2px solid #333; padding: 20px; min-height: 200px; background: #f0f0f0; }
+        .status { padding: 10px; margin: 5px 0; border-radius: 3px; }
+        .ok { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Test Minimal Chyster Live App</h1>
+    <p>État du DOM: <span id="dom-state">Chargement...</span></p>
+    <p>Container trouvé: <span id="container-status">En attente...</span></p>
+    
+    <!-- APP CONTAINER - TRÈS IMPORTANT -->
+    <div id="app" class="app-container">
+        <p>🎯 Container app initial - En attente de chargement...</p>
+    </div>
+    
+    <div id="logs" style="margin-top: 20px;"></div>
+
+    <script>
+        // Fonction pour logger
+        function log(message, type = 'info') {
+            console.log(message);
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            document.getElementById('logs').appendChild(div);
+        }
+        
+        // Vérifier l'état du DOM immédiatement
+        document.getElementById('dom-state').textContent = document.readyState;
+        
+        // Vérifier si le container existe
+        function checkContainer() {
+            const container = document.getElementById('app');
+            const statusEl = document.getElementById('container-status');
+            
+            if (container) {
+                statusEl.textContent = '✅ Trouvé';
+                statusEl.style.color = 'green';
+                log('✅ Container #app trouvé', 'ok');
+                return true;
+            } else {
+                statusEl.textContent = '❌ Non trouvé';
+                statusEl.style.color = 'red';
+                log('❌ Container #app NON trouvé', 'error');
+                return false;
+            }
+        }
+        
+        // Test immédiat
+        log('🔍 Test immédiat du container');
+        checkContainer();
+        
+        // Test après DOMContentLoaded
+        if (document.readyState === 'loading') {
+            log('📄 DOM en cours de chargement, attente de DOMContentLoaded');
+            document.addEventListener('DOMContentLoaded', () => {
+                log('📄 DOMContentLoaded déclenché');
+                document.getElementById('dom-state').textContent = document.readyState;
+                checkContainer();
+            });
+        } else {
+            log('📄 DOM déjà prêt');
+        }
+        
+        // Test périodique
+        let attempts = 0;
+        const maxAttempts = 10;
+        const testInterval = setInterval(() => {
+            attempts++;
+            log(`🔄 Test périodique ${attempts}/${maxAttempts}`);
+            
+            if (checkContainer() || attempts >= maxAttempts) {
+                clearInterval(testInterval);
+                if (attempts >= maxAttempts) {
+                    log('❌ Container jamais trouvé après 10 tentatives', 'error');
+                }
+            }
+        }, 200);
+    </script>
+    
+    <!-- Charger les scripts Chyster après les tests de base -->
+    <script src="js/live-app-types.js"></script>
+    <script src="js/live-app-core.js"></script>
+    <script src="js/live-app-ui.js"></script>
+    <script src="js/live-app.js"></script>
+    
+    <script>
+        // Test final après chargement des scripts
+        setTimeout(() => {
+            log('🧪 Test final après chargement scripts');
+            
+            if (window.ChysterApp) {
+                log('✅ ChysterApp disponible', 'ok');
+                
+                // Test manuel d'initialisation
+                try {
+                    // Reset pour forcer la réinitialisation
+                    window.ChysterApp.initialized = false;
+                    window.ChysterApp.init();
+                    log('✅ Initialisation manuelle réussie', 'ok');
+                } catch (error) {
+                    log(`❌ Erreur initialisation manuelle: ${error.message}`, 'error');
+                }
+            } else {
+                log('❌ ChysterApp non disponible', 'error');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

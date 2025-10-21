@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chyster Live App - Jouez en temps réel. Le jeu qui met l'amitié à l'épreuve.">
+    <meta name="keywords" content="chyster, jeu de cartes, live app, temps réel, amis, soirée">
+    <meta name="theme-color" content="#E53935">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chyster Live">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chyster.fr/live">
+    <meta property="og:title" content="Chyster Live App - Jeu en temps réel">
+    <meta property="og:description" content="Jouez au Chyster en temps réel avec l'app live officielle.">
+    
+    <title>Chyster Live App</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/live-app.css" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="css/live-app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- App Container -->
+    <div id="app" class="app-container">
+        <!-- Content will be dynamically rendered here -->
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Chargement...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/live-app-types.js"></script>
+    <script src="js/live-app-core.js"></script>
+    <script src="js/live-app-ui.js"></script>
+    <script src="js/live-app.js"></script>
+</body>
+</html>

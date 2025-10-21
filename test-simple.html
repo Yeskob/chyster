@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple Chyster</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .status { padding: 10px; margin: 5px 0; border-radius: 3px; }
+        .ok { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>Test Simple Chyster</h1>
+    <div id="logs"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            document.getElementById('logs').appendChild(div);
+            console.log(message);
+        }
+        
+        log('Début du test...');
+        
+        // Test 1: Charger le premier script
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    log(`✅ Script chargé: ${src}`, 'ok');
+                    resolve();
+                };
+                script.onerror = () => {
+                    log(`❌ Erreur de chargement: ${src}`, 'error');
+                    reject(new Error(`Failed to load ${src}`));
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        async function testSequential() {
+            try {
+                // Charger les scripts dans l'ordre
+                await loadScript('js/live-app-types.js');
+                
+                // Vérifier que ChysterTypes est disponible
+                if (window.ChysterTypes) {
+                    log('✅ ChysterTypes disponible', 'ok');
+                    log(`CHYSTER_TARGET_MAP disponible: ${!!window.ChysterTypes.CHYSTER_TARGET_MAP}`, 'ok');
+                } else {
+                    log('❌ ChysterTypes non disponible', 'error');
+                }
+                
+                await loadScript('js/live-app-core.js');
+                
+                // Vérifier ChysterCore
+                if (window.ChysterCore) {
+                    log('✅ ChysterCore disponible', 'ok');
+                } else {
+                    log('❌ ChysterCore non disponible', 'error');
+                }
+                
+                await loadScript('js/live-app-ui.js');
+                
+                // Vérifier ChysterUI
+                if (window.ChysterUI) {
+                    log('✅ ChysterUI disponible', 'ok');
+                } else {
+                    log('❌ ChysterUI non disponible', 'error');
+                }
+                
+                await loadScript('js/live-app.js');
+                
+                // Vérifier ChysterApp
+                if (window.ChysterApp) {
+                    log('✅ ChysterApp disponible', 'ok');
+                    
+                    // Créer un conteneur simple
+                    document.body.innerHTML += '<div id="app" style="border: 1px solid #ccc; padding: 20px; margin: 20px 0;">App Container</div>';
+                    
+                    // Essayer d'initialiser
+                    try {
+                        window.ChysterApp.init();
+                        log('✅ Initialisation réussie', 'ok');
+                    } catch (error) {
+                        log(`❌ Erreur d'initialisation: ${error.message}`, 'error');
+                        console.error('Erreur détaillée:', error);
+                    }
+                    
+                } else {
+                    log('❌ ChysterApp non disponible', 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Erreur durant le test: ${error.message}`, 'error');
+                console.error('Erreur détaillée:', error);
+            }
+        }
+        
+        // Démarrer le test
+        testSequential();
+    </script>
+</body>
+</html>

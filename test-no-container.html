@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sans Container</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <h1>Test sans container initial</h1>
+    <p>Cette page n'a PAS de div#app initial. L'app devrait créer ses propres containers.</p>
+    
+    <!-- Charger les scripts Chyster directement -->
+    <script src="js/live-app-types.js"></script>
+    <script src="js/live-app-core.js"></script>
+    <script src="js/live-app-ui.js"></script>
+    <script src="js/live-app.js"></script>
+    
+    <script>
+        // Force l'initialisation après un court délai
+        setTimeout(() => {
+            console.log('🧪 Forcer l\'initialisation...');
+            if (window.ChysterApp) {
+                window.ChysterApp.initialized = false;
+                window.ChysterApp.init().then(() => {
+                    console.log('✅ Initialisation forcée réussie !');
+                }).catch(error => {
+                    console.error('❌ Erreur initialisation forcée:', error);
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

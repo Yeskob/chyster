@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chyster Live App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .error {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+        .success {
+            background-color: #e8f5e8;
+            border-color: #4caf50;
+        }
+        .warning {
+            background-color: #fff3e0;
+            border-color: #ff9800;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background: #2196f3;
+            color: white;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Chyster Live App</h1>
+    
+    <div class="test-section">
+        <h2>1. Test de chargement des modules</h2>
+        <div id="modules-test">En cours...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test d'initialisation</h2>
+        <div id="init-test">En cours...</div>
+        <button onclick="testInit()">Ré-initialiser</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test de création de jeu</h2>
+        <div id="game-test">En attente...</div>
+        <button onclick="testGameCreation()">Tester création de jeu</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Console Debug</h2>
+        <button onclick="runDebug()">chysterDebug()</button>
+        <button onclick="runTests()">chysterTest()</button>
+        <button onclick="quickStart()">chysterQuickStart()</button>
+        <div id="debug-output">
+            <p><em>Ouvrez la console (F12) pour voir les détails complets</em></p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Lien vers l'app principale</h2>
+        <a href="live-app.html" target="_blank">
+            <button>Ouvrir Chyster Live App</button>
+        </a>
+    </div>
+
+    <!-- Load all scripts -->
+    <script src="js/live-app-types.js"></script>
+    <script src="js/live-app-core.js"></script>
+    <script src="js/live-app-ui.js"></script>
+    <script src="js/live-app.js"></script>
+
+    <script>
+        // Test functions
+        function testModules() {
+            const modules = ['ChysterTypes', 'ChysterCore', 'ChysterUI', 'ChysterApp'];
+            const results = [];
+            
+            modules.forEach(module => {
+                if (window[module]) {
+                    results.push(`✅ ${module} - Chargé`);
+                } else {
+                    results.push(`❌ ${module} - Manquant`);
+                }
+            });
+            
+            const allLoaded = modules.every(m => window[m]);
+            const resultDiv = document.getElementById('modules-test');
+            resultDiv.innerHTML = results.join('<br>');
+            resultDiv.parentElement.className = `test-section ${allLoaded ? 'success' : 'error'}`;
+            
+            return allLoaded;
+        }
+        
+        function testInit() {
+            const resultDiv = document.getElementById('init-test');
+            try {
+                if (window.ChysterApp) {
+                    // Reset initialization flag for testing
+                    window.ChysterApp.initialized = false;
+                    window.ChysterApp.init();
+                    resultDiv.innerHTML = '✅ Initialisation réussie';
+                    resultDiv.parentElement.className = 'test-section success';
+                } else {
+                    resultDiv.innerHTML = '❌ ChysterApp non disponible';
+                    resultDiv.parentElement.className = 'test-section error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Erreur d'initialisation: ${error.message}`;
+                resultDiv.parentElement.className = 'test-section error';
+                console.error('Test init error:', error);
+            }
+        }
+        
+        function testGameCreation() {
+            const resultDiv = document.getElementById('game-test');
+            try {
+                if (window.ChysterApp && window.ChysterApp.createGameState) {
+                    const config = {
+                        playersCount: 3,
+                        targetRowLength: 4,
+                        playerNames: ['Alice', 'Bob', 'Charlie']
+                    };
+                    
+                    const gameState = window.ChysterApp.createGameState(config);
+                    
+                    if (gameState && gameState.players && gameState.players.length === 3) {
+                        resultDiv.innerHTML = '✅ Création de jeu réussie';
+                        resultDiv.parentElement.className = 'test-section success';
+                    } else {
+                        resultDiv.innerHTML = '❌ État de jeu invalide';
+                        resultDiv.parentElement.className = 'test-section error';
+                    }
+                } else {
+                    resultDiv.innerHTML = '❌ Fonction createGameState non disponible';
+                    resultDiv.parentElement.className = 'test-section error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Erreur: ${error.message}`;
+                resultDiv.parentElement.className = 'test-section error';
+                console.error('Test game creation error:', error);
+            }
+        }
+        
+        function runDebug() {
+            if (window.chysterDebug) {
+                window.chysterDebug();
+                document.getElementById('debug-output').innerHTML = '<p>✅ Debug info affiché dans la console</p>';
+            } else {
+                document.getElementById('debug-output').innerHTML = '<p>❌ chysterDebug() non disponible</p>';
+            }
+        }
+        
+        function runTests() {
+            if (window.chysterTest) {
+                const results = window.chysterTest();
+                document.getElementById('debug-output').innerHTML = `<p>✅ Tests exécutés: ${results.summary}</p>`;
+            } else {
+                document.getElementById('debug-output').innerHTML = '<p>❌ chysterTest() non disponible</p>';
+            }
+        }
+        
+        function quickStart() {
+            if (window.chysterQuickStart) {
+                window.chysterQuickStart();
+                document.getElementById('debug-output').innerHTML = '<p>✅ Partie rapide démarrée</p>';
+            } else {
+                document.getElementById('debug-output').innerHTML = '<p>❌ chysterQuickStart() non disponible</p>';
+            }
+        }
+        
+        // Run tests on load
+        window.addEventListener('load', function() {
+            console.log('🧪 Starting tests...');
+            
+            setTimeout(() => {
+                testModules();
+                setTimeout(() => {
+                    testInit();
+                }, 500);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
