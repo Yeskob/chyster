@@ -123,6 +123,16 @@
         <section id="rules" class="rules" aria-label="Règles du jeu">
             <div class="container">
                 <h2 class="section-title">Règles essentielles</h2>
+                
+                <!-- Card order explanation -->
+                <div class="card-order-section">
+                    <h3>🂡 Ordre des cartes</h3>
+                    <p class="card-order-text">
+                        <strong>AS = 1</strong> (sauf effet spécial), puis <strong>2 → 10 → Valet (V) → Dame (D)</strong>.<br>
+                        Le <strong>Roi (R)</strong> est un joker : il se pose au-dessus de la rangée et ne compte pas pour la Chyster.
+                    </p>
+                </div>
+                
                 <p class="rules-intro">Dans quelle situation êtes-vous ?</p>
                 
                 <!-- Game flow timeline -->
@@ -143,12 +153,11 @@
                                         <span class="branch-label">NON</span>
                                     </div>
                                     <div class="branch-content">
-                                        <h4>📋 ROUGE OU NOIR ?</h4>
-                                        <p>Annoncez votre prédiction</p>
+                                        <h4>📋 ANNONCEZ VOTRE PRÉDICTION</h4>
                                         <div class="color-choices">
-                                            <span class="color-choice color-red">🔴 Rouge</span>
-                                            <span class="choice-or">ou</span>
-                                            <span class="color-choice color-black">⚫ Noir</span>
+                                            <span class="color-choice">🔴 Rouge</span>
+                                            <div class="choice-or">OU</div>
+                                            <span class="color-choice">⚫ Noir</span>
                                         </div>
                                     </div>
                                 </div>
@@ -191,99 +200,20 @@
                                         <p>→ Posez la carte avec vos cartes déjà posées (en haut de votre rangée)</p>
                                     </div>
                                     <div class="choice-option">
-                                        <p>→ On passe au joueur suivant !</p>
+                                        <p>→ On passe au joueur suivant</p>
                                     </div>
                                 </div>
 
                                 <div class="outcome outcome-failure">
                                     <h4>❌ MAUVAISE COULEUR</h4>
                                     
-                                    <!-- Sous-navigation cliquable -->
-                                    <div class="sub-situation-nav">
-                                        <div class="sub-situation-card" onclick="toggleSubSection('no-cards-failure')">
-                                            <h5>Pas de carte déjà posée</h5>
-                                            <p>Cliquez pour voir les actions</p>
-                                            <span class="expand-indicator">▼</span>
-                                        </div>
-                                        <div class="sub-situation-card" onclick="toggleSubSection('with-cards-failure')">
-                                            <h5>J'ai déjà des cartes posées</h5>
-                                            <p>Cliquez pour voir les options</p>
-                                            <span class="expand-indicator">▼</span>
-                                        </div>
-                                        <div class="sub-situation-card" onclick="toggleSubSection('special-cards-section')">
-                                            <h5>Cartes spéciales</h5>
-                                            <p>Pouvoirs et exceptions</p>
-                                            <span class="expand-indicator">▼</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Section: Pas de cartes -->
-                                    <div class="sub-section" id="no-cards-failure" style="display: none;">
-                                        <h5>Pas de carte déjà posée</h5>
+                                    <div class="failure-scenario">
+                                        <h5>Pas de cartes déjà posées</h5>
                                         <div class="choice-option">
-                                            <p>→ Buvez 1 gorgée</p>
+                                            <p>→ Buvez une gorgée</p>
                                         </div>
                                         <div class="choice-option">
-                                            <p>⚠️ Carte spéciale piochée ? → <a href="#" class="special-link" onclick="toggleSubSection('special-cards-section'); return false;">Voir les cartes spéciales</a></p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Section: Avec des cartes -->
-                                    <div class="sub-section" id="with-cards-failure" style="display: none;">
-                                        <h5>J'ai déjà des cartes posées</h5>
-                                        
-                                        <div class="bonus-explanation">
-                                            <h6>⭐ BONUS</h6>
-                                            <p>Mauvaise couleur MAIS numéro supérieur à votre dernière carte → <strong>NOUVELLE CHANCE !</strong></p>
-                                        </div>
-
-                                        <div class="system-explanation">
-                                            <h6>🎲 SYSTÈME D'ESSAIS</h6>
-                                            <div class="choice-option">
-                                                <p>→ 3 essais maximum</p>
-                                            </div>
-                                            <div class="choice-option sub-bullet">
-                                                <p>⚠️ Égalité = perdu</p>
-                                            </div>
-                                            <div class="choice-option sub-bullet">
-                                                <p>☠️ Échec total = buvez le nombre de cartes déjà posées</p>
-                                            </div>
-                                        </div>
-
-                                        <p>⚠️ Carte spéciale piochée ? → <a href="#" class="special-link" onclick="toggleSubSection('special-cards-section'); return false;">Voir les cartes spéciales</a></p>
-                                    </div>
-
-                                    <!-- Section: Cartes spéciales intégrée -->
-                                    <div class="sub-section" id="special-cards-section" style="display: none;">
-                                        <h5>CARTES SPÉCIALES</h5>
-                                        
-                                        <!-- Pouvoirs détaillés -->
-                                        <div class="powers-section">
-                                            <h6>💎 POUVOIRS DÉTAILLÉS</h6>
-                                            <div class="power-details">
-                                                <div class="power-item">
-                                                    <h6>🃏 Valet (J)</h6>
-                                                    <p><em>Désignez 2 personnes pour un shifu-bois !</em><br>
-                                                    Carte neutre, ne compte pas dans les essais</p>
-                                                </div>
-                                                <div class="power-item">
-                                                    <h6>👸 Dame (Q)</h6>
-                                                    <p><em>Le dernier à dire "pute" boit !</em><br>
-                                                    <small style="color: #FF2E63;">(le mot peut être modifié au début de jeu si tu joues avec des enfants)</small> 👶<br>
-                                                    Carte neutre, ne compte pas dans les essais</p>
-                                                </div>
-                                                <div class="power-item">
-                                                    <h6>👑 Roi (K)</h6>
-                                                    <p><em>JOKER ! Posez-le au-dessus de votre jeu.</em><br>
-                                                    <small style="color: #FF2E63;">Il élimine votre dernière carte au début de votre tour ou quand vous devriez perdre. Ne compte pas pour la Chyster</small><br>
-                                                    Victoire automatique (peu importe la couleur prédite)</p>
-                                                </div>
-                                                <div class="power-item">
-                                                    <h6>🅰️ As (A)</h6>
-                                                    <p><em>Vaut 1 dans votre rangée ou 10 pour un adversaire !</em><br>
-                                                    Victoire automatique (peu importe la couleur prédite)</p>
-                                                </div>
-                                            </div>
+                                            <p>→ Carte spéciale piochée ? <a href="#special-cards" class="special-link">Voir exemple interactif</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -324,51 +254,267 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </section>
 
-        <!-- Special cards - Mobile optimized grid -->
+        <!-- Special cards section - Detailed -->
         <section id="cards" class="special-cards" aria-label="Cartes spéciales">
             <div class="container">
-                <h2 class="section-title">Cartes spéciales</h2>
-                <div class="cards-grid">
-                    <div class="card-simple" role="button" tabindex="0">
-                        <div class="card-simple__front">
-                            <span class="card-rank">J</span>
+                <h2 class="section-title">🃏 <em>Cartes spéciales</em> <small><em>(effet + comportement en jeu)</em></small></h2>
+                
+                <div class="special-cards-detailed">
+                    <!-- Valet -->
+                    <div class="special-card-detail">
+                        <div class="card-header">
+                            <div class="card-visual">
+                                <span class="card-rank">V</span>
+                                <span class="card-suit">♠</span>
+                            </div>
+                            <h3>Valet (V)</h3>
                         </div>
-                        <div class="card-simple__info">
-                            <h4>Valet</h4>
-                            <p>Shifu-bois entre 2 personnes</p>
-                        </div>
-                    </div>
-
-                    <div class="card-simple" role="button" tabindex="0">
-                        <div class="card-simple__front">
-                            <span class="card-rank card-rank--red">Q</span>
-                        </div>
-                        <div class="card-simple__info">
-                            <h4>Dame</h4>
-                            <p>Le dernier à dire "pute" boit</p>
-                        </div>
-                    </div>
-
-                    <div class="card-simple" role="button" tabindex="0">
-                        <div class="card-simple__front">
-                            <span class="card-rank">K</span>
-                        </div>
-                        <div class="card-simple__info">
-                            <h4>Roi</h4>
-                            <p>JOKER ! Sauve une carte</p>
+                        <div class="card-content">
+                            <div class="card-effect">
+                                <h4>Effet</h4>
+                                <p>Désigne 2 personnes pour un shifu-bois (pierre-feuille-ciseaux ; perdant boit).</p>
+                            </div>
+                            <div class="card-behavior">
+                                <h4>En jeu</h4>
+                                <p>Ne compte pas comme un essai → tu actives l'effet, tu défausses le Valet puis repioche.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card-simple" role="button" tabindex="0">
-                        <div class="card-simple__front">
-                            <span class="card-rank card-rank--red">A</span>
+                    <!-- Dame -->
+                    <div class="special-card-detail">
+                        <div class="card-header">
+                            <div class="card-visual card-visual--red">
+                                <span class="card-rank">D</span>
+                                <span class="card-suit">♥</span>
+                            </div>
+                            <h3>Dame (D)</h3>
                         </div>
-                        <div class="card-simple__info">
-                            <h4>As</h4>
-                            <p>1 pour vous, 10 pour un adversaire</p>
+                        <div class="card-content">
+                            <div class="card-effect">
+                                <h4>Effet</h4>
+                                <p>Le dernier à dire "pute" boit.</p>
+                                <small class="card-note">"Le mot peut être changé si tu joues avec des enfants"</small>
+                            </div>
+                            <div class="card-behavior">
+                                <h4>En jeu</h4>
+                                <p>Ne compte pas comme un essai → tu actives l'effet, tu défausses la Dame puis repioche.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roi -->
+                    <div class="special-card-detail special-card-detail--premium">
+                        <div class="card-header">
+                            <div class="card-visual">
+                                <span class="card-rank">R</span>
+                                <span class="card-suit">♠</span>
+                            </div>
+                            <h3>Roi (R)</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-effect">
+                                <h4>Effet</h4>
+                                <p>Victoire automatique (indépendamment de la couleur annoncée).</p>
+                            </div>
+                            <div class="card-placement">
+                                <h4>Placement</h4>
+                                <p>Se pose au-dessus de ta rangée (ne compte pas pour la Chyster).</p>
+                            </div>
+                            <div class="card-power">
+                                <h4>Pouvoir</h4>
+                                <ul>
+                                    <li>Peut te permettre de réessayer de deviner la bonne couleur quand tu devrais perdre.</li>
+                                    <li>Ne compte jamais pour la Chyster.</li>
+                                    <li>Se défausse une fois utilisé</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- As -->
+                    <div class="special-card-detail special-card-detail--premium">
+                        <div class="card-header">
+                            <div class="card-visual card-visual--red">
+                                <span class="card-rank">A</span>
+                                <span class="card-suit">♦</span>
+                            </div>
+                            <h3>As (A)</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-effect">
+                                <h4>Effet</h4>
+                                <p>Victoire automatique (indépendamment de la couleur annoncée).</p>
+                            </div>
+                            <div class="card-choice">
+                                <h4>Choix</h4>
+                                <ul>
+                                    <li><strong>AS = 1</strong> dans ton jeu, ou</li>
+                                    <li><strong>AS = 10</strong> dans le jeu d'un autre (malus).</li>
+                                </ul>
+                                <p class="choice-note">→ Ne compte PAS comme une carte posée dans la rangée. Il remplace la dernière carte posée</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special cards interactive example -->
+        <section id="special-cards" class="special-example" aria-label="Exemple carte spéciale">
+            <div class="container">
+                <h2 class="section-title">Exemple carte spéciale</h2>
+                <p class="example-intro">Démonstration interactive du comportement des cartes spéciales</p>
+                
+                <!-- Interactive demo -->
+                <div class="interactive-demo">
+                    <h3>Séquence de jeu avec exemples</h3>
+                    <p class="demo-intro">Suivez cette séquence pour comprendre le système d'essais et les cartes spéciales</p>
+                    
+                    <!-- Slider interactif -->
+                    <div class="game-slider" role="region" aria-label="Exemple de séquence de jeu">
+                        <div class="slider-container">
+                            <div class="slider-track" id="sliderTrack">
+                                <!-- Étape 1 - Premier essai -->
+                                <div class="slider-step active" data-step="1">
+                                    <div class="step-header">
+                                        <h4>Étape 1 - Premier essai</h4>
+                                        <div class="attempts-counter">
+                                            <span class="attempts-text">Essais restants :</span>
+                                            <span class="attempts-number">3/3</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="context-info">
+                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
+                                        </div>
+                                        <div class="prediction">
+                                            <p>Vous annoncez : <strong class="color-choice">ROUGE</strong></p>
+                                        </div>
+                                        <div class="card-reveal">
+                                            <div class="card-container">
+                                                <div class="card card--back" id="card1">
+                                                    <div class="card-front">?</div>
+                                                </div>
+                                            </div>
+                                            <button class="reveal-btn" onclick="revealCard(1, 'black', '7♠')">Retourner la carte</button>
+                                        </div>
+                                        <div class="result-message" id="result1" style="display: none;">
+                                            <span class="result-icon">❌</span>
+                                            <span class="result-text">Mauvaise couleur ! Carte noire (7♠) mais chiffre supérieur à votre précédente carte, vous pouvez rejouer, il vous reste 2 essais pour réussir à trouver la bonne couleur</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Étape 2 - Valet spécial -->
+                                <div class="slider-step" data-step="2">
+                                    <div class="step-header">
+                                        <h4>Étape 2 - Valet spécial</h4>
+                                        <div class="attempts-counter">
+                                            <span class="attempts-text">Essais restants :</span>
+                                            <span class="attempts-number">2/3</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="context-info">
+                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
+                                        </div>
+                                        <div class="prediction">
+                                            <p>Vous annoncez : <strong class="color-choice">NOIR</strong></p>
+                                        </div>
+                                        <div class="card-reveal">
+                                            <div class="card-container">
+                                                <div class="card card--back" id="card2">
+                                                    <div class="card-front">?</div>
+                                                </div>
+                                            </div>
+                                            <button class="reveal-btn" onclick="revealCard(2, 'red', 'V♥')">Retourner la carte</button>
+                                        </div>
+                                        <div class="result-message" id="result2" style="display: none;">
+                                            <span class="result-icon">🃏</span>
+                                            <span class="result-text">Valet ! Carte spéciale - Désignez 2 personnes pour un shifu-bois. Ne compte pas comme un essai → défausse et repioche.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Étape 3 - Succès -->
+                                <div class="slider-step" data-step="3">
+                                    <div class="step-header">
+                                        <h4>Étape 3 - Succès !</h4>
+                                        <div class="attempts-counter">
+                                            <span class="attempts-text">Essais restants :</span>
+                                            <span class="attempts-number">2/3</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="context-info">
+                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
+                                        </div>
+                                        <div class="prediction">
+                                            <p>Vous annoncez : <strong class="color-choice">NOIR</strong></p>
+                                        </div>
+                                        <div class="card-reveal">
+                                            <div class="card-container">
+                                                <div class="card card--back" id="card3">
+                                                    <div class="card-front">?</div>
+                                                </div>
+                                            </div>
+                                            <button class="reveal-btn" onclick="revealCard(3, 'black', '9♠')">Retourner la carte</button>
+                                        </div>
+                                        <div class="result-message" id="result3" style="display: none;">
+                                            <span class="result-icon">✅</span>
+                                            <span class="result-text">Bonne couleur ! Vous posez la carte dans votre jeu. Votre tour est terminé, c'est au joueur suivant !</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Étape 4 - Cas d'échec total -->
+                                <div class="slider-step" data-step="4">
+                                    <div class="step-header">
+                                        <h4>Étape 4 - Cas d'échec total</h4>
+                                        <div class="attempts-counter attempts-counter--danger">
+                                            <span class="attempts-text">Essais restants :</span>
+                                            <span class="attempts-number">0/3</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="failure-scenario">
+                                            <h5>Si vous aviez échoué 3 fois...</h5>
+                                            <div class="failure-consequence">
+                                                <span class="result-icon">💀</span>
+                                                <p>Vous auriez bu autant de gorgées que vous aviez de cartes posées</p>
+                                                <p><strong>→ Défausse toute ta rangée (joker compris).</strong></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation du slider -->
+                        <div class="slider-nav">
+                            <button class="slider-btn slider-btn--prev" onclick="previousStep()" aria-label="Étape précédente">
+                                ‹ Précédent
+                            </button>
+                            <div class="slider-indicators">
+                                <span class="indicator active" data-step="1" onclick="goToStep(1)"></span>
+                                <span class="indicator" data-step="2" onclick="goToStep(2)"></span>
+                                <span class="indicator" data-step="3" onclick="goToStep(3)"></span>
+                                <span class="indicator" data-step="4" onclick="goToStep(4)"></span>
+                            </div>
+                            <button class="slider-btn slider-btn--next" onclick="nextStep()" aria-label="Étape suivante">
+                                Suivant ›
+                            </button>
+                        </div>
+                        
+                        <div class="slider-actions">
+                            <button class="btn btn--secondary" onclick="resetDemo()">
+                                🔄 Rejouer la séquence
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -393,5 +539,189 @@
 
     <!-- Scripts optimized for mobile -->
     <script src="js/mobile-app.js" defer></script>
+    
+    <!-- Interactive slider script -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let revealedCards = new Set();
+
+        function updateSliderPosition() {
+            const track = document.getElementById('sliderTrack');
+            if (track) {
+                const translateX = -(currentStep - 1) * 25; // 25% per step
+                track.style.transform = `translateX(${translateX}%)`;
+            }
+        }
+
+        function updateNavigation() {
+            // Update buttons
+            const prevBtn = document.querySelector('.slider-btn--prev');
+            const nextBtn = document.querySelector('.slider-btn--next');
+            
+            if (prevBtn) prevBtn.disabled = currentStep === 1;
+            if (nextBtn) nextBtn.disabled = currentStep === totalSteps;
+            
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                const isActive = index + 1 === currentStep;
+                indicator.classList.toggle('active', isActive);
+            });
+            
+            // Update step visibility
+            document.querySelectorAll('.slider-step').forEach((step, index) => {
+                const isActive = index + 1 === currentStep;
+                step.classList.toggle('active', isActive);
+            });
+        }
+
+        function goToStep(stepNumber) {
+            if (stepNumber < 1 || stepNumber > totalSteps) return;
+            currentStep = stepNumber;
+            updateSliderPosition();
+            updateNavigation();
+            
+            // Auto-reveal card after a short delay if not already revealed
+            setTimeout(() => {
+                autoRevealCard(stepNumber);
+            }, 800);
+        }
+
+        function autoRevealCard(stepNumber) {
+            // Only auto-reveal for steps 1, 2, and 3 (not the failure scenario step 4)
+            if (stepNumber >= 1 && stepNumber <= 3) {
+                const cardId = `card${stepNumber}`;
+                const resultId = `result${stepNumber}`;
+                const card = document.getElementById(cardId);
+                const result = document.getElementById(resultId);
+                const button = document.querySelector(`#${cardId} + .card-container + .reveal-btn`) || 
+                              document.querySelector(`.slider-step[data-step="${stepNumber}"] .reveal-btn`);
+                
+                // Only auto-reveal if not already revealed
+                if (card && result && button && !revealedCards.has(stepNumber) && !button.disabled) {
+                    // Define card data for each step
+                    const cardData = {
+                        1: { color: 'black', value: '7♠' },
+                        2: { color: 'red', value: 'V♥' },
+                        3: { color: 'black', value: '9♠' }
+                    };
+                    
+                    const data = cardData[stepNumber];
+                    if (data) {
+                        revealCardInternal(stepNumber, data.color, data.value, button);
+                    }
+                }
+            }
+        }
+
+        function revealCardInternal(cardNumber, color, cardValue, button) {
+            const card = document.getElementById(`card${cardNumber}`);
+            const result = document.getElementById(`result${cardNumber}`);
+            
+            if (!card || !result || !button) return;
+            
+            // Disable button
+            button.disabled = true;
+            button.textContent = 'Carte révélée';
+            
+            // Add revealed card to set
+            revealedCards.add(cardNumber);
+            
+            // Animate card flip
+            setTimeout(() => {
+                // Update card content
+                const cardFront = card.querySelector('.card-front');
+                cardFront.textContent = cardValue;
+                cardFront.classList.add(color === 'red' ? 'card-front--red' : 'card-front--black');
+                
+                // Flip card
+                card.classList.add('card--flipped');
+                
+                // Show result with appropriate styling
+                result.style.display = 'block';
+                result.classList.remove('result-message--success', 'result-message--error', 'result-message--special');
+                
+                if (cardValue.includes('V')) {
+                    result.classList.add('result-message--special');
+                } else if (cardNumber === 1) {
+                    result.classList.add('result-message--error');
+                } else if (cardNumber === 3) {
+                    result.classList.add('result-message--success');
+                }
+                
+            }, 200);
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        function revealCard(cardNumber, color, cardValue) {
+            const button = event.target;
+            // Use the internal reveal function for manual reveals too
+            revealCardInternal(cardNumber, color, cardValue, button);
+        }
+
+        function resetDemo() {
+            currentStep = 1;
+            revealedCards.clear();
+            
+            // Reset all cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('card--flipped');
+                const cardFront = card.querySelector('.card-front');
+                cardFront.textContent = '?';
+                cardFront.classList.remove('card-front--red', 'card-front--black');
+            });
+            
+            // Hide all result messages
+            document.querySelectorAll('.result-message').forEach(result => {
+                result.style.display = 'none';
+            });
+            
+            // Reset buttons
+            document.querySelectorAll('.reveal-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = 'Retourner la carte';
+            });
+            
+            updateSliderPosition();
+            updateNavigation();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.target.closest('.game-slider')) {
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        previousStep();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        nextStep();
+                        break;
+                }
+            }
+        });
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSliderPosition();
+            updateNavigation();
+            // Auto-reveal the first card after a short delay
+            setTimeout(() => {
+                autoRevealCard(1);
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
