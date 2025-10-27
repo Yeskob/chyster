@@ -133,51 +133,130 @@
                     </p>
                 </div>
                 
-                <p class="rules-intro">Dans quelle situation êtes-vous ?</p>
+                <!-- État persistant du joueur -->
+                <div class="game-state-tracker">
+                    <div class="state-header">
+                        <h3>🃏 Mon état de jeu</h3>
+                    </div>
+                    <div class="state-content">
+                        <!-- Sélection de situation initiale -->
+                        <div class="situation-selector" id="situation-selector">
+                            <p class="situation-question">Quelle est votre situation actuelle ?</p>
+                            <div class="situation-choices">
+                                <button class="situation-btn" id="no-cards-btn" data-situation="no-cards">
+                                    <span class="situation-icon">🆕</span>
+                                    <span class="situation-title">Je n'ai pas de cartes posées</span>
+                                    <span class="situation-subtitle">Début de partie ou après défausse</span>
+                                </button>
+                                <button class="situation-btn" id="has-cards-btn" data-situation="has-cards">
+                                    <span class="situation-icon">🃏</span>
+                                    <span class="situation-title">J'ai des cartes posées</span>
+                                    <span class="situation-subtitle">Hors jokers (Rois)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Compteurs (affichés uniquement si cartes posées) -->
+                        <div class="state-counters" id="state-counters" style="display: none;">
+                            <button class="close-btn" id="close-counters" aria-label="Revenir au choix de situation">×</button>
+                            <div class="state-item">
+                                <label class="state-label">Cartes posées :</label>
+                                <div class="counter-control">
+                                    <button class="counter-btn" id="decrease-cards" aria-label="Diminuer cartes">-</button>
+                                    <span class="counter-value" id="cards-count">0</span>
+                                    <button class="counter-btn" id="increase-cards" aria-label="Augmenter cartes">+</button>
+                                </div>
+                            </div>
+                            <div class="state-item">
+                                <label class="state-label">Objectif Chyster :</label>
+                                <span class="chyster-target" id="chyster-target">9 cartes</span>
+                            </div>
+                            <div class="state-indicator">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="progress-text" id="progress-text">0/9 cartes</span>
+                            </div>
+                        </div>
+
+                        <!-- Redirection automatique pour "aucune carte" -->
+                        <div class="no-cards-redirect" id="no-cards-redirect" style="display: none;">
+                            <button class="close-btn" id="close-redirect" aria-label="Revenir au choix de situation">×</button>
+                            <div class="redirect-message">
+                                <span class="redirect-icon">🎯</span>
+                                <p class="redirect-text">Parfait ! Vous allez commencer un nouveau tour.</p>
+                                <p class="redirect-action">Redirection vers "Début de tour"...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="rules-intro">Suivez le déroulement de votre tour :</p>
                 
                 <!-- Game flow timeline -->
                 <div class="game-timeline">
-                    <!-- Étape 1 -->
-                    <div class="timeline-step accordion-step" id="step-situation">
-                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-situation-content">
+                    <!-- Étape 1: Début de tour -->
+                    <div class="timeline-step accordion-step" id="step-beginning">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-beginning-content">
                             <div class="step-number">1</div>
                             <h3 class="step-title">🤔 DÉBUT DE TOUR</h3>
                             <span class="accordion-icon">▼</span>
                         </button>
-                        <div class="step-content accordion-content" id="step-situation-content" style="display: none;">
-                            <p class="step-question">Avez-vous des cartes déjà posées ?</p>
-                            
-                            <div class="choice-branches">
-                                <div class="branch branch-a">
-                                    <div class="branch-header">
-                                        <span class="branch-label">NON</span>
+                        <div class="step-content accordion-content" id="step-beginning-content" style="display: none;">
+                            <div class="flow-selector">
+                                <div class="situation-check">
+                                    <p class="step-question">Votre situation actuelle :</p>
+                                    <div class="situation-display">
+                                        <span class="situation-text" id="current-situation">Aucune carte posée</span>
+                                        <small class="situation-help">(Mis à jour automatiquement selon vos compteurs)</small>
                                     </div>
-                                    <div class="branch-content">
-                                        <h4>📋 ANNONCEZ VOTRE PRÉDICTION</h4>
+                                </div>
+                                
+                                <!-- Flow sans cartes -->
+                                <div class="flow-content" id="no-cards-flow">
+                                    <div class="flow-section">
+                                        <h4>📋 Annoncez votre prédiction</h4>
+                                        <p>Choisissez la couleur que vous pensez piocher :</p>
                                         <div class="color-choices">
-                                            <span class="color-choice">🔴 Rouge</span>
+                                            <button class="color-choice-btn color-red" data-color="rouge">
+                                                🔴 Rouge
+                                            </button>
                                             <div class="choice-or">OU</div>
-                                            <span class="color-choice">⚫ Noir</span>
+                                            <button class="color-choice-btn color-black" data-color="noir">
+                                                ⚫ Noir
+                                            </button>
+                                        </div>
+                                        <div class="selected-color" id="selected-color" style="display: none;">
+                                            <p>Couleur annoncée : <strong id="announced-color"></strong></p>
+                                        </div>
+                                        <div class="next-action">
+                                            <button class="btn btn--primary" onclick="proceedToDraw()">
+                                                Piocher ma carte →
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="branch branch-b">
-                                    <div class="branch-header">
-                                        <span class="branch-label">OUI</span>
-                                    </div>
-                                    <div class="branch-content">
-                                        <h4>🎯 CHOIX STRATÉGIQUE</h4>
+                                
+                                <!-- Flow avec cartes -->
+                                <div class="flow-content" id="has-cards-flow" style="display: none;">
+                                    <div class="flow-section">
+                                        <h4>🎯 Choix stratégique</h4>
+                                        <p>Choisissez UNE des deux options :</p>
                                         <div class="strategic-choices">
-                                            <div class="choice-option">
-                                                <h5>🔴⚫ ROUGE OU NOIR</h5>
-                                                <p>(deviner)</p>
+                                            <div class="choice-option" data-choice="guess">
+                                                <h5>🔴⚫ DEVINER LA COULEUR</h5>
+                                                <p>Annoncez Rouge ou Noir puis piochez</p>
+                                                <button class="btn btn--secondary">Choisir A</button>
                                             </div>
                                             <div class="choice-or">OU</div>
-                                            <div class="choice-option">
-                                                <h5>🍻 DISTRIBUER</h5>
-                                                <p>gorgées (= nombre de cartes déjà posées) à un SEUL joueur</p>
+                                            <div class="choice-option" data-choice="distribute">
+                                                <h5>🍻 DISTRIBUER DES GORGÉES</h5>
+                                                <p>Donnez <span id="distribution-amount">X</span> gorgées à un joueur puis défaussez votre rangée</p>
+                                                <button class="btn btn--secondary">Choisir B</button>
                                             </div>
+                                        </div>
+                                        <div class="choice-result" id="strategic-choice-result" style="display: none;">
+                                            <!-- Contenu dynamique selon choix -->
                                         </div>
                                     </div>
                                 </div>
@@ -185,72 +264,274 @@
                         </div>
                     </div>
 
-                    <!-- Étape 2 -->
+                    <!-- Étape 2: Résultat & Cartes -->
                     <div class="timeline-step accordion-step" id="step-result">
                         <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-result-content">
                             <div class="step-number">2</div>
-                            <h3 class="step-title">🎰 RÉSULTAT</h3>
+                            <h3 class="step-title">🎰 RÉSULTAT & CARTES</h3>
                             <span class="accordion-icon">▼</span>
                         </button>
                         <div class="step-content accordion-content" id="step-result-content" style="display: none;">
-                            <div class="result-outcomes">
-                                <div class="outcome outcome-success">
-                                    <h4>✅ BONNE COULEUR</h4>
-                                    <div class="choice-option">
-                                        <p>→ Posez la carte avec vos cartes déjà posées (en haut de votre rangée)</p>
+                            <!-- Interface de saisie carte -->
+                            <div class="card-input-section" id="card-input">
+                                <h4>🎯 Quelle carte avez-vous piochée ?</h4>
+                                
+                                <div class="card-selector">
+                                    <!-- Sélecteur valeur -->
+                                    <div class="value-selector">
+                                        <label>Valeur :</label>
+                                        <div class="value-grid">
+                                            <button class="value-btn" data-value="A">A</button>
+                                            <button class="value-btn" data-value="2">2</button>
+                                            <button class="value-btn" data-value="3">3</button>
+                                            <button class="value-btn" data-value="4">4</button>
+                                            <button class="value-btn" data-value="5">5</button>
+                                            <button class="value-btn" data-value="6">6</button>
+                                            <button class="value-btn" data-value="7">7</button>
+                                            <button class="value-btn" data-value="8">8</button>
+                                            <button class="value-btn" data-value="9">9</button>
+                                            <button class="value-btn" data-value="10">10</button>
+                                            <button class="value-btn" data-value="V">V</button>
+                                            <button class="value-btn" data-value="D">D</button>
+                                            <button class="value-btn" data-value="R">R</button>
+                                        </div>
                                     </div>
-                                    <div class="choice-option">
-                                        <p>→ On passe au joueur suivant</p>
-                                    </div>
-                                </div>
-
-                                <div class="outcome outcome-failure">
-                                    <h4>❌ MAUVAISE COULEUR</h4>
                                     
-                                    <div class="failure-scenario">
-                                        <h5>Pas de cartes déjà posées</h5>
-                                        <div class="choice-option">
-                                            <p>→ Buvez une gorgée</p>
-                                        </div>
-                                        <div class="choice-option">
-                                            <p>→ Carte spéciale piochée ? <a href="#special-cards" class="special-link">Voir exemple interactif</a></p>
+                                    <!-- Sélecteur couleur -->
+                                    <div class="suit-selector">
+                                        <label>Couleur :</label>
+                                        <div class="suit-grid">
+                                            <button class="suit-btn" data-suit="spades" data-color="noir">♠</button>
+                                            <button class="suit-btn" data-suit="hearts" data-color="rouge">♥</button>
+                                            <button class="suit-btn" data-suit="diamonds" data-color="rouge">♦</button>
+                                            <button class="suit-btn" data-suit="clubs" data-color="noir">♣</button>
                                         </div>
                                     </div>
+                                    
+                                    <div class="card-preview" id="card-preview">
+                                        <div class="preview-card">
+                                            <span class="preview-text">Sélectionnez une carte</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn--primary" id="validate-card" disabled>
+                                        Valider ma carte
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Résultat après validation -->
+                            <div class="card-result-section" id="card-result" style="display: none;">
+                                <!-- Contenu dynamique selon type de carte -->
+                            </div>
+                            
+                            <div class="help-link">
+                                <p>💡 Besoin d'aide sur les cartes spéciales ?</p>
+                                <a href="#special-cards-ref" class="special-link">→ Voir le guide des cartes spéciales</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 3: Vérification couleur -->
+                    <div class="timeline-step accordion-step" id="step-color-check">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-color-check-content">
+                            <div class="step-number">3</div>
+                            <h3 class="step-title">⚖️ VÉRIFICATION COULEUR</h3>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-color-check-content" style="display: none;">
+                            <div class="color-verification">
+                                <div class="verification-display" id="color-verification-display">
+                                    <p>Cette section s'active automatiquement après avoir saisi une carte normale.</p>
+                                </div>
+                                
+                                <div class="verification-results" id="verification-results" style="display: none;">
+                                    <!-- Contenu dynamique selon résultat -->
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- La Chyster -->
+                    <!-- Étape 4: Comparaison valeurs -->
+                    <div class="timeline-step accordion-step" id="step-comparison">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-comparison-content">
+                            <div class="step-number">4</div>
+                            <h3 class="step-title">🔍 COMPARAISON VALEURS</h3>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-comparison-content" style="display: none;">
+                            <div class="comparison-section">
+                                <div class="comparison-display" id="comparison-display">
+                                    <p>Cette section s'active si vous avez des cartes posées et une mauvaise couleur.</p>
+                                </div>
+                                
+                                <div class="comparison-results" id="comparison-results" style="display: none;">
+                                    <!-- Contenu dynamique selon comparaison -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 5: Système 3 essais -->
+                    <div class="timeline-step accordion-step" id="step-three-tries">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-three-tries-content">
+                            <div class="step-number">5</div>
+                            <h3 class="step-title">🎯 SYSTÈME 3 ESSAIS</h3>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="step-three-tries-content" style="display: none;">
+                            <div class="three-tries-section">
+                                <div class="tries-counter" id="tries-counter">
+                                    <p>Essais restants : <span class="tries-remaining">3/3</span></p>
+                                </div>
+                                
+                                <div class="tries-interface" id="tries-interface" style="display: none;">
+                                    <!-- Interface pour nouveaux essais -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 6: Chyster -->
                     <div class="timeline-step timeline-step--chyster accordion-step" id="step-chyster">
                         <button class="step-header accordion-header" aria-expanded="false" aria-controls="step-chyster-content">
                             <div class="step-number">🏆</div>
-                            <h3 class="step-title">LA CHYSTER</h3>
+                            <h3 class="step-title">CHYSTER</h3>
                             <span class="accordion-icon">▼</span>
                         </button>
                         <div class="step-content accordion-content" id="step-chyster-content" style="display: none;">
-                            <div class="chyster-objective">
-                                <h4>🎯 OBJECTIF</h4>
-                                <p>Atteignez le nombre de cartes requis pour votre groupe</p>
-                            </div>
-
-                            <div class="chyster-power">
-                                <h4>💥 POUVOIR CHYSTER</h4>
-                                <div class="choice-option">
-                                    <p>→ Distribuez TOUTES vos gorgées à 1 seul joueur (1 carte = 1 gorgée)</p>
-                                </div>
-                                <div class="choice-option">
-                                    <p>→ Détruisez l'ENSEMBLE de son jeu (rangée de cartes + jokers)</p>
+                            <div class="chyster-check" id="chyster-check">
+                                <div class="chyster-status" id="chyster-status">
+                                    <p>Vérification automatique après chaque succès.</p>
                                 </div>
                             </div>
+                            
+                            <div class="chyster-achieved" id="chyster-achieved" style="display: none;">
+                                <div class="chyster-objective">
+                                    <h4>� CHYSTER ATTEINTE !</h4>
+                                    <p>Vous avez atteint l'objectif de cartes requis pour votre groupe</p>
+                                </div>
 
-                            <div class="chyster-royale">
-                                <h4>✨ CHYSTER ROYALE</h4>
-                                <p>Même couleur sur toutes vos cartes = <strong>Distribution x2</strong> et <strong>destruction de 2 jeux !</strong></p>
+                                <div class="chyster-power">
+                                    <h4>💥 VOS POUVOIRS CHYSTER</h4>
+                                    <div class="power-options">
+                                        <div class="power-item">
+                                            <h5>🍻 Distribution</h5>
+                                            <p>Distribuez <span id="chyster-sips"></span> gorgées à UN seul joueur (1 carte = 1 gorgée)</p>
+                                        </div>
+                                        <div class="power-item">
+                                            <h5>💣 Destruction</h5>
+                                            <p>Détruisez l'ENSEMBLE du jeu d'un adversaire (rangée + jokers)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="chyster-target-selection">
+                                        <label>Choisir l'adversaire cible :</label>
+                                        <select class="target-selector">
+                                            <option value="">-- Sélectionner --</option>
+                                            <option value="player1">Joueur 1</option>
+                                            <option value="player2">Joueur 2</option>
+                                            <option value="player3">Joueur 3</option>
+                                        </select>
+                                        <button class="btn btn--primary" onclick="executeChyster()">
+                                            Activer Chyster
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="chyster-royale" id="chyster-royale" style="display: none;">
+                                    <h4>✨ CHYSTER ROYALE</h4>
+                                    <p>Toutes vos cartes sont de la même couleur !</p>
+                                    <p><strong>Effet x2 :</strong> Distribution doublée + destruction de 2 jeux !</p>
+                                </div>
+
+                                <div class="chyster-reminder">
+                                    <p><em>À chaque Chyster, le dealer doit mélanger le paquet.</em></p>
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div style="text-align: center; margin-top: 20px;">
-                                <p><em>À chaque Chyster, le dealer est dans l'obligation de mélanger le paquet.</em></p>
+                    <!-- Étape 7: Cartes spéciales (référence) -->
+                    <div class="timeline-step timeline-step--reference accordion-step" id="special-cards-ref">
+                        <button class="step-header accordion-header" aria-expanded="false" aria-controls="special-cards-ref-content">
+                            <div class="step-number">🃏</div>
+                            <h3 class="step-title">CARTES SPÉCIALES</h3>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="step-content accordion-content" id="special-cards-ref-content" style="display: none;">
+                            <div class="special-cards-reference">
+                                <p class="reference-intro">📖 Guide de référence rapide - Accès direct sans passer par le flow de jeu</p>
+                                
+                                <div class="special-cards-grid">
+                                    <!-- Roi -->
+                                    <div class="special-card-ref">
+                                        <div class="card-visual">
+                                            <span class="card-rank">R</span>
+                                            <span class="card-suit">♠</span>
+                                        </div>
+                                        <div class="card-info">
+                                            <h4>👑 ROI</h4>
+                                            <ul>
+                                                <li>• Victoire automatique (ignore couleur)</li>
+                                                <li>• Placement au-dessus de la rangée</li>
+                                                <li>• Ne compte pas pour la Chyster</li>
+                                                <li>• Peut servir de "joker de secours"</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- As -->
+                                    <div class="special-card-ref">
+                                        <div class="card-visual card-visual--red">
+                                            <span class="card-rank">A</span>
+                                            <span class="card-suit">♦</span>
+                                        </div>
+                                        <div class="card-info">
+                                            <h4>🃏 AS</h4>
+                                            <ul>
+                                                <li>• Victoire automatique (ignore couleur)</li>
+                                                <li>• Choix : AS=1 chez moi OU AS=10 chez adversaire</li>
+                                                <li>• Remplace la dernière carte (chez adversaire seulement)</li>
+                                                <li>• Décision stratégique importante</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Valet -->
+                                    <div class="special-card-ref">
+                                        <div class="card-visual">
+                                            <span class="card-rank">V</span>
+                                            <span class="card-suit">♠</span>
+                                        </div>
+                                        <div class="card-info">
+                                            <h4>🃜 VALET</h4>
+                                            <ul>
+                                                <li>• Effet : Shifu-bois (2 personnes désignées)</li>
+                                                <li>• Défausse + repioche obligatoire</li>
+                                                <li>• Ne compte pas comme un essai</li>
+                                                <li>• Carte neutre (continue le jeu)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dame -->
+                                    <div class="special-card-ref">
+                                        <div class="card-visual card-visual--red">
+                                            <span class="card-rank">D</span>
+                                            <span class="card-suit">♥</span>
+                                        </div>
+                                        <div class="card-info">
+                                            <h4>🃝 DAME</h4>
+                                            <ul>
+                                                <li>• Effet : Le dernier à dire "pute" boit</li>
+                                                <li>• Défausse + repioche obligatoire</li>
+                                                <li>• Ne compte pas comme un essai</li>
+                                                <li>• Carte neutre (continue le jeu)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -721,7 +1002,398 @@
             setTimeout(() => {
                 autoRevealCard(1);
             }, 1000);
+            
+            // Initialize game state tracker
+            initGameStateTracker();
         });
+
+        // Game State Tracker Management
+        let gameState = {
+            cardsCount: 0,
+            chysterTarget: 9 // Default, will be updated by player selector
+        };
+        
+        let redirectTimeout = null; // To store and cancel redirect timeout
+
+        // Calculer le nombre de cartes cible en fonction du nombre de joueurs
+        function calculateCardsForChyster(players) {
+            const cardMapping = {
+                2: 11,
+                3: 10,
+                4: 9,
+                5: 8,
+                6: 7,
+                7: 6,
+                8: 5,
+                9: 5,
+                10: 5
+            };
+            return cardMapping[players] || 5;
+        }
+
+        function initGameStateTracker() {
+            // Initialize situation selector
+            initSituationSelector();
+            
+            // Get elements
+            const decreaseCards = document.getElementById('decrease-cards');
+            const increaseCards = document.getElementById('increase-cards');
+            
+            // Cards counter events
+            if (decreaseCards) {
+                decreaseCards.addEventListener('click', () => adjustCards(-1));
+            }
+            if (increaseCards) {
+                increaseCards.addEventListener('click', () => adjustCards(1));
+            }
+            
+            // Close buttons for going back to situation selector
+            const closeCountersBtn = document.getElementById('close-counters');
+            const closeRedirectBtn = document.getElementById('close-redirect');
+            
+            if (closeCountersBtn) {
+                closeCountersBtn.addEventListener('click', () => {
+                    resetToSituationSelector();
+                });
+            }
+            
+            if (closeRedirectBtn) {
+                closeRedirectBtn.addEventListener('click', () => {
+                    resetToSituationSelector();
+                });
+            }
+            
+            // Sync with player count selector
+            const playerCountElement = document.getElementById('player-count');
+            if (playerCountElement) {
+                gameState.chysterTarget = calculateCardsForChyster(parseInt(playerCountElement.value));
+                updateGameStateDisplay();
+                
+                // Listen for input events (when user changes value directly)
+                playerCountElement.addEventListener('input', () => {
+                    gameState.chysterTarget = calculateCardsForChyster(parseInt(playerCountElement.value));
+                    updateGameStateDisplay();
+                });
+            }
+
+            // Also listen to the main player selector buttons
+            const decreasePlayers = document.getElementById('decrease-players');
+            const increasePlayers = document.getElementById('increase-players');
+            
+            if (decreasePlayers) {
+                decreasePlayers.addEventListener('click', () => {
+                    setTimeout(() => {
+                        const currentValue = parseInt(playerCountElement.value);
+                        gameState.chysterTarget = calculateCardsForChyster(currentValue);
+                        updateGameStateDisplay();
+                    }, 100); // Small delay to ensure the value is updated
+                });
+            }
+            
+            if (increasePlayers) {
+                increasePlayers.addEventListener('click', () => {
+                    setTimeout(() => {
+                        const currentValue = parseInt(playerCountElement.value);
+                        gameState.chysterTarget = calculateCardsForChyster(currentValue);
+                        updateGameStateDisplay();
+                    }, 100); // Small delay to ensure the value is updated
+                });
+            }
+        }
+
+        function initSituationSelector() {
+            const noCardsBtn = document.getElementById('no-cards-btn');
+            const hasCardsBtn = document.getElementById('has-cards-btn');
+            
+            if (noCardsBtn) {
+                noCardsBtn.addEventListener('click', () => {
+                    handleSituationChoice('no-cards');
+                });
+            }
+            
+            if (hasCardsBtn) {
+                hasCardsBtn.addEventListener('click', () => {
+                    handleSituationChoice('has-cards');
+                });
+            }
+        }
+
+        function handleSituationChoice(situation) {
+            const situationSelector = document.getElementById('situation-selector');
+            const stateCounters = document.getElementById('state-counters');
+            const noCardsRedirect = document.getElementById('no-cards-redirect');
+            
+            if (situation === 'no-cards') {
+                // Smooth hide situation selector
+                situationSelector.classList.add('hide');
+                
+                // Wait for hide animation then show redirect
+                setTimeout(() => {
+                    situationSelector.style.display = 'none';
+                    noCardsRedirect.style.display = 'block';
+                    
+                    // Small delay for smoother transition
+                    setTimeout(() => {
+                        noCardsRedirect.classList.add('show');
+                    }, 10);
+                }, 200);
+                
+                // Reset game state
+                gameState.cardsCount = 0;
+                updateGameStateDisplay();
+                
+                // Set redirect timeout (can be cancelled by close button)
+                redirectTimeout = setTimeout(() => {
+                    redirectToBeginningSection();
+                }, 2500); // Increased delay to account for animation
+                
+            } else if (situation === 'has-cards') {
+                // Smooth hide situation selector
+                situationSelector.classList.add('hide');
+                
+                // Wait for hide animation then show counters
+                setTimeout(() => {
+                    situationSelector.style.display = 'none';
+                    stateCounters.style.display = 'block';
+                    
+                    // Small delay for smoother transition
+                    setTimeout(() => {
+                        stateCounters.classList.add('show');
+                    }, 10);
+                }, 200);
+                
+                // Initialize with 1 card minimum since they said they have cards
+                gameState.cardsCount = Math.max(gameState.cardsCount, 1);
+                updateGameStateDisplay();
+            }
+        }
+
+        function resetToSituationSelector() {
+            // Cancel any pending redirect
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
+            
+            const situationSelector = document.getElementById('situation-selector');
+            const stateCounters = document.getElementById('state-counters');
+            const noCardsRedirect = document.getElementById('no-cards-redirect');
+            
+            // Smooth hide current section
+            stateCounters.classList.remove('show');
+            noCardsRedirect.classList.remove('show');
+            
+            // Wait for hide animation then show situation selector
+            setTimeout(() => {
+                stateCounters.style.display = 'none';
+                noCardsRedirect.style.display = 'none';
+                
+                // Reset classes
+                situationSelector.classList.remove('hide');
+                situationSelector.style.display = 'block';
+            }, 300);
+            
+            // Reset game state
+            gameState.cardsCount = 0;
+            updateGameStateDisplay();
+        }
+
+        function redirectToBeginningSection() {
+            // Find and open the beginning section
+            const beginningStep = document.getElementById('step-beginning');
+            const beginningHeader = beginningStep?.querySelector('.accordion-header');
+            const beginningContent = beginningStep?.querySelector('.accordion-content');
+            
+            if (beginningHeader && beginningContent) {
+                // Close all other sections first
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                document.querySelectorAll('.accordion-header').forEach(header => {
+                    header.setAttribute('aria-expanded', 'false');
+                    header.querySelector('.accordion-icon').textContent = '▼';
+                });
+                
+                // Open beginning section
+                beginningContent.style.display = 'block';
+                beginningHeader.setAttribute('aria-expanded', 'true');
+                beginningHeader.querySelector('.accordion-icon').textContent = '▲';
+                
+                // Scroll to beginning section with smooth animation
+                beginningStep.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                // Add highlighting effect
+                beginningStep.style.border = '2px solid var(--color-secondary)';
+                beginningStep.style.boxShadow = '0 0 20px rgba(8, 247, 254, 0.2)';
+                
+                setTimeout(() => {
+                    beginningStep.style.border = '';
+                    beginningStep.style.boxShadow = '';
+                }, 3000);
+            }
+        }
+
+        // Sync global gameState with FlowManager if it exists
+        function syncWithFlowManager() {
+            if (window.flowManager && window.flowManager.gameState) {
+                const playerCountElement = document.getElementById('player-count');
+                if (playerCountElement) {
+                    const currentPlayers = parseInt(playerCountElement.value);
+                    window.flowManager.gameState.playersCount = currentPlayers;
+                    window.flowManager.updateChysterTarget();
+                    window.flowManager.gameState.cardsCount = gameState.cardsCount;
+                    window.flowManager.gameState.chysterTarget = gameState.chysterTarget;
+                    
+                    // Trigger Chyster achievement check in FlowManager if needed
+                    if (gameState.cardsCount === gameState.chysterTarget) {
+                        window.flowManager.triggerChysterAchievement();
+                    }
+                }
+            }
+        }
+
+        function adjustCards(delta) {
+            const newCount = gameState.cardsCount + delta;
+            if (newCount >= 0 && newCount <= gameState.chysterTarget) { // Limited to Chyster target
+                gameState.cardsCount = newCount;
+                updateGameStateDisplay();
+                syncWithFlowManager(); // Keep FlowManager in sync
+                
+                // Add visual feedback
+                const counter = document.getElementById('cards-count');
+                if (counter) {
+                    counter.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        counter.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            }
+        }
+
+        function updateGameStateDisplay() {
+            // Update counters
+            const cardsCountEl = document.getElementById('cards-count');
+            const chysterTargetEl = document.getElementById('chyster-target');
+            const progressFillEl = document.getElementById('progress-fill');
+            const progressTextEl = document.getElementById('progress-text');
+            
+            if (cardsCountEl) cardsCountEl.textContent = gameState.cardsCount;
+            
+            // Always sync with player count selector to maintain consistency
+            const playerCountElement = document.getElementById('player-count');
+            if (playerCountElement) {
+                const currentPlayers = parseInt(playerCountElement.value);
+                gameState.chysterTarget = calculateCardsForChyster(currentPlayers);
+            }
+            
+            if (chysterTargetEl) chysterTargetEl.textContent = `${gameState.chysterTarget} cartes`;
+            
+            // Update progress (only cards count now)
+            const progressPercent = Math.min((gameState.cardsCount / gameState.chysterTarget) * 100, 100);
+            if (progressFillEl) progressFillEl.style.width = `${progressPercent}%`;
+            if (progressTextEl) progressTextEl.textContent = `${gameState.cardsCount}/${gameState.chysterTarget} cartes`;
+            
+            // Update button states with dynamic limit
+            const decreaseCards = document.getElementById('decrease-cards');
+            const increaseCards = document.getElementById('increase-cards');
+            
+            if (decreaseCards) decreaseCards.disabled = gameState.cardsCount <= 0;
+            if (increaseCards) increaseCards.disabled = gameState.cardsCount >= gameState.chysterTarget;
+        }
+
+        function showChysterAchievement() {
+            // Visual celebration when Chyster is reached
+            const progressFill = document.getElementById('progress-fill');
+            const gameStateTracker = document.querySelector('.game-state-tracker');
+            
+            if (progressFill) {
+                progressFill.style.background = 'linear-gradient(90deg, var(--color-warning), var(--color-primary))';
+                progressFill.style.boxShadow = '0 0 10px rgba(255, 184, 0, 0.5)';
+                progressFill.style.animation = 'pulse 0.5s ease-in-out 3';
+            }
+            
+            if (gameStateTracker) {
+                gameStateTracker.style.border = '2px solid var(--color-primary)';
+                gameStateTracker.style.boxShadow = '0 0 20px rgba(255, 46, 99, 0.3)';
+                gameStateTracker.style.animation = 'glow 1s ease-in-out 2';
+            }
+            
+            // Show achievement message
+            const achievementDiv = document.createElement('div');
+            achievementDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+                    color: var(--color-text);
+                    padding: 2rem;
+                    border-radius: 1rem;
+                    text-align: center;
+                    z-index: 1000;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    animation: fadeInScale 0.5s ease-out;
+                ">
+                    <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🎉 CHYSTER ATTEINT !</h3>
+                    <p style="margin: 0; font-size: 1.1rem;">Redirection vers la section Chyster...</p>
+                </div>
+            `;
+            document.body.appendChild(achievementDiv);
+            
+            // Remove achievement message after animation
+            setTimeout(() => {
+                document.body.removeChild(achievementDiv);
+            }, 1400);
+        }
+
+        function redirectToChysterSection() {
+            // Find and open the Chyster section
+            const chysterStep = document.getElementById('step-chyster');
+            const chysterHeader = chysterStep?.querySelector('.accordion-header');
+            const chysterContent = chysterStep?.querySelector('.accordion-content');
+            
+            if (chysterHeader && chysterContent) {
+                // Close all other sections first
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                document.querySelectorAll('.accordion-header').forEach(header => {
+                    header.setAttribute('aria-expanded', 'false');
+                    header.querySelector('.accordion-icon').textContent = '▼';
+                });
+                
+                // Open Chyster section
+                chysterContent.style.display = 'block';
+                chysterHeader.setAttribute('aria-expanded', 'true');
+                chysterHeader.querySelector('.accordion-icon').textContent = '▲';
+                
+                // Scroll to Chyster section with smooth animation
+                chysterStep.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                // Add highlighting effect
+                chysterStep.style.border = '2px solid var(--color-primary)';
+                chysterStep.style.boxShadow = '0 0 20px rgba(255, 46, 99, 0.2)';
+                
+                setTimeout(() => {
+                    chysterStep.style.border = '';
+                    chysterStep.style.boxShadow = '';
+                }, 3000);
+            }
+        }
+
+        // Expose gameState for other functions to use
+        window.gameState = gameState;
+        window.adjustCards = adjustCards;
     </script>
+    
+    <!-- Flow Manager Script -->
+    <script src="js/flow-manager.js"></script>
 </body>
 </html>

@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerCount = document.getElementById('playerCount');
     const cardTarget = document.getElementById('cardTarget');
     const playerWarning = document.getElementById('playerWarning');
+    
+    // Also get the game state tracker element
+    const gameStatePlayerCount = document.getElementById('player-count');
 
     // Calculer le nombre de cartes cible en fonction du nombre de joueurs
     const calculateTargetCards = (players) => {
@@ -25,6 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateDisplay = (players) => {
         playerCount.textContent = players;
         cardTarget.textContent = calculateTargetCards(players);
+        
+        // Synchronize with game state tracker
+        if (gameStatePlayerCount) {
+            gameStatePlayerCount.value = players;
+            // Trigger input event to notify game state tracker
+            gameStatePlayerCount.dispatchEvent(new Event('input'));
+        }
         
         // Gérer l'avertissement
         if (players >= 8) {
@@ -67,5 +77,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initialisation
-    updateDisplay(2);
+    updateDisplay(4); // Start with 4 players as default
 });
