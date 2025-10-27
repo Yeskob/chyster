@@ -1199,40 +1199,168 @@
         }
 
         function redirectToBeginningSection() {
-            // Find and open the beginning section
+            // Find and open the beginning section using proper accordion system
             const beginningStep = document.getElementById('step-beginning');
             const beginningHeader = beginningStep?.querySelector('.accordion-header');
-            const beginningContent = beginningStep?.querySelector('.accordion-content');
             
-            if (beginningHeader && beginningContent) {
-                // Close all other sections first
-                document.querySelectorAll('.accordion-content').forEach(content => {
-                    content.style.display = 'none';
-                });
-                document.querySelectorAll('.accordion-header').forEach(header => {
-                    header.setAttribute('aria-expanded', 'false');
-                    header.querySelector('.accordion-icon').textContent = '▼';
-                });
+            if (beginningHeader && beginningStep) {
+                // Use the existing accordion system for proper animation
+                openAccordionSection(beginningHeader);
                 
-                // Open beginning section
-                beginningContent.style.display = 'block';
-                beginningHeader.setAttribute('aria-expanded', 'true');
-                beginningHeader.querySelector('.accordion-icon').textContent = '▲';
+                // Update flow display for no-cards situation
+                updateFlowDisplayForSituation('no-cards');
                 
-                // Scroll to beginning section with smooth animation
-                beginningStep.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-                
-                // Add highlighting effect
-                beginningStep.style.border = '2px solid var(--color-secondary)';
-                beginningStep.style.boxShadow = '0 0 20px rgba(8, 247, 254, 0.2)';
-                
+                // Add enhanced highlighting effect for redirection
                 setTimeout(() => {
-                    beginningStep.style.border = '';
-                    beginningStep.style.boxShadow = '';
-                }, 3000);
+                    // Scroll with offset to show the full section
+                    beginningStep.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    
+                    // Enhanced visual feedback for automatic redirection
+                    beginningStep.style.transition = 'all 0.6s ease';
+                    beginningStep.style.border = '3px solid var(--color-secondary)';
+                    beginningStep.style.boxShadow = '0 0 30px rgba(8, 247, 254, 0.4), inset 0 0 20px rgba(8, 247, 254, 0.1)';
+                    beginningStep.style.transform = 'scale(1.02)';
+                    
+                    // Show notification that this was an auto-redirect
+                    showRedirectNotification();
+                    
+                    // Restore normal state after highlighting
+                    setTimeout(() => {
+                        beginningStep.style.border = '';
+                        beginningStep.style.boxShadow = '';
+                        beginningStep.style.transform = '';
+                        setTimeout(() => {
+                            beginningStep.style.transition = '';
+                        }, 600);
+                    }, 4000);
+                }, 300);
+            }
+        }
+
+        // Utility function to open accordion sections properly
+        function openAccordionSection(header) {
+            if (!header) return;
+            
+            // Close all other accordions first
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                if (h !== header) {
+                    const content = document.getElementById(h.getAttribute('aria-controls'));
+                    if (content) {
+                        h.setAttribute('aria-expanded', 'false');
+                        h.querySelector('.accordion-icon').textContent = '▼';
+                        content.classList.remove('expanded');
+                        content.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Open target accordion with animation
+            const content = document.getElementById(header.getAttribute('aria-controls'));
+            if (content) {
+                header.setAttribute('aria-expanded', 'true');
+                header.querySelector('.accordion-icon').textContent = '▲';
+                content.style.display = 'block';
+                
+                // Trigger accordion animation
+                setTimeout(() => {
+                    content.classList.add('expanded');
+                }, 10);
+            }
+        }
+
+        // Show notification for auto-redirect
+        function showRedirectNotification() {
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+                    color: var(--color-dark);
+                    padding: 1rem 1.5rem;
+                    border-radius: var(--radius-lg);
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 8px 25px rgba(8, 247, 254, 0.3);
+                    animation: slideInRight 0.5s ease-out;
+                    max-width: 300px;
+                    font-size: 0.9rem;
+                " id="redirect-notification">
+                    🎯 <strong>Redirection automatique</strong><br>
+                    <small>Section "Début de tour" ouverte</small>
+                </div>
+            `;
+            
+            // Add keyframe animation for slide in
+            if (!document.getElementById('redirect-animation-style')) {
+                const style = document.createElement('style');
+                style.id = 'redirect-animation-style';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        0% { transform: translateX(100%); opacity: 0; }
+                        100% { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOutRight {
+                        0% { transform: translateX(0); opacity: 1; }
+                        100% { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove notification after 4 seconds
+            setTimeout(() => {
+                const notif = document.getElementById('redirect-notification');
+                if (notif) {
+                    notif.style.animation = 'slideOutRight 0.5s ease-in';
+                    setTimeout(() => {
+                        if (notif.parentNode) {
+                            notif.parentNode.removeChild(notif);
+                        }
+                    }, 500);
+                }
+            }, 4000);
+        }
+
+        // Update flow display based on current situation
+        function updateFlowDisplayForSituation(situation = null) {
+            const currentSituation = situation || (gameState.cardsCount > 0 ? 'has-cards' : 'no-cards');
+            const situationText = document.getElementById('current-situation');
+            const noCardsFlow = document.getElementById('no-cards-flow');
+            const hasCardsFlow = document.getElementById('has-cards-flow');
+            const distributionAmount = document.getElementById('distribution-amount');
+            
+            // Update situation display
+            if (situationText) {
+                if (currentSituation === 'no-cards') {
+                    situationText.textContent = 'Aucune carte posée';
+                    situationText.style.color = 'var(--color-secondary)';
+                } else {
+                    situationText.textContent = `${gameState.cardsCount} carte(s) posée(s)`;
+                    situationText.style.color = 'var(--color-primary)';
+                }
+            }
+            
+            // Show appropriate flow
+            if (noCardsFlow && hasCardsFlow) {
+                if (currentSituation === 'no-cards') {
+                    noCardsFlow.style.display = 'block';
+                    hasCardsFlow.style.display = 'none';
+                } else {
+                    noCardsFlow.style.display = 'none';
+                    hasCardsFlow.style.display = 'block';
+                    
+                    // Update distribution amount
+                    if (distributionAmount) {
+                        distributionAmount.textContent = gameState.cardsCount;
+                    }
+                }
             }
         }
 
@@ -1302,6 +1430,9 @@
             
             if (decreaseCards) decreaseCards.disabled = gameState.cardsCount <= 0;
             if (increaseCards) increaseCards.disabled = gameState.cardsCount >= gameState.chysterTarget;
+            
+            // Update flow display to reflect current situation
+            updateFlowDisplayForSituation();
         }
 
         function showChysterAchievement() {
