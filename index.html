@@ -1005,6 +1005,9 @@
             
             // Initialize game state tracker
             initGameStateTracker();
+            
+            // Initialize color choice buttons for "no cards" flow
+            initColorChoiceButtons();
         });
 
         // Game State Tracker Management
@@ -1517,6 +1520,222 @@
                     chysterStep.style.boxShadow = '';
                 }, 3000);
             }
+        }
+
+        // === GESTION DU FLOW "AUCUNE CARTE POSÉE" ===
+        
+        let selectedColor = null;
+        
+        // Initialize color choice buttons
+        function initColorChoiceButtons() {
+            const colorButtons = document.querySelectorAll('.color-choice-btn');
+            colorButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove selection from all buttons
+                    colorButtons.forEach(b => b.classList.remove('selected'));
+                    // Select current button
+                    btn.classList.add('selected');
+                    
+                    selectedColor = btn.dataset.color;
+                    showSelectedColor(selectedColor);
+                });
+            });
+        }
+        
+        // Show selected color and enable draw button
+        function showSelectedColor(color) {
+            const selectedColorDiv = document.getElementById('selected-color');
+            const announcedColor = document.getElementById('announced-color');
+            
+            if (selectedColorDiv && announcedColor) {
+                const colorNames = {
+                    'rouge': 'Rouge (♥ ♦)',
+                    'noir': 'Noir (♠ ♣)'
+                };
+                
+                announcedColor.textContent = colorNames[color];
+                selectedColorDiv.style.display = 'block';
+                
+                // Add visual feedback
+                selectedColorDiv.style.animation = 'fadeInScale 0.3s ease-out';
+            }
+        }
+        
+        // Proceed to draw phase - redirect to "Résultat & Cartes"
+        function proceedToDraw() {
+            if (!selectedColor) {
+                // Show error if no color selected
+                showColorSelectionError();
+                return;
+            }
+            
+            // Store selected color for later use
+            if (window.gameState) {
+                window.gameState.predictedColor = selectedColor;
+            }
+            
+            // Redirect to result section with automatic opening
+            redirectToResultSection();
+        }
+        
+        // Show error for missing color selection
+        function showColorSelectionError() {
+            const errorNotification = document.createElement('div');
+            errorNotification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--color-primary), #E02556);
+                    color: var(--color-text);
+                    padding: 1rem 1.5rem;
+                    border-radius: var(--radius-lg);
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 8px 25px rgba(255, 46, 99, 0.4);
+                    animation: slideInRight 0.5s ease-out;
+                    max-width: 300px;
+                    font-size: 0.9rem;
+                " id="error-notification">
+                    ⚠️ <strong>Sélection manquante</strong><br>
+                    <small>Veuillez choisir une couleur avant de piocher</small>
+                </div>
+            `;
+            
+            document.body.appendChild(errorNotification);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                const notif = document.getElementById('error-notification');
+                if (notif) {
+                    notif.style.animation = 'slideOutRight 0.5s ease-in';
+                    setTimeout(() => {
+                        if (notif.parentNode) {
+                            notif.parentNode.removeChild(notif);
+                        }
+                    }, 500);
+                }
+            }, 3000);
+        }
+        
+        // Redirect to result section and open accordion
+        function redirectToResultSection() {
+            const resultStep = document.getElementById('step-result');
+            const resultHeader = resultStep?.querySelector('.accordion-header');
+            
+            if (resultHeader && resultStep) {
+                // Use the existing accordion system for proper animation
+                openAccordionSection(resultHeader);
+                
+                // Update the card input section to reflect the flow
+                updateCardInputForNoCardsFlow();
+                
+                // Enhanced highlighting effect for redirection
+                setTimeout(() => {
+                    // Scroll with offset to show the full section
+                    resultStep.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    
+                    // Enhanced visual feedback for automatic redirection
+                    resultStep.style.transition = 'all 0.6s ease';
+                    resultStep.style.border = '3px solid var(--color-primary)';
+                    resultStep.style.boxShadow = '0 0 30px rgba(255, 46, 99, 0.4), inset 0 0 20px rgba(255, 46, 99, 0.1)';
+                    resultStep.style.transform = 'scale(1.02)';
+                    
+                    // Show notification that this was an auto-redirect
+                    showDrawRedirectNotification();
+                    
+                    // Restore normal state after highlighting
+                    setTimeout(() => {
+                        resultStep.style.border = '';
+                        resultStep.style.boxShadow = '';
+                        resultStep.style.transform = '';
+                        setTimeout(() => {
+                            resultStep.style.transition = '';
+                        }, 600);
+                    }, 4000);
+                }, 300);
+            }
+        }
+        
+        // Update card input section for no-cards flow
+        function updateCardInputForNoCardsFlow() {
+            const cardInputSection = document.getElementById('card-input');
+            const cardInputTitle = cardInputSection?.querySelector('h4');
+            
+            if (cardInputTitle) {
+                cardInputTitle.innerHTML = `🎯 Quelle carte avez-vous piochée ?<br><small style="color: var(--color-text-muted); font-weight: 400;">Couleur prédite: <span style="color: var(--color-${selectedColor === 'rouge' ? 'primary' : 'text'}); font-weight: 600;">${selectedColor === 'rouge' ? 'Rouge' : 'Noir'}</span></small>`;
+            }
+            
+            // Add visual indicator for predicted color
+            addPredictionIndicator();
+        }
+        
+        // Add prediction indicator to card input
+        function addPredictionIndicator() {
+            const cardSelector = document.querySelector('.card-selector');
+            if (cardSelector && !document.getElementById('prediction-indicator')) {
+                const indicator = document.createElement('div');
+                indicator.id = 'prediction-indicator';
+                indicator.innerHTML = `
+                    <div style="
+                        background: rgba(${selectedColor === 'rouge' ? '255, 46, 99' : '160, 160, 160'}, 0.1);
+                        border: 2px solid ${selectedColor === 'rouge' ? 'var(--color-primary)' : '#A0A0A0'};
+                        border-radius: var(--radius-md);
+                        padding: var(--space-3);
+                        margin-bottom: var(--space-4);
+                        text-align: center;
+                    ">
+                        <span style="font-size: 1.2rem;">${selectedColor === 'rouge' ? '🔴' : '⚫'}</span>
+                        <strong style="color: var(--color-text); margin-left: var(--space-2);">
+                            Prédiction: ${selectedColor === 'rouge' ? 'Rouge' : 'Noir'}
+                        </strong>
+                    </div>
+                `;
+                cardSelector.insertBefore(indicator, cardSelector.firstChild);
+            }
+        }
+        
+        // Show notification for draw redirect
+        function showDrawRedirectNotification() {
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+                    color: var(--color-dark);
+                    padding: 1rem 1.5rem;
+                    border-radius: var(--radius-lg);
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 8px 25px rgba(255, 46, 99, 0.3);
+                    animation: slideInRight 0.5s ease-out;
+                    max-width: 300px;
+                    font-size: 0.9rem;
+                " id="draw-redirect-notification">
+                    🎰 <strong>Phase de pioche</strong><br>
+                    <small>Section "Résultat & Cartes" ouverte</small>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove notification after 4 seconds
+            setTimeout(() => {
+                const notif = document.getElementById('draw-redirect-notification');
+                if (notif) {
+                    notif.style.animation = 'slideOutRight 0.5s ease-in';
+                    setTimeout(() => {
+                        if (notif.parentNode) {
+                            notif.parentNode.removeChild(notif);
+                        }
+                    }, 500);
+                }
+            }, 4000);
         }
 
         // Expose gameState for other functions to use
