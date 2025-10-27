@@ -107,10 +107,23 @@ class FlowManager {
 
     // === INTERFACE DE SAISIE DES CARTES ===
     initCardInput() {
+        this.setupCardInputEventListeners();
+    }
+
+    // Setup or re-setup card input event listeners
+    setupCardInputEventListeners() {
+        // Remove existing listeners to avoid duplicates
+        this.removeCardInputEventListeners();
+
         // Boutons de valeur
         const valueButtons = document.querySelectorAll('.value-btn');
+        console.log(`Setting up ${valueButtons.length} value buttons`);
+        
         valueButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
+            const handleValueClick = (e) => {
+                e.preventDefault();
+                console.log(`Value button clicked: ${btn.textContent}`);
+                
                 // Désélectionner les autres
                 valueButtons.forEach(b => b.classList.remove('selected'));
                 // Sélectionner celui-ci
@@ -119,13 +132,23 @@ class FlowManager {
                 this.gameState.selectedCard = this.gameState.selectedCard || {};
                 this.gameState.selectedCard.value = btn.textContent;
                 this.updateCardPreview();
-            });
+                this.updateValidateButton();
+            };
+            
+            btn.addEventListener('click', handleValueClick);
+            // Store reference for cleanup
+            btn._handleValueClick = handleValueClick;
         });
 
         // Boutons de couleur
         const suitButtons = document.querySelectorAll('.suit-btn');
+        console.log(`Setting up ${suitButtons.length} suit buttons`);
+        
         suitButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
+            const handleSuitClick = (e) => {
+                e.preventDefault();
+                console.log(`Suit button clicked: ${btn.textContent}`);
+                
                 // Désélectionner les autres
                 suitButtons.forEach(b => b.classList.remove('selected'));
                 // Sélectionner celui-ci
@@ -135,27 +158,100 @@ class FlowManager {
                 this.gameState.selectedCard.suit = btn.textContent;
                 this.gameState.selectedCard.color = btn.dataset.color;
                 this.updateCardPreview();
-            });
+                this.updateValidateButton();
+            };
+            
+            btn.addEventListener('click', handleSuitClick);
+            // Store reference for cleanup
+            btn._handleSuitClick = handleSuitClick;
         });
+        
+        console.log('Card input event listeners setup completed');
+    }
+
+    // Remove existing event listeners to prevent duplicates
+    removeCardInputEventListeners() {
+        const valueButtons = document.querySelectorAll('.value-btn');
+        valueButtons.forEach(btn => {
+            if (btn._handleValueClick) {
+                btn.removeEventListener('click', btn._handleValueClick);
+                delete btn._handleValueClick;
+            }
+        });
+
+        const suitButtons = document.querySelectorAll('.suit-btn');
+        suitButtons.forEach(btn => {
+            if (btn._handleSuitClick) {
+                btn.removeEventListener('click', btn._handleSuitClick);
+                delete btn._handleSuitClick;
+            }
+        });
+    }
+
+    // Update validate button state
+    updateValidateButton() {
+        const validateButton = document.getElementById('validate-card');
+        if (validateButton) {
+            const hasValue = this.gameState.selectedCard?.value;
+            const hasSuit = this.gameState.selectedCard?.suit;
+            const isComplete = hasValue && hasSuit;
+            
+            validateButton.disabled = !isComplete;
+            
+            // Update button text to reflect state
+            if (isComplete) {
+                validateButton.textContent = 'Valider ma carte →';
+                validateButton.classList.add('btn--primary');
+            } else {
+                validateButton.textContent = 'Sélectionnez valeur + couleur';
+                validateButton.classList.remove('btn--primary');
+            }
+        }
     }
 
     updateCardPreview() {
         const previewCard = document.querySelector('.preview-card');
         const previewText = document.querySelector('.preview-text');
         
-        if (previewCard && previewText && this.gameState.selectedCard) {
+        if (previewCard && this.gameState.selectedCard) {
             const { value, suit, color } = this.gameState.selectedCard;
             
             if (value && suit) {
-                previewCard.innerHTML = `
-                    <div style="font-size: 14px;">${value}</div>
-                    <div style="font-size: 20px;">${suit}</div>
-                `;
+                // Clear existing content
+                previewCard.innerHTML = '';
+                
+                // Add card content
+                const valueDiv = document.createElement('div');
+                valueDiv.style.fontSize = '14px';
+                valueDiv.textContent = value;
+                
+                const suitDiv = document.createElement('div');
+                suitDiv.style.fontSize = '20px';
+                suitDiv.textContent = suit;
+                
+                previewCard.appendChild(valueDiv);
+                previewCard.appendChild(suitDiv);
+                
+                // Update class
                 previewCard.className = `preview-card ${color}`;
-                previewText.textContent = `Votre carte: ${value} de ${this.getSuitName(suit)}`;
+                
+                // Update preview text
+                if (previewText) {
+                    previewText.textContent = `Votre carte: ${value} de ${this.getSuitName(suit)}`;
+                }
                 
                 // Déclencher l'analyse de la situation
                 this.analyzeSituation();
+            } else {
+                // Partial selection - show what's selected so far
+                previewCard.innerHTML = '<span class="preview-text">Sélectionnez une carte</span>';
+                previewCard.className = 'preview-card';
+                
+                if (value && !suit) {
+                    previewCard.innerHTML = `<div style="font-size: 16px;">${value}<br><small>Choisissez une couleur</small></div>`;
+                } else if (!value && suit) {
+                    previewCard.innerHTML = `<div style="font-size: 20px; color: ${color === 'rouge' ? '#EF4444' : '#6B7280'};">${suit}<br><small>Choisissez une valeur</small></div>`;
+                }
             }
         }
     }
@@ -354,6 +450,58 @@ class FlowManager {
         this.updateChysterTarget();
         this.updateProgress();
         this.updateFlowDisplay();
+        
+        // Reset card selection interface
+        this.resetCardSelection();
+    }
+
+    // Reset card selection interface
+    resetCardSelection() {
+        // Clear selected state from all buttons
+        document.querySelectorAll('.value-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        document.querySelectorAll('.suit-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Reset preview
+        const previewCard = document.querySelector('.preview-card');
+        if (previewCard) {
+            previewCard.innerHTML = '<span class="preview-text">Sélectionnez une carte</span>';
+            previewCard.className = 'preview-card';
+        }
+        
+        // Reset validate button
+        const validateButton = document.getElementById('validate-card');
+        if (validateButton) {
+            validateButton.disabled = true;
+        }
+        
+        // Clear selected card
+        this.gameState.selectedCard = null;
+        
+        // Re-setup event listeners to ensure they work
+        this.setupCardInputEventListeners();
+    }
+
+    // Public method to reinitialize card input (can be called from external code)
+    reinitializeCardInput() {
+        this.setupCardInputEventListeners();
+        this.resetCardSelection();
+    }
+
+    // Get current selected card
+    getSelectedCard() {
+        return this.gameState.selectedCard;
+    }
+
+    // Set selected card (for external synchronization)
+    setSelectedCard(card) {
+        this.gameState.selectedCard = card;
+        this.updateCardPreview();
+        this.updateValidateButton();
     }
 }
 
