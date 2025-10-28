@@ -1880,72 +1880,231 @@
             const verificationResults = document.getElementById('verification-results');
             
             if (verificationDisplay && selectedCard) {
-                const predictedColor = window.gameState?.predictedColor || 'non définie';
-                const drawnCardColor = selectedCard.color;
-                const isCorrectPrediction = predictedColor === drawnCardColor;
-                
-                verificationDisplay.innerHTML = `
-                    <div style="
-                        background: rgba(255, 255, 255, 0.05);
-                        border-radius: var(--radius-lg);
-                        padding: var(--space-4);
-                        margin-bottom: var(--space-4);
-                    ">
-                        <h4 style="color: var(--color-text); margin-bottom: var(--space-3); text-align: center;">
-                            ⚖️ Vérification de votre prédiction
-                        </h4>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
-                            <div style="text-align: center; padding: var(--space-3); background: rgba(8, 247, 254, 0.1); border-radius: var(--radius-md);">
-                                <div style="font-size: 1.5rem; margin-bottom: var(--space-1);">
-                                    ${predictedColor === 'rouge' ? '🔴' : '⚫'}
-                                </div>
-                                <strong style="color: var(--color-secondary);">Prédiction</strong><br>
-                                <span style="color: var(--color-text);">${predictedColor === 'rouge' ? 'Rouge' : 'Noir'}</span>
-                            </div>
-                            
-                            <div style="text-align: center; padding: var(--space-3); background: rgba(255, 46, 99, 0.1); border-radius: var(--radius-md);">
-                                <div style="font-size: 1.5rem; margin-bottom: var(--space-1);">
-                                    ${selectedCard.suit}
-                                </div>
-                                <strong style="color: var(--color-primary);">Carte piochée</strong><br>
-                                <span style="color: var(--color-text);">${selectedCard.value} ${selectedCard.suit} (${drawnCardColor === 'rouge' ? 'Rouge' : 'Noir'})</span>
-                            </div>
-                        </div>
-                        
-                        <div style="
-                            text-align: center; 
-                            padding: var(--space-4); 
-                            background: ${isCorrectPrediction ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
-                            border: 2px solid ${isCorrectPrediction ? '#22C55E' : '#EF4444'};
-                            border-radius: var(--radius-md);
-                        ">
-                            <div style="font-size: 2rem; margin-bottom: var(--space-2);">
-                                ${isCorrectPrediction ? '✅' : '❌'}
-                            </div>
-                            <h3 style="color: var(--color-text); margin-bottom: var(--space-2);">
-                                ${isCorrectPrediction ? 'BONNE COULEUR !' : 'MAUVAISE COULEUR !'}
-                            </h3>
-                            <p style="color: var(--color-text-muted); margin: 0;">
-                                ${isCorrectPrediction ? 
-                                    'Félicitations ! Vous avez correctement prédit la couleur.' : 
-                                    'Dommage ! Votre prédiction était incorrecte.'}
-                            </p>
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: var(--space-4);">
-                            <button class="btn btn--primary" onclick="proceedToNextStep()">
-                                ${isCorrectPrediction ? 'Poser ma carte →' : 'Voir les conséquences →'}
-                            </button>
-                        </div>
-                    </div>
-                `;
+                // Check if it's a special card first
+                if (isSpecialCard(selectedCard.value)) {
+                    // Special card: show effect directly instead of color verification
+                    showSpecialCardDirectly();
+                } else {
+                    // Normal card: show color verification
+                    showNormalColorVerification();
+                }
                 
                 // Show verification results
                 if (verificationResults) {
                     verificationResults.style.display = 'block';
                 }
             }
+        }
+        
+        // Show normal color verification for non-special cards
+        function showNormalColorVerification() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            const predictedColor = window.gameState?.predictedColor || 'non définie';
+            const drawnCardColor = selectedCard.color;
+            const isCorrectPrediction = predictedColor === drawnCardColor;
+            
+            verificationDisplay.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: var(--radius-lg);
+                    padding: var(--space-4);
+                    margin-bottom: var(--space-4);
+                ">
+                    <h4 style="color: var(--color-text); margin-bottom: var(--space-3); text-align: center;">
+                        ⚖️ Vérification de votre prédiction
+                    </h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div style="text-align: center; padding: var(--space-3); background: rgba(8, 247, 254, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-size: 1.5rem; margin-bottom: var(--space-1);">
+                                ${predictedColor === 'rouge' ? '🔴' : '⚫'}
+                            </div>
+                            <strong style="color: var(--color-secondary);">Prédiction</strong><br>
+                            <span style="color: var(--color-text);">${predictedColor === 'rouge' ? 'Rouge' : 'Noir'}</span>
+                        </div>
+                        
+                        <div style="text-align: center; padding: var(--space-3); background: rgba(255, 46, 99, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-size: 1.5rem; margin-bottom: var(--space-1);">
+                                ${selectedCard.suit}
+                            </div>
+                            <strong style="color: var(--color-primary);">Carte piochée</strong><br>
+                            <span style="color: var(--color-text);">${selectedCard.value} ${selectedCard.suit} (${drawnCardColor === 'rouge' ? 'Rouge' : 'Noir'})</span>
+                        </div>
+                    </div>
+                    
+                    <div style="
+                        text-align: center; 
+                        padding: var(--space-4); 
+                        background: ${isCorrectPrediction ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+                        border: 2px solid ${isCorrectPrediction ? '#22C55E' : '#EF4444'};
+                        border-radius: var(--radius-md);
+                    ">
+                        <div style="font-size: 2rem; margin-bottom: var(--space-2);">
+                            ${isCorrectPrediction ? '✅' : '❌'}
+                        </div>
+                        <h3 style="color: var(--color-text); margin-bottom: var(--space-2);">
+                            ${isCorrectPrediction ? 'BONNE COULEUR !' : 'MAUVAISE COULEUR !'}
+                        </h3>
+                        <p style="color: var(--color-text-muted); margin: 0;">
+                            ${isCorrectPrediction ? 
+                                'Félicitations ! Vous avez correctement prédit la couleur.' : 
+                                'Dommage ! Votre prédiction était incorrecte.'}
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: var(--space-4);">
+                        <button class="btn btn--primary" onclick="proceedToNextStep()">
+                            ${isCorrectPrediction ? 'Poser ma carte →' : 'Voir les conséquences →'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show special card effect directly (skip color verification)
+        function showSpecialCardDirectly() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            const cardValue = selectedCard.value;
+            let specialEffect = '';
+            let detailedEffect = '';
+            let actionButtons = '';
+            let isVictoryCard = false;
+            
+            switch(cardValue) {
+                case 'R':
+                    specialEffect = '👑 ROI - JOKER AUTOMATIQUE';
+                    detailedEffect = 'Le Roi ignore complètement la couleur prédite et devient automatiquement un joker dans votre jeu. C\'est une victoire garantie !';
+                    isVictoryCard = true;
+                    actionButtons = `
+                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('R')">
+                            👑 Placer le Roi comme joker
+                        </button>
+                    `;
+                    break;
+                case 'A':
+                    specialEffect = '🃏 AS - CHOIX STRATÉGIQUE';
+                    detailedEffect = 'L\'As ignore la couleur prédite. Vous pouvez choisir de le placer comme AS=1 dans votre jeu, ou comme AS=10 chez un adversaire (remplace sa dernière carte).';
+                    isVictoryCard = true;
+                    actionButtons = `
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 id="as-choice-prompt" style="
+                                color: var(--color-secondary); 
+                                margin-bottom: var(--space-4); 
+                                text-align: center;
+                                font-size: var(--text-xl);
+                                font-weight: 700;
+                                text-shadow: 0 2px 4px rgba(8, 247, 254, 0.3);
+                                padding: var(--space-3);
+                                background: rgba(8, 247, 254, 0.1);
+                                border-radius: var(--radius-md);
+                                border: 2px solid rgba(8, 247, 254, 0.3);
+                                transition: all 0.3s ease;
+                            ">
+                                ⚡ Choisissez l'effet de l'As !
+                            </h4>
+                            <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn--secondary" onclick="chooseAsEffect('self')">
+                                    AS = 1 chez moi
+                                </button>
+                                <button class="btn btn--secondary" onclick="chooseAsEffect('opponent')">
+                                    AS = 10 chez adversaire
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn--primary" onclick="confirmAsChoice()" disabled id="as-confirm-btn">
+                            🃏 Confirmer le choix de l'As
+                        </button>
+                    `;
+                    break;
+                case 'V':
+                    specialEffect = '🃜 VALET - SHIFU-BOIS';
+                    detailedEffect = 'Le Valet déclenche un "Shifu-bois" : désignez 2 personnes qui doivent boire. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
+                    actionButtons = `
+                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('V')">
+                            🃜 Faire Shifu-bois + Repiocher
+                        </button>
+                    `;
+                    break;
+                case 'D':
+                    specialEffect = '🃝 DAME - JEU "PUTE"';
+                    detailedEffect = 'La Dame déclenche le jeu "Pute" : le dernier à dire "pute" boit une gorgée. Ensuite, défaussez la Dame et piochez une nouvelle carte.';
+                    actionButtons = `
+                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('D')">
+                            🃝 Jeu "Pute" + Repiocher
+                        </button>
+                    `;
+                    break;
+            }
+            
+            verificationDisplay.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: var(--radius-lg);
+                    padding: var(--space-4);
+                    margin-bottom: var(--space-4);
+                ">
+                    <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                        🃏 Carte spéciale détectée !
+                    </h4>
+                    
+                    <div style="
+                        background: ${isVictoryCard ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)'};
+                        border: 3px solid ${isVictoryCard ? '#22C55E' : '#F59E0B'};
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-5);
+                        margin-bottom: var(--space-4);
+                        text-align: center;
+                    ">
+                        <div style="font-size: 4rem; margin-bottom: var(--space-3);">
+                            ${cardValue === 'R' ? '👑' : cardValue === 'A' ? '🃏' : cardValue === 'V' ? '🃜' : '🃝'}
+                        </div>
+                        <h2 style="color: ${isVictoryCard ? '#22C55E' : '#F59E0B'}; margin-bottom: var(--space-3); font-size: var(--text-2xl);">
+                            ${specialEffect}
+                        </h2>
+                        <p style="color: var(--color-text); margin: 0; font-size: var(--text-lg); line-height: 1.5;">
+                            ${detailedEffect}
+                        </p>
+                    </div>
+                    
+                    ${isVictoryCard ? `
+                    <div style="
+                        background: rgba(34, 197, 94, 0.1);
+                        border: 1px solid rgba(34, 197, 94, 0.3);
+                        border-radius: var(--radius-md);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                        text-align: center;
+                    ">
+                        <h4 style="color: var(--color-success); margin-bottom: var(--space-2);">
+                            ✨ La couleur n'importe pas !
+                        </h4>
+                        <p style="color: var(--color-text-muted); margin: 0; font-size: var(--text-sm);">
+                            Les cartes ${cardValue === 'R' ? 'Roi' : 'As'} ignorent complètement votre prédiction de couleur.
+                        </p>
+                    </div>
+                    ` : `
+                    <div style="
+                        background: rgba(245, 158, 11, 0.1);
+                        border: 1px solid rgba(245, 158, 11, 0.3);
+                        border-radius: var(--radius-md);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                        text-align: center;
+                    ">
+                        <h4 style="color: var(--color-warning); margin-bottom: var(--space-2);">
+                            🔄 Action spéciale requise
+                        </h4>
+                        <p style="color: var(--color-text-muted); margin: 0; font-size: var(--text-sm);">
+                            Cette carte déclenche un effet spécial, puis vous devrez piocher une nouvelle carte.
+                        </p>
+                    </div>
+                    `}
+                    
+                    <div style="text-align: center;">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
         }
         
         // Show notification for color verification redirect
@@ -2010,7 +2169,422 @@
         
         // Show failure flow for incorrect prediction
         function showFailureFlow() {
-            alert('😅 Échec ! Vous devrez maintenant suivre les conséquences selon vos cartes déjà posées.\n\n(Cette partie sera développée dans la prochaine étape)');
+            const predictedColor = window.gameState?.predictedColor;
+            const drawnCardColor = selectedCard?.color;
+            const hasCards = window.gameState?.cardsCount > 0;
+            
+            if (hasCards) {
+                // Has cards: need to check value comparison
+                alert('🔍 Vous avez des cartes posées ! La comparaison de valeurs sera implémentée dans la prochaine étape.');
+            } else {
+                // No cards: simple consequence flow
+                showNoCardsFailureFlow();
+            }
+        }
+        
+        // Show failure flow specifically for "no cards" scenario
+        function showNoCardsFailureFlow() {
+            // Check if it's a special card first
+            if (isSpecialCard(selectedCard.value)) {
+                showSpecialCardFlow();
+            } else {
+                showNormalCardFailureFlow();
+            }
+        }
+        
+        // Check if card is special
+        function isSpecialCard(value) {
+            return ['R', 'A', 'V', 'D'].includes(value);
+        }
+        
+        // Show normal card failure flow (drink + end turn)
+        function showNormalCardFailureFlow() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            😅 Conséquences de votre échec
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(239, 68, 68, 0.15);
+                            border: 2px solid #EF4444;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-2);">🍺</div>
+                            <h3 style="color: #EF4444; margin-bottom: var(--space-2);">
+                                Buvez 1 gorgée
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Vous n'avez aucune carte posée, donc vous subissez la pénalité simple.
+                            </p>
+                        </div>
+                        
+                        <div style="
+                            background: rgba(160, 160, 160, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <h4 style="color: var(--color-text); margin-bottom: var(--space-2);">
+                                📋 Résumé
+                            </h4>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                • Votre carte <strong>${selectedCard.value} ${selectedCard.suit}</strong> est défaussée<br>
+                                • Aucune carte n'est posée dans votre jeu<br>
+                                • Votre tour se termine
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn--secondary" onclick="confirmDrink()" id="drink-btn">
+                                🍺 J'ai bu ma gorgée
+                            </button>
+                            <button class="btn btn--primary" onclick="endTurnNoCards()" disabled id="end-turn-btn">
+                                ✅ Terminer mon tour
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Show special card flow
+        function showSpecialCardFlow() {
+            const cardValue = selectedCard.value;
+            let specialEffect = '';
+            let actionNeeded = '';
+            let isVictoryCard = false;
+            
+            switch(cardValue) {
+                case 'R':
+                    specialEffect = '👑 VICTOIRE AUTOMATIQUE !';
+                    actionNeeded = 'Le Roi ignore la couleur et devient un joker dans votre jeu.';
+                    isVictoryCard = true;
+                    break;
+                case 'A':
+                    specialEffect = '🃏 VICTOIRE AUTOMATIQUE !';
+                    actionNeeded = 'L\'As ignore la couleur. Choisissez: AS=1 chez vous OU AS=10 chez un adversaire.';
+                    isVictoryCard = true;
+                    break;
+                case 'V':
+                    specialEffect = '🃜 VALET - SHIFU-BOIS !';
+                    actionNeeded = 'Désignez 2 personnes qui doivent boire, puis défaussez le Valet et repiochez.';
+                    break;
+                case 'D':
+                    specialEffect = '🃝 DAME - "PUTE" !';
+                    actionNeeded = 'Le dernier à dire "pute" boit une gorgée, puis défaussez la Dame et repiochez.';
+                    break;
+            }
+            
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            🃏 Carte spéciale piochée !
+                        </h4>
+                        
+                        <div style="
+                            background: ${isVictoryCard ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)'};
+                            border: 2px solid ${isVictoryCard ? '#22C55E' : '#F59E0B'};
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-2);">
+                                ${cardValue === 'R' ? '👑' : cardValue === 'A' ? '🃏' : cardValue === 'V' ? '🃜' : '🃝'}
+                            </div>
+                            <h3 style="color: ${isVictoryCard ? '#22C55E' : '#F59E0B'}; margin-bottom: var(--space-2);">
+                                ${specialEffect}
+                            </h3>
+                            <p style="color: var(--color-text); margin: 0; font-weight: 500;">
+                                ${actionNeeded}
+                            </p>
+                        </div>
+                        
+                        ${isVictoryCard ? `
+                        <div style="
+                            background: rgba(34, 197, 94, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <h4 style="color: var(--color-success); margin-bottom: var(--space-2);">
+                                🎉 Aucune gorgée à boire !
+                            </h4>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Les cartes ${cardValue === 'R' ? 'Roi' : 'As'} sont des victoires automatiques qui ignorent la couleur prédite.
+                            </p>
+                        </div>
+                        ` : `
+                        <div style="
+                            background: rgba(245, 158, 11, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <h4 style="color: var(--color-warning); margin-bottom: var(--space-2);">
+                                🔄 Action requise puis repioche
+                            </h4>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Effectuez l'action ci-dessus, défaussez cette carte, puis piochez une nouvelle carte.
+                            </p>
+                        </div>
+                        `}
+                        
+                        <div style="text-align: center;">
+                            ${cardValue === 'A' ? `
+                            <div style="margin-bottom: var(--space-4);">
+                                <h5 style="color: var(--color-text); margin-bottom: var(--space-3);">Choisissez l'effet de l'As :</h5>
+                                <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                    <button class="btn btn--secondary" onclick="chooseAsEffect('self')">
+                                        AS = 1 chez moi
+                                    </button>
+                                    <button class="btn btn--secondary" onclick="chooseAsEffect('opponent')">
+                                        AS = 10 chez adversaire
+                                    </button>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <button class="btn btn--primary" onclick="confirmAsChoice()">
+                                ${isVictoryCard ? '✅ Continuer' : '🔄 Action effectuée, continuer'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Confirm drink action
+        function confirmDrink() {
+            const drinkBtn = document.getElementById('drink-btn');
+            const endTurnBtn = document.getElementById('end-turn-btn');
+            
+            if (drinkBtn && endTurnBtn) {
+                drinkBtn.textContent = '✅ Gorgée confirmée';
+                drinkBtn.disabled = true;
+                drinkBtn.style.opacity = '0.6';
+                
+                endTurnBtn.disabled = false;
+                endTurnBtn.classList.add('btn--primary');
+                
+                // Visual feedback
+                setTimeout(() => {
+                    endTurnBtn.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        endTurnBtn.style.transform = 'scale(1)';
+                    }, 200);
+                }, 100);
+            }
+        }
+        
+        // Confirm As choice with validation
+        function confirmAsChoice() {
+            const hasChoice = window.gameState?.asChoice;
+            
+            if (!hasChoice) {
+                // Show error state - turn prompt red
+                const promptElement = document.getElementById('as-choice-prompt');
+                if (promptElement) {
+                    promptElement.style.color = 'var(--color-danger)';
+                    promptElement.style.borderColor = 'var(--color-danger)';
+                    promptElement.style.background = 'rgba(239, 68, 68, 0.1)';
+                    promptElement.style.textShadow = '0 2px 4px rgba(239, 68, 68, 0.3)';
+                    promptElement.innerHTML = '❌ Vous devez choisir un effet pour l\'As !';
+                    
+                    // Add shake animation
+                    promptElement.style.animation = 'shake 0.5s ease-in-out';
+                    
+                    // Reset animation after it completes
+                    setTimeout(() => {
+                        promptElement.style.animation = '';
+                    }, 500);
+                }
+                return;
+            }
+            
+            // Valid choice - proceed
+            handleSpecialCardComplete('A');
+        }
+        
+        // Handle As card effect choice
+        function chooseAsEffect(choice) {
+            if (window.gameState) {
+                window.gameState.asChoice = choice;
+            }
+            
+            // Reset prompt to normal state if it was in error
+            const promptElement = document.getElementById('as-choice-prompt');
+            if (promptElement) {
+                promptElement.style.color = 'var(--color-secondary)';
+                promptElement.style.borderColor = 'rgba(8, 247, 254, 0.3)';
+                promptElement.style.background = 'rgba(8, 247, 254, 0.1)';
+                promptElement.style.textShadow = '0 2px 4px rgba(8, 247, 254, 0.3)';
+                promptElement.innerHTML = '⚡ Choisissez l\'effet de l\'As !';
+            }
+            
+            // Reset all buttons to their original state first
+            document.querySelectorAll('[onclick*="chooseAsEffect"]').forEach(btn => {
+                btn.classList.remove('btn--primary');
+                btn.classList.add('btn--secondary');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                
+                // Reset text to original (remove any existing checkmarks)
+                if (btn.onclick.toString().includes('self')) {
+                    btn.textContent = 'AS = 1 chez moi';
+                } else if (btn.onclick.toString().includes('opponent')) {
+                    btn.textContent = 'AS = 10 chez adversaire';
+                }
+            });
+            
+            // Now apply selection to the chosen button
+            document.querySelectorAll('[onclick*="chooseAsEffect"]').forEach(btn => {
+                if (btn.onclick.toString().includes(choice)) {
+                    btn.classList.remove('btn--secondary');
+                    btn.classList.add('btn--primary');
+                    btn.textContent = '✅ ' + btn.textContent;
+                }
+            });
+            
+            // Enable confirmation button
+            const confirmBtn = document.getElementById('as-confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.classList.add('btn--primary');
+            }
+        }
+        
+        // Handle special card completion
+        function handleSpecialCardComplete(cardValue) {
+            if (cardValue === 'R' || cardValue === 'A') {
+                // Victory cards: add to game state and potentially trigger chyster check
+                if (window.gameState) {
+                    window.gameState.cardsCount += 1;
+                    updateGameStateDisplay();
+                }
+                alert(`🎉 ${cardValue === 'R' ? 'Roi placé comme joker' : 'As placé dans votre jeu'} !\n\nVotre tour se termine avec succès.`);
+                endTurnNoCards();
+            } else if (cardValue === 'V' || cardValue === 'D') {
+                // Valet/Dame: show effect, then redirect to color choice for next card
+                alert(`🔄 ${cardValue === 'V' ? 'Shifu-bois effectué' : '"Pute" effectué'} !\n\nDéfaussez cette carte et piochez une nouvelle carte.`);
+                showColorChoiceStepSansCarte();
+            }
+        }
+        // Show color choice step for "sans carte" scenario after Valet/Dame
+        function showColorChoiceStepSansCarte() {
+            // Reset game state to simulate "no cards" situation
+            gameState.cardsCount = 0;
+            updateGameStateDisplay();
+            
+            // Use the same redirection mechanism as "Je n'ai pas de cartes posées"
+            redirectToBeginningSection();
+            
+            // Reset card selection if flow manager is available
+            if (window.flowManager) {
+                window.flowManager.resetCardSelection();
+            }
+        }
+        
+        // End turn for no cards scenario
+        function endTurnNoCards() {
+            showTurnEndOptions();
+        }
+        
+        // Show turn end options
+        function showTurnEndOptions() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-6);
+                        text-align: center;
+                    ">
+                        <h3 style="color: var(--color-text); margin-bottom: var(--space-4);">
+                            ✅ Tour terminé !
+                        </h3>
+                        
+                        <p style="color: var(--color-text-muted); margin-bottom: var(--space-6);">
+                            Que souhaitez-vous faire maintenant ?
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--primary" onclick="startNewTurn()">
+                                🎯 Commencer un nouveau tour
+                            </button>
+                            <button class="btn btn--secondary" onclick="changePlayer()">
+                                👥 Passer au joueur suivant
+                            </button>
+                            <button class="btn btn--accent" onclick="showRulesReference()">
+                                📖 Consulter les règles
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Start new turn
+        function startNewTurn() {
+            // Reset selected card
+            selectedCard = null;
+            if (window.gameState) {
+                window.gameState.drawnCard = null;
+                window.gameState.predictedColor = null;
+            }
+            
+            // Reset card selection if FlowManager exists
+            if (window.flowManager) {
+                window.flowManager.resetCardSelection();
+            }
+            
+            // Redirect back to beginning section
+            redirectToBeginningSection();
+        }
+        
+        // Change player
+        function changePlayer() {
+            alert('👥 C\'est au tour du joueur suivant !\n\nPassez-lui le dispositif pour qu\'il puisse jouer.');
+            startNewTurn();
+        }
+        
+        // Show rules reference
+        function showRulesReference() {
+            const specialCardsStep = document.getElementById('special-cards-ref');
+            const specialCardsHeader = specialCardsStep?.querySelector('.accordion-header');
+            
+            if (specialCardsHeader) {
+                openAccordionSection(specialCardsHeader);
+                specialCardsStep.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
         }
 
         // Expose gameState for other functions to use

@@ -14,6 +14,7 @@
     --color-text-muted: #A0A0A0;
     --color-success: #00FF88;
     --color-warning: #FFB800;
+    --color-danger: #EF4444;
     
     /* Typography - Mobile optimized scales */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -2080,6 +2081,18 @@ h1, h2, h3, h4, h5, h6 {
     100% {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { 
+        transform: translateX(0); 
+    }
+    10%, 30%, 50%, 70%, 90% { 
+        transform: translateX(-4px); 
+    }
+    20%, 40%, 60%, 80% { 
+        transform: translateX(4px); 
     }
 }
 
