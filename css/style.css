@@ -2646,15 +2646,8 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Dark mode is default, but we can add light mode support */
-@media (prefers-color-scheme: light) {
-    :root {
-        --color-dark: #FFFFFF;
-        --color-surface: #F8F9FA;
-        --color-text: #1A1A1A;
-        --color-text-muted: #6B7280;
-    }
-}
+/* Force dark mode - ignore device preference */
+/* Light mode support removed to maintain consistent dark theme */
 
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
