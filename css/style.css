@@ -2084,6 +2084,17 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+@keyframes fadeInFlow {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 @keyframes shake {
     0%, 100% { 
         transform: translateX(0); 

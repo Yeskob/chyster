@@ -1151,7 +1151,7 @@
                 // Set redirect timeout (can be cancelled by close button)
                 redirectTimeout = setTimeout(() => {
                     redirectToBeginningSection();
-                }, 2500); // Increased delay to account for animation
+                }, 1000); // Quick redirect for better UX
                 
             } else if (situation === 'has-cards') {
                 // Smooth hide situation selector
@@ -1241,7 +1241,7 @@
                         setTimeout(() => {
                             beginningStep.style.transition = '';
                         }, 600);
-                    }, 4000);
+                    }, 2000);
                 }, 300);
             }
         }
@@ -1329,7 +1329,7 @@
             
             document.body.appendChild(notification);
             
-            // Auto-remove notification after 4 seconds
+            // Auto-remove notification after 2 seconds
             setTimeout(() => {
                 const notif = document.getElementById('redirect-notification');
                 if (notif) {
@@ -1340,7 +1340,7 @@
                         }
                     }, 500);
                 }
-            }, 4000);
+            }, 2000);
         }
 
         // Update flow display based on current situation
@@ -1568,8 +1568,8 @@
                 announcedColor.textContent = colorNames[color];
                 selectedColorDiv.style.display = 'block';
                 
-                // Add visual feedback
-                selectedColorDiv.style.animation = 'fadeInScale 0.3s ease-out';
+                // Add visual feedback with proper animation for flow elements
+                selectedColorDiv.style.animation = 'fadeInFlow 0.3s ease-out';
             }
         }
         
@@ -1672,7 +1672,7 @@
                         setTimeout(() => {
                             resultStep.style.transition = '';
                         }, 600);
-                    }, 4000);
+                    }, 2000);
                 }, 300);
             }
         }
@@ -1741,7 +1741,7 @@
             
             document.body.appendChild(notification);
             
-            // Auto-remove notification after 4 seconds
+            // Auto-remove notification after 2 seconds
             setTimeout(() => {
                 const notif = document.getElementById('draw-redirect-notification');
                 if (notif) {
@@ -1752,7 +1752,7 @@
                         }
                     }, 500);
                 }
-            }, 4000);
+            }, 2000);
         }
 
         // === GESTION DE LA VALIDATION DE CARTE ===
@@ -1869,7 +1869,7 @@
                         setTimeout(() => {
                             colorCheckStep.style.transition = '';
                         }, 600);
-                    }, 4000);
+                    }, 2000);
                 }, 300);
             }
         }
@@ -2133,7 +2133,7 @@
             
             document.body.appendChild(notification);
             
-            // Auto-remove notification after 4 seconds
+            // Auto-remove notification after 2 seconds
             setTimeout(() => {
                 const notif = document.getElementById('verification-redirect-notification');
                 if (notif) {
@@ -2144,7 +2144,7 @@
                         }
                     }, 500);
                 }
-            }, 4000);
+            }, 2000);
         }
         
         // Proceed to next step based on result
