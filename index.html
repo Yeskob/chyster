@@ -505,9 +505,9 @@
                                             <span class="card-suit">♠</span>
                                         </div>
                                         <div class="card-info">
-                                            <h4>🃜 VALET</h4>
+                                            <h4>🃜 VALET : SHIFU-BOIS</h4>
                                             <ul>
-                                                <li>• Effet : Shifu-bois (2 personnes désignées)</li>
+                                                <li>• Effet : Désigne 2 personnes pour un pierre-feuille-ciseaux, le perdant boit</li>
                                                 <li>• Défausse + repioche obligatoire</li>
                                                 <li>• Ne compte pas comme un essai</li>
                                                 <li>• Carte neutre (continue le jeu)</li>
@@ -522,9 +522,9 @@
                                             <span class="card-suit">♥</span>
                                         </div>
                                         <div class="card-info">
-                                            <h4>🃝 DAME</h4>
+                                            <h4>🃝 DAME : LE DERNIER QUI DIT</h4>
                                             <ul>
-                                                <li>• Effet : Le dernier à dire "pute" boit</li>
+                                                <li>• Effet : Le dernier qui dit "Pute" boit</li>
                                                 <li>• Défausse + repioche obligatoire</li>
                                                 <li>• Ne compte pas comme un essai</li>
                                                 <li>• Carte neutre (continue le jeu)</li>
@@ -557,7 +557,7 @@
                         <div class="card-content">
                             <div class="card-effect">
                                 <h4>Effet</h4>
-                                <p>Désigne 2 personnes pour un shifu-bois (pierre-feuille-ciseaux ; perdant boit).</p>
+                                <p>Le Valet déclenche un "Shifu-bois" : désigne 2 personnes qui vont effectuer un pierre-feuille-ciseaux, le perdant boit.</p>
                             </div>
                             <div class="card-behavior">
                                 <h4>En jeu</h4>
@@ -578,8 +578,8 @@
                         <div class="card-content">
                             <div class="card-effect">
                                 <h4>Effet</h4>
-                                <p>Le dernier à dire "pute" boit.</p>
-                                <small class="card-note">"Le mot peut être changé si tu joues avec des enfants"</small>
+                                <p>La Dame déclenche le jeu "Le dernier qui dit "Pute"" boit.</p>
+                                <small class="card-note">Le mot peut être modifié si tu joues avec des enfants.</small>
                             </div>
                             <div class="card-behavior">
                                 <h4>En jeu</h4>
@@ -717,7 +717,7 @@
                                         </div>
                                         <div class="result-message" id="result2" style="display: none;">
                                             <span class="result-icon">🃏</span>
-                                            <span class="result-text">Valet ! Carte spéciale - Désignez 2 personnes pour un shifu-bois. Ne compte pas comme un essai → défausse et repioche.</span>
+                                            <span class="result-text">Valet ! Carte spéciale - Désignez 2 personnes pour un pierre-feuille-ciseaux, le perdant boit. Ne compte pas comme un essai → défausse et repioche.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1016,7 +1016,11 @@
         // Game State Tracker Management
         let gameState = {
             cardsCount: 0,
-            chysterTarget: 9 // Default, will be updated by player selector
+            chysterTarget: 9, // Default, will be updated by player selector
+            drinkConfirmed: false,
+            asChoice: null,
+            valetActionConfirmed: false,
+            dameActionConfirmed: false
         };
         
         let redirectTimeout = null; // To store and cancel redirect timeout
@@ -1777,7 +1781,10 @@
             }
             
             if (!selectedCard || !selectedCard.value || !selectedCard.suit) {
-                showCardValidationError();
+                const validateBtn = document.getElementById('validate-card');
+                if (validateBtn) {
+                    showValidationError('validate-card', '⚠️ Veuillez sélectionner une valeur ET une couleur !', 'card-selection');
+                }
                 return;
             }
             
@@ -2011,27 +2018,37 @@
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn--primary" onclick="confirmAsChoice()" disabled id="as-confirm-btn">
+                        <button class="btn btn--secondary" onclick="confirmAsChoice()" id="as-confirm-btn" style="opacity: 0.7;">
                             🃏 Confirmer le choix de l'As
                         </button>
                     `;
                     break;
                 case 'V':
-                    specialEffect = '🃜 VALET - SHIFU-BOIS';
-                    detailedEffect = 'Le Valet déclenche un "Shifu-bois" : désignez 2 personnes qui doivent boire. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
+                    specialEffect = '🃜 VALET : SHIFU-BOIS';
+                    detailedEffect = 'Le Valet déclenche un "Shifu-bois" : désignez 2 personnes qui vont effectuer un pierre-feuille-ciseaux, le perdant boit. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
                     actionButtons = `
-                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('V')">
-                            🃜 Faire Shifu-bois + Repiocher
-                        </button>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--secondary" onclick="confirmValetAction()" id="valet-action-btn">
+                                🃜 J'ai désigné 2 personnes
+                            </button>
+                            <button class="btn btn--secondary" onclick="handleSpecialCardComplete('V')" id="valet-continue-btn" style="opacity: 0.7;">
+                                ➡️ Défausser + Repiocher
+                            </button>
+                        </div>
                     `;
                     break;
                 case 'D':
-                    specialEffect = '🃝 DAME - JEU "PUTE"';
-                    detailedEffect = 'La Dame déclenche le jeu "Pute" : le dernier à dire "pute" boit une gorgée. Ensuite, défaussez la Dame et piochez une nouvelle carte.';
+                    specialEffect = '🃝 DAME : LE DERNIER QUI DIT';
+                    detailedEffect = 'La Dame déclenche le jeu «Le dernier qui dit "Pute"» boit (le mot peut être modifié si tu joues avec des enfants). Ensuite, défaussez la Dame et piochez une nouvelle carte.';
                     actionButtons = `
-                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('D')">
-                            🃝 Jeu "Pute" + Repiocher
-                        </button>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--secondary" onclick="confirmDameAction()" id="dame-action-btn">
+                                🃝 Le jeu "Pute" est terminé
+                            </button>
+                            <button class="btn btn--secondary" onclick="handleSpecialCardComplete('D')" id="dame-continue-btn" style="opacity: 0.7;">
+                                ➡️ Défausser + Repiocher
+                            </button>
+                        </div>
                     `;
                     break;
             }
@@ -2201,6 +2218,11 @@
         function showNormalCardFailureFlow() {
             const verificationDisplay = document.getElementById('color-verification-display');
             
+            // Reset drink confirmation state for this flow
+            if (window.gameState) {
+                window.gameState.drinkConfirmed = false;
+            }
+            
             if (verificationDisplay) {
                 verificationDisplay.innerHTML = `
                     <div style="
@@ -2251,7 +2273,7 @@
                             <button class="btn btn--secondary" onclick="confirmDrink()" id="drink-btn">
                                 🍺 J'ai bu ma gorgée
                             </button>
-                            <button class="btn btn--primary" onclick="endTurnNoCards()" disabled id="end-turn-btn">
+                            <button class="btn btn--secondary" onclick="endTurnNoCards()" id="end-turn-btn" style="opacity: 0.7;">
                                 ✅ Terminer mon tour
                             </button>
                         </div>
@@ -2267,6 +2289,13 @@
             let actionNeeded = '';
             let isVictoryCard = false;
             
+            // Reset special card confirmation states
+            if (window.gameState) {
+                window.gameState.asChoice = null;
+                window.gameState.valetActionConfirmed = false;
+                window.gameState.dameActionConfirmed = false;
+            }
+            
             switch(cardValue) {
                 case 'R':
                     specialEffect = '👑 VICTOIRE AUTOMATIQUE !';
@@ -2279,12 +2308,12 @@
                     isVictoryCard = true;
                     break;
                 case 'V':
-                    specialEffect = '🃜 VALET - SHIFU-BOIS !';
-                    actionNeeded = 'Désignez 2 personnes qui doivent boire, puis défaussez le Valet et repiochez.';
+                    specialEffect = '🃜 VALET : SHIFU-BOIS';
+                    actionNeeded = 'Le Valet déclenche un «Shifu-bois» : désignez 2 personnes qui vont effectuer un pierre-feuille-ciseaux, le perdant boit. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
                     break;
                 case 'D':
-                    specialEffect = '🃝 DAME - "PUTE" !';
-                    actionNeeded = 'Le dernier à dire "pute" boit une gorgée, puis défaussez la Dame et repiochez.';
+                    specialEffect = '🃝 DAME : LE DERNIER QUI DIT';
+                    actionNeeded = 'La Dame déclenche le jeu «Le dernier qui dit "Pute"» boit (le mot peut être modifié si tu joues avec des enfants). Ensuite, défaussez la Dame et piochez une nouvelle carte.';
                     break;
             }
             
@@ -2387,8 +2416,20 @@
                 drinkBtn.disabled = true;
                 drinkBtn.style.opacity = '0.6';
                 
-                endTurnBtn.disabled = false;
+                endTurnBtn.classList.remove('btn--secondary');
                 endTurnBtn.classList.add('btn--primary');
+                endTurnBtn.style.opacity = '1';
+                
+                // Mark drink as confirmed in gameState
+                if (window.gameState) {
+                    window.gameState.drinkConfirmed = true;
+                }
+                
+                // Remove any existing error message
+                const errorMsg = document.getElementById('drink-error-msg');
+                if (errorMsg && errorMsg.parentNode) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
                 
                 // Visual feedback
                 setTimeout(() => {
@@ -2405,23 +2446,7 @@
             const hasChoice = window.gameState?.asChoice;
             
             if (!hasChoice) {
-                // Show error state - turn prompt red
-                const promptElement = document.getElementById('as-choice-prompt');
-                if (promptElement) {
-                    promptElement.style.color = 'var(--color-danger)';
-                    promptElement.style.borderColor = 'var(--color-danger)';
-                    promptElement.style.background = 'rgba(239, 68, 68, 0.1)';
-                    promptElement.style.textShadow = '0 2px 4px rgba(239, 68, 68, 0.3)';
-                    promptElement.innerHTML = '❌ Vous devez choisir un effet pour l\'As !';
-                    
-                    // Add shake animation
-                    promptElement.style.animation = 'shake 0.5s ease-in-out';
-                    
-                    // Reset animation after it completes
-                    setTimeout(() => {
-                        promptElement.style.animation = '';
-                    }, 500);
-                }
+                showValidationError('as-choice-prompt', '❌ Vous devez choisir un effet pour l\'As !', 'as-choice');
                 return;
             }
             
@@ -2443,6 +2468,12 @@
                 promptElement.style.background = 'rgba(8, 247, 254, 0.1)';
                 promptElement.style.textShadow = '0 2px 4px rgba(8, 247, 254, 0.3)';
                 promptElement.innerHTML = '⚡ Choisissez l\'effet de l\'As !';
+            }
+            
+            // Remove any existing error message
+            const errorMsg = document.getElementById('as-choice-error-msg');
+            if (errorMsg && errorMsg.parentNode) {
+                errorMsg.parentNode.removeChild(errorMsg);
             }
             
             // Reset all buttons to their original state first
@@ -2469,11 +2500,82 @@
                 }
             });
             
-            // Enable confirmation button
+            // Enable confirmation button visually
             const confirmBtn = document.getElementById('as-confirm-btn');
             if (confirmBtn) {
-                confirmBtn.disabled = false;
+                confirmBtn.classList.remove('btn--secondary');
                 confirmBtn.classList.add('btn--primary');
+                confirmBtn.style.opacity = '1';
+            }
+        }
+        
+        // Confirm Valet action (Shifu-bois)
+        function confirmValetAction() {
+            const actionBtn = document.getElementById('valet-action-btn');
+            const continueBtn = document.getElementById('valet-continue-btn');
+            
+            if (actionBtn && continueBtn) {
+                actionBtn.textContent = '✅ Shifu-bois effectué';
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = '0.6';
+                
+                continueBtn.classList.remove('btn--secondary');
+                continueBtn.classList.add('btn--primary');
+                continueBtn.style.opacity = '1';
+                
+                // Mark action as confirmed
+                if (window.gameState) {
+                    window.gameState.valetActionConfirmed = true;
+                }
+                
+                // Remove any existing error message
+                const errorMsg = document.getElementById('valet-error-msg');
+                if (errorMsg && errorMsg.parentNode) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
+                
+                // Visual feedback
+                setTimeout(() => {
+                    continueBtn.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        continueBtn.style.transform = 'scale(1)';
+                    }, 200);
+                }, 100);
+            }
+        }
+        
+        // Confirm Dame action (Jeu "Pute")
+        function confirmDameAction() {
+            const actionBtn = document.getElementById('dame-action-btn');
+            const continueBtn = document.getElementById('dame-continue-btn');
+            
+            if (actionBtn && continueBtn) {
+                actionBtn.textContent = '✅ Jeu "Pute" terminé';
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = '0.6';
+                
+                continueBtn.classList.remove('btn--secondary');
+                continueBtn.classList.add('btn--primary');
+                continueBtn.style.opacity = '1';
+                
+                // Mark action as confirmed
+                if (window.gameState) {
+                    window.gameState.dameActionConfirmed = true;
+                }
+                
+                // Remove any existing error message
+                const errorMsg = document.getElementById('dame-error-msg');
+                if (errorMsg && errorMsg.parentNode) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
+                
+                // Visual feedback
+                setTimeout(() => {
+                    continueBtn.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        continueBtn.style.transform = 'scale(1)';
+                    }, 200);
+                }, 100);
             }
         }
         
@@ -2486,13 +2588,41 @@
                     updateGameStateDisplay();
                 }
                 alert(`🎉 ${cardValue === 'R' ? 'Roi placé comme joker' : 'As placé dans votre jeu'} !\n\nVotre tour se termine avec succès.`);
+                
+                // Reset drink confirmation for next turn
+                if (window.gameState) {
+                    window.gameState.drinkConfirmed = false;
+                }
                 endTurnNoCards();
-            } else if (cardValue === 'V' || cardValue === 'D') {
-                // Valet/Dame: show effect, then redirect to color choice for next card
-                alert(`🔄 ${cardValue === 'V' ? 'Shifu-bois effectué' : '"Pute" effectué'} !\n\nDéfaussez cette carte et piochez une nouvelle carte.`);
+            } else if (cardValue === 'V') {
+                // Valet: check if action was confirmed
+                if (!window.gameState?.valetActionConfirmed) {
+                    showValidationError('valet-action-btn', '⚠️ Vous devez d\'abord confirmer le Shifu-bois !', 'valet');
+                    return;
+                }
+                alert(`🔄 Shifu-bois effectué !\n\nDéfaussez cette carte et piochez une nouvelle carte.`);
+                
+                // Reset for next turn
+                if (window.gameState) {
+                    window.gameState.valetActionConfirmed = false;
+                }
+                showColorChoiceStepSansCarte();
+            } else if (cardValue === 'D') {
+                // Dame: check if action was confirmed
+                if (!window.gameState?.dameActionConfirmed) {
+                    showValidationError('dame-action-btn', '⚠️ Vous devez d\'abord confirmer le jeu "Pute" !', 'dame');
+                    return;
+                }
+                alert(`🔄 Jeu "Pute" effectué !\n\nDéfaussez cette carte et piochez une nouvelle carte.`);
+                
+                // Reset for next turn
+                if (window.gameState) {
+                    window.gameState.dameActionConfirmed = false;
+                }
                 showColorChoiceStepSansCarte();
             }
         }
+        
         // Show color choice step for "sans carte" scenario after Valet/Dame
         function showColorChoiceStepSansCarte() {
             // Reset game state to simulate "no cards" situation
@@ -2510,7 +2640,66 @@
         
         // End turn for no cards scenario
         function endTurnNoCards() {
+            // Check if drink was confirmed first
+            const drinkBtn = document.getElementById('drink-btn');
+            const drinkConfirmed = window.gameState?.drinkConfirmed === true;
+            
+            // If drink button exists and is not disabled, and drink not confirmed
+            if (drinkBtn && !drinkConfirmed) {
+                showValidationError('drink-btn', '⚠️ Vous devez d\'abord boire votre gorgée !', 'drink');
+                return;
+            }
             showTurnEndOptions();
+        }
+        
+        // Generic function to show validation errors
+        function showValidationError(targetElementId, message, errorType) {
+            const targetElement = document.getElementById(targetElementId);
+            if (!targetElement) return;
+            
+            // Create or update error message
+            let errorMsg = document.getElementById(`${errorType}-error-msg`);
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.id = `${errorType}-error-msg`;
+                errorMsg.style.cssText = `
+                    background: rgba(239, 68, 68, 0.1);
+                    border: 2px solid var(--color-danger);
+                    border-radius: var(--radius-md);
+                    padding: var(--space-3);
+                    margin-top: var(--space-3);
+                    text-align: center;
+                    color: var(--color-danger);
+                    font-weight: 600;
+                    animation: shake 0.5s ease-in-out;
+                `;
+                targetElement.parentNode.insertBefore(errorMsg, targetElement.nextSibling);
+            }
+            
+            errorMsg.innerHTML = message;
+            
+            // Add shake animation to target element
+            targetElement.style.animation = 'shake 0.5s ease-in-out';
+            
+            // Reset animation
+            setTimeout(() => {
+                targetElement.style.animation = '';
+                if (errorMsg) {
+                    errorMsg.style.animation = '';
+                }
+            }, 500);
+            
+            // Auto-remove error after 4 seconds
+            setTimeout(() => {
+                if (errorMsg && errorMsg.parentNode) {
+                    errorMsg.style.animation = 'fadeOut 0.3s ease-out';
+                    setTimeout(() => {
+                        if (errorMsg.parentNode) {
+                            errorMsg.parentNode.removeChild(errorMsg);
+                        }
+                    }, 300);
+                }
+            }, 4000);
         }
         
         // Show turn end options
