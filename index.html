@@ -2513,20 +2513,22 @@
             const triesRemaining = window.gameState?.triesRemaining || 3;
             const stepBeginning = document.getElementById('step-beginning');
             const stepBeginningHeader = stepBeginning?.querySelector('.accordion-header');
-            const isFirstTry = triesRemaining === 3;
+            const hasStartedGuessing = window.gameState?.hasStartedGuessing || false;
+            // Hide strategic choices if guessing has already started (even if still on try 1/3 after special card)
+            const shouldHideStrategicChoices = hasStartedGuessing;
             
             // Open step 1 accordion (Début de tour)
             if (stepBeginningHeader) {
                 openAccordionSection(stepBeginningHeader);
             }
             
-            // Hide the "distribuer des gorgées" option if not first try
+            // Hide the "distribuer des gorgées" option if guessing has started
             const strategicChoices = document.querySelector('.strategic-choices');
             if (strategicChoices) {
-                if (isFirstTry) {
-                    strategicChoices.style.display = 'flex';
-                } else {
+                if (shouldHideStrategicChoices) {
                     strategicChoices.style.display = 'none';
+                } else {
+                    strategicChoices.style.display = 'flex';
                 }
             }
             
@@ -2543,7 +2545,7 @@
                             🎯 Essai ${4 - triesRemaining}/3 - Choisissez une couleur
                         </h4>
                         
-                        ${!isFirstTry ? `
+                        ${triesRemaining < 3 ? `
                         <p style="color: var(--color-text-muted); text-align: center; margin-bottom: var(--space-3); font-size: var(--text-sm);">
                             ⚠️ Vous devez continuer à deviner la couleur
                         </p>
@@ -3125,9 +3127,10 @@
             const strategicChoiceResult = document.getElementById('strategic-choice-result');
             
             if (option === 'guess') {
-                // Initialize tries
+                // Initialize tries and mark that guessing has started
                 if (window.gameState) {
                     window.gameState.triesRemaining = 3;
+                    window.gameState.hasStartedGuessing = true;
                 }
                 
                 // Show color choice
@@ -3794,6 +3797,7 @@
                 window.gameState.valetActionConfirmed = false;
                 window.gameState.dameActionConfirmed = false;
                 window.gameState.triesRemaining = 3;
+                window.gameState.hasStartedGuessing = false;
             }
             
             // Reset selected card
