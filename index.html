@@ -128,7 +128,9 @@
                 <div class="card-order-section">
                     <h3>🂡 Ordre des cartes</h3>
                     <p class="card-order-text">
-                        <strong>AS = 1</strong> (sauf effet spécial), puis <strong>2 → 10 → Valet (V) → Dame (D)</strong>.<br>
+                        <strong>AS = 1</strong> (sauf effet spécial)<br>
+                        <strong>2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10</strong><br>
+                        <strong>Valet (V) & Dame (D)</strong> = cartes spéciales<br>
                         Le <strong>Roi (R)</strong> est un joker : il se pose au-dessus de la rangée et ne compte pas pour la Chyster.
                     </p>
                 </div>
@@ -176,6 +178,11 @@
                                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
                                 </div>
                                 <span class="progress-text" id="progress-text">0/9 cartes</span>
+                            </div>
+                            <div style="margin-top: var(--space-4); text-align: center;">
+                                <button class="btn btn--primary" id="validate-cards-btn" onclick="validateCardsCount()">
+                                    ✅ Valider et commencer mon tour
+                                </button>
                             </div>
                         </div>
 
@@ -1457,6 +1464,31 @@
             // Update flow display to reflect current situation
             updateFlowDisplayForSituation();
         }
+        
+        // Validate cards count and redirect to "Début de tour"
+        function validateCardsCount() {
+            // Open the "Début de tour" accordion (step 1)
+            const stepBeginning = document.getElementById('step-beginning');
+            const stepBeginningHeader = stepBeginning?.querySelector('.accordion-header');
+            const situationCheck = stepBeginning?.querySelector('.situation-check');
+            
+            if (stepBeginningHeader) {
+                openAccordionSection(stepBeginningHeader);
+            }
+            
+            // Update flow display for has-cards situation
+            updateFlowDisplayForSituation('has-cards');
+            
+            // Scroll to the situation check section (not the whole step)
+            setTimeout(() => {
+                if (situationCheck) {
+                    situationCheck.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }, 100);
+        }
 
         function showChysterAchievement() {
             // Visual celebration when Chyster is reached
@@ -2303,7 +2335,7 @@
                                 La carte piochée est-elle SUPÉRIEURE à votre dernière carte ?
                             </h5>
                             <p style="color: var(--color-text-muted); font-size: var(--text-sm); text-align: center; margin-bottom: var(--space-4);">
-                                Ordre : A(1) → 2 → 3 → ... → 10 → V → D
+                                Ordre : A(1) → 2 → 3 → ... → 10
                             </p>
                             
                             <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
@@ -2350,7 +2382,6 @@
             window.gameState.triesRemaining--;
             
             const triesRemaining = window.gameState.triesRemaining;
-            const verificationDisplay = document.getElementById('color-verification-display');
             
             if (triesRemaining <= 0) {
                 // No more tries - consequences
@@ -2358,63 +2389,26 @@
                 return;
             }
             
-            if (verificationDisplay) {
-                verificationDisplay.innerHTML = `
-                    <div style="
-                        background: rgba(255, 255, 255, 0.05);
-                        border-radius: var(--radius-lg);
-                        padding: var(--space-4);
-                        margin-bottom: var(--space-4);
-                    ">
-                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
-                            🔄 Vous pouvez rejouer !
-                        </h4>
-                        
-                        <div style="
-                            background: rgba(34, 197, 94, 0.15);
-                            border: 2px solid #22C55E;
-                            border-radius: var(--radius-md);
-                            padding: var(--space-4);
-                            margin-bottom: var(--space-4);
-                            text-align: center;
-                        ">
-                            <div style="font-size: 2.5rem; margin-bottom: var(--space-2);">🎯</div>
-                            <h3 style="color: #22C55E; margin-bottom: var(--space-2);">
-                                Carte supérieure = Nouvel essai !
-                            </h3>
-                            <p style="color: var(--color-text-muted); margin: 0;">
-                                Votre carte piochée est plus forte. Défaussez-la et repiochez !
-                            </p>
-                        </div>
-                        
-                        <div style="
-                            background: rgba(245, 158, 11, 0.1);
-                            border-radius: var(--radius-md);
-                            padding: var(--space-3);
-                            margin-bottom: var(--space-4);
-                            text-align: center;
-                        ">
-                            <p style="color: var(--color-warning); margin: 0; font-weight: 600;">
-                                ⚠️ Il vous reste ${triesRemaining} essai${triesRemaining > 1 ? 's' : ''} pour trouver la bonne couleur
-                            </p>
-                        </div>
-                        
-                        <div style="text-align: center;">
-                            <button class="btn btn--primary" onclick="retryColorGuess()">
-                                🔄 Défausser et repiocher
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                // Scroll
-                setTimeout(() => {
-                    verificationDisplay.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                }, 100);
+            // Reset card selection
+            selectedCard = null;
+            if (window.gameState) {
+                window.gameState.drawnCard = null;
+                window.gameState.predictedColor = null;
             }
+            
+            // Reset card selection in FlowManager
+            if (window.flowManager) {
+                window.flowManager.resetCardSelection();
+            }
+            
+            // Clear verification display
+            const verificationDisplay = document.getElementById('color-verification-display');
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = '';
+            }
+            
+            // Go directly to color choice for retry
+            showHasCardsColorChoice();
         }
         
         // Retry color guess - go back to color selection
@@ -2449,6 +2443,24 @@
         function showHasCardsColorChoice() {
             const strategicChoiceResult = document.getElementById('strategic-choice-result');
             const triesRemaining = window.gameState?.triesRemaining || 3;
+            const stepBeginning = document.getElementById('step-beginning');
+            const stepBeginningHeader = stepBeginning?.querySelector('.accordion-header');
+            const isFirstTry = triesRemaining === 3;
+            
+            // Open step 1 accordion (Début de tour)
+            if (stepBeginningHeader) {
+                openAccordionSection(stepBeginningHeader);
+            }
+            
+            // Hide the "distribuer des gorgées" option if not first try
+            const strategicChoices = document.querySelector('.strategic-choices');
+            if (strategicChoices) {
+                if (isFirstTry) {
+                    strategicChoices.style.display = 'flex';
+                } else {
+                    strategicChoices.style.display = 'none';
+                }
+            }
             
             if (strategicChoiceResult) {
                 strategicChoiceResult.style.display = 'block';
@@ -2462,6 +2474,12 @@
                         <h4 style="color: var(--color-text); margin-bottom: var(--space-3); text-align: center;">
                             🎯 Essai ${4 - triesRemaining}/3 - Choisissez une couleur
                         </h4>
+                        
+                        ${!isFirstTry ? `
+                        <p style="color: var(--color-text-muted); text-align: center; margin-bottom: var(--space-3); font-size: var(--text-sm);">
+                            ⚠️ Vous devez continuer à deviner la couleur
+                        </p>
+                        ` : ''}
                         
                         <div class="color-choices" style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
                             <button class="color-choice-btn color-red" onclick="selectColorWithCards('rouge')" style="
@@ -2488,11 +2506,11 @@
                     </div>
                 `;
                 
-                // Scroll to color choice
+                // Scroll to the color choice result (not the step beginning)
                 setTimeout(() => {
                     strategicChoiceResult.scrollIntoView({ 
                         behavior: 'smooth', 
-                        block: 'start' 
+                        block: 'center' 
                     });
                 }, 100);
             }
@@ -2506,6 +2524,27 @@
             
             // Proceed to card selection step
             openCardSelectionStep();
+        }
+        
+        // Open card selection step (step 2)
+        function openCardSelectionStep() {
+            const stepResult = document.getElementById('step-result');
+            const stepResultHeader = stepResult?.querySelector('.accordion-header');
+            
+            // Open step 2 accordion
+            if (stepResultHeader) {
+                openAccordionSection(stepResultHeader);
+            }
+            
+            // Scroll to step 2
+            setTimeout(() => {
+                if (stepResult) {
+                    stepResult.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }, 100);
         }
         
         // Show consequences for has cards scenario (failure)
@@ -3082,10 +3121,11 @@
                         </div>
                     `;
                     
+                    // Scroll - use 'center' to avoid scrolling too far down
                     setTimeout(() => {
                         strategicChoiceResult.scrollIntoView({ 
                             behavior: 'smooth', 
-                            block: 'start' 
+                            block: 'center' 
                         });
                     }, 100);
                 }
@@ -3685,6 +3725,7 @@
                 window.gameState.asChoice = null;
                 window.gameState.valetActionConfirmed = false;
                 window.gameState.dameActionConfirmed = false;
+                window.gameState.triesRemaining = 3;
             }
             
             // Reset selected card
@@ -3703,6 +3744,7 @@
             const noCardsFlow = document.getElementById('no-cards-flow');
             const hasCardsFlow = document.getElementById('has-cards-flow');
             const strategicChoiceResult = document.getElementById('strategic-choice-result');
+            const strategicChoices = document.querySelector('.strategic-choices');
             
             // Show situation selector, hide everything else
             if (situationSelector) {
@@ -3727,6 +3769,10 @@
             if (strategicChoiceResult) {
                 strategicChoiceResult.style.display = 'none';
                 strategicChoiceResult.innerHTML = '';
+            }
+            // Reset strategic choices visibility for next player
+            if (strategicChoices) {
+                strategicChoices.style.display = 'flex';
             }
             
             // Close all accordion sections
