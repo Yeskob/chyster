@@ -2008,6 +2008,7 @@
         function showSpecialCardDirectly() {
             const verificationDisplay = document.getElementById('color-verification-display');
             const cardValue = selectedCard.value;
+            const hasCards = window.gameState?.cardsCount > 0; // Detect if in "has cards" flow
             let specialEffect = '';
             let detailedEffect = '';
             let actionButtons = '';
@@ -2018,74 +2019,141 @@
                     specialEffect = '👑 ROI - JOKER AUTOMATIQUE';
                     detailedEffect = 'Le Roi ignore complètement la couleur prédite et devient automatiquement un joker dans votre jeu. C\'est une victoire garantie !';
                     isVictoryCard = true;
-                    actionButtons = `
-                        <button class="btn btn--primary" onclick="handleSpecialCardComplete('R')">
-                            👑 Placer le Roi comme joker
-                        </button>
-                    `;
+                    if (hasCards) {
+                        actionButtons = `
+                            <button class="btn btn--primary" onclick="handleSpecialCardCompleteWithCards('R')">
+                                👑 Placer le Roi comme joker
+                            </button>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <button class="btn btn--primary" onclick="handleSpecialCardComplete('R')">
+                                👑 Placer le Roi comme joker
+                            </button>
+                        `;
+                    }
                     break;
                 case 'A':
                     specialEffect = '🃏 AS - CHOIX STRATÉGIQUE';
                     detailedEffect = 'L\'As ignore la couleur prédite. Vous pouvez choisir de le placer comme AS=1 dans votre jeu, ou comme AS=10 chez un adversaire (remplace sa dernière carte).';
                     isVictoryCard = true;
-                    actionButtons = `
-                        <div style="margin-bottom: var(--space-4);">
-                            <h4 id="as-choice-prompt" style="
-                                color: var(--color-secondary); 
-                                margin-bottom: var(--space-4); 
-                                text-align: center;
-                                font-size: var(--text-xl);
-                                font-weight: 700;
-                                text-shadow: 0 2px 4px rgba(8, 247, 254, 0.3);
-                                padding: var(--space-3);
-                                background: rgba(8, 247, 254, 0.1);
-                                border-radius: var(--radius-md);
-                                border: 2px solid rgba(8, 247, 254, 0.3);
-                                transition: all 0.3s ease;
-                            ">
-                                ⚡ Choisissez l'effet de l'As !
-                            </h4>
-                            <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
-                                <button class="btn btn--secondary" onclick="chooseAsEffect('self')">
-                                    AS = 1 chez moi
-                                </button>
-                                <button class="btn btn--secondary" onclick="chooseAsEffect('opponent')">
-                                    AS = 10 chez adversaire
-                                </button>
+                    if (hasCards) {
+                        actionButtons = `
+                            <div style="margin-bottom: var(--space-4);">
+                                <h4 id="as-choice-prompt-cards" style="
+                                    color: var(--color-secondary); 
+                                    margin-bottom: var(--space-4); 
+                                    text-align: center;
+                                    font-size: var(--text-xl);
+                                    font-weight: 700;
+                                    text-shadow: 0 2px 4px rgba(8, 247, 254, 0.3);
+                                    padding: var(--space-3);
+                                    background: rgba(8, 247, 254, 0.1);
+                                    border-radius: var(--radius-md);
+                                    border: 2px solid rgba(8, 247, 254, 0.3);
+                                    transition: all 0.3s ease;
+                                ">
+                                    ⚡ Choisissez l'effet de l'As !
+                                </h4>
+                                <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                    <button class="btn btn--secondary" onclick="chooseAsEffectWithCards('self')">
+                                        AS = 1 chez moi
+                                    </button>
+                                    <button class="btn btn--secondary" onclick="chooseAsEffectWithCards('opponent')">
+                                        AS = 10 chez adversaire
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <button class="btn btn--secondary" onclick="confirmAsChoice()" id="as-confirm-btn" style="opacity: 0.7;">
-                            🃏 Confirmer le choix de l'As
-                        </button>
-                    `;
+                            <button class="btn btn--secondary" onclick="confirmAsChoiceWithCards()" id="as-confirm-btn-cards" style="opacity: 0.7;">
+                                🃏 Confirmer le choix de l'As
+                            </button>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <div style="margin-bottom: var(--space-4);">
+                                <h4 id="as-choice-prompt" style="
+                                    color: var(--color-secondary); 
+                                    margin-bottom: var(--space-4); 
+                                    text-align: center;
+                                    font-size: var(--text-xl);
+                                    font-weight: 700;
+                                    text-shadow: 0 2px 4px rgba(8, 247, 254, 0.3);
+                                    padding: var(--space-3);
+                                    background: rgba(8, 247, 254, 0.1);
+                                    border-radius: var(--radius-md);
+                                    border: 2px solid rgba(8, 247, 254, 0.3);
+                                    transition: all 0.3s ease;
+                                ">
+                                    ⚡ Choisissez l'effet de l'As !
+                                </h4>
+                                <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                    <button class="btn btn--secondary" onclick="chooseAsEffect('self')">
+                                        AS = 1 chez moi
+                                    </button>
+                                    <button class="btn btn--secondary" onclick="chooseAsEffect('opponent')">
+                                        AS = 10 chez adversaire
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="btn btn--secondary" onclick="confirmAsChoice()" id="as-confirm-btn" style="opacity: 0.7;">
+                                🃏 Confirmer le choix de l'As
+                            </button>
+                        `;
+                    }
                     break;
                 case 'V':
                     specialEffect = '🃜 VALET : SHIFU-BOIS';
                     detailedEffect = 'Le Valet déclenche un "Shifu-bois" : désignez 2 personnes qui vont effectuer un pierre-feuille-ciseaux, le perdant boit. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
-                    actionButtons = `
-                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
-                            <button class="btn btn--secondary" onclick="confirmValetAction()" id="valet-action-btn">
-                                🃜 J'ai désigné 2 personnes
-                            </button>
-                            <button class="btn btn--secondary" onclick="handleSpecialCardComplete('V')" id="valet-continue-btn" style="opacity: 0.7;">
-                                ➡️ Défausser + Repiocher
-                            </button>
-                        </div>
-                    `;
+                    if (hasCards) {
+                        actionButtons = `
+                            <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                                <button class="btn btn--secondary" onclick="confirmValetActionWithCards()" id="valet-action-btn-cards">
+                                    🃜 Le Shifu-bois est terminé
+                                </button>
+                                <button class="btn btn--secondary" onclick="handleSpecialCardCompleteWithCards('V')" id="valet-continue-btn-cards" style="opacity: 0.7;">
+                                    ➡️ Défausser + Repiocher
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                                <button class="btn btn--secondary" onclick="confirmValetAction()" id="valet-action-btn">
+                                    🃜 J'ai désigné 2 personnes
+                                </button>
+                                <button class="btn btn--secondary" onclick="handleSpecialCardComplete('V')" id="valet-continue-btn" style="opacity: 0.7;">
+                                    ➡️ Défausser + Repiocher
+                                </button>
+                            </div>
+                        `;
+                    }
                     break;
                 case 'D':
                     specialEffect = '🃝 DAME : LE DERNIER QUI DIT';
                     detailedEffect = 'La Dame déclenche le jeu «Le dernier qui dit "Pute"» boit (le mot peut être modifié si tu joues avec des enfants). Ensuite, défaussez la Dame et piochez une nouvelle carte.';
-                    actionButtons = `
-                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
-                            <button class="btn btn--secondary" onclick="confirmDameAction()" id="dame-action-btn">
-                                🃝 Le jeu "Pute" est terminé
-                            </button>
-                            <button class="btn btn--secondary" onclick="handleSpecialCardComplete('D')" id="dame-continue-btn" style="opacity: 0.7;">
-                                ➡️ Défausser + Repiocher
-                            </button>
-                        </div>
-                    `;
+                    if (hasCards) {
+                        actionButtons = `
+                            <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                                <button class="btn btn--secondary" onclick="confirmDameActionWithCards()" id="dame-action-btn-cards">
+                                    🃝 Le jeu est terminé
+                                </button>
+                                <button class="btn btn--secondary" onclick="handleSpecialCardCompleteWithCards('D')" id="dame-continue-btn-cards" style="opacity: 0.7;">
+                                    ➡️ Défausser + Repiocher
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionButtons = `
+                            <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                                <button class="btn btn--secondary" onclick="confirmDameAction()" id="dame-action-btn">
+                                    🃝 Le jeu "Pute" est terminé
+                                </button>
+                                <button class="btn btn--secondary" onclick="handleSpecialCardComplete('D')" id="dame-continue-btn" style="opacity: 0.7;">
+                                    ➡️ Défausser + Repiocher
+                                </button>
+                            </div>
+                        `;
+                    }
                     break;
             }
             
