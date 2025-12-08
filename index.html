@@ -246,13 +246,13 @@
                                             <div class="choice-option" data-choice="guess">
                                                 <h5>🔴⚫ DEVINER LA COULEUR</h5>
                                                 <p>Annoncez Rouge ou Noir puis piochez</p>
-                                                <button class="btn btn--secondary">Choisir A</button>
+                                                <button class="btn btn--secondary" onclick="chooseStrategicOption('guess')">Choisir cette option</button>
                                             </div>
                                             <div class="choice-or">OU</div>
                                             <div class="choice-option" data-choice="distribute">
                                                 <h5>🍻 DISTRIBUER DES GORGÉES</h5>
-                                                <p>Donnez <span id="distribution-amount">X</span> gorgées à un joueur puis défaussez votre rangée</p>
-                                                <button class="btn btn--secondary">Choisir B</button>
+                                                <p>Donnez <span id="distribution-amount">X</span> gorgée(s) à un joueur puis défaussez votre rangée</p>
+                                                <button class="btn btn--secondary" onclick="chooseStrategicOption('distribute')">Choisir cette option</button>
                                             </div>
                                         </div>
                                         <div class="choice-result" id="strategic-choice-result" style="display: none;">
@@ -1020,7 +1020,11 @@
             drinkConfirmed: false,
             asChoice: null,
             valetActionConfirmed: false,
-            dameActionConfirmed: false
+            dameActionConfirmed: false,
+            triesRemaining: 3,
+            asChoiceWithCards: null,
+            valetActionConfirmedWithCards: false,
+            dameActionConfirmedWithCards: false
         };
         
         let redirectTimeout = null; // To store and cancel redirect timeout
@@ -2181,22 +2185,923 @@
         
         // Show success flow for correct prediction
         function showSuccessFlow() {
-            alert('🎉 Succès ! Votre carte sera posée et le tour passe au joueur suivant.\n\n(Cette partie sera développée dans la prochaine étape)');
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            🎉 Bravo !
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(34, 197, 94, 0.15);
+                            border: 2px solid #22C55E;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-2);">✅</div>
+                            <h3 style="color: #22C55E; margin-bottom: var(--space-2);">
+                                Bonne couleur !
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Posez cette carte dans votre jeu. Votre tour est terminé !
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn--primary" onclick="showTurnEndOptions()">
+                                ✅ Continuer
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to the success message
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
         }
         
         // Show failure flow for incorrect prediction
         function showFailureFlow() {
-            const predictedColor = window.gameState?.predictedColor;
-            const drawnCardColor = selectedCard?.color;
             const hasCards = window.gameState?.cardsCount > 0;
             
             if (hasCards) {
                 // Has cards: need to check value comparison
-                alert('🔍 Vous avez des cartes posées ! La comparaison de valeurs sera implémentée dans la prochaine étape.');
+                showHasCardsFailureFlow();
             } else {
                 // No cards: simple consequence flow
                 showNoCardsFailureFlow();
             }
+        }
+        
+        // Show failure flow for "has cards" scenario - compare values
+        function showHasCardsFailureFlow() {
+            // Check if it's a special card first
+            if (isSpecialCard(selectedCard.value)) {
+                showSpecialCardFlowWithCards();
+            } else {
+                // Normal card - need to compare values
+                showValueComparisonStep();
+            }
+        }
+        
+        // Show value comparison step for has cards scenario
+        function showValueComparisonStep() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            const cardValue = selectedCard.value;
+            const cardColor = selectedCard.color;
+            const cardSuit = selectedCard.suit;
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            ❌ Mauvaise couleur - Comparaison de valeurs
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(245, 158, 11, 0.15);
+                            border: 2px solid #F59E0B;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <p style="color: var(--color-text); margin-bottom: var(--space-3);">
+                                Votre carte piochée : <strong>${cardValue}${cardSuit}</strong>
+                            </p>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Comparez-la avec votre dernière carte posée.
+                            </p>
+                        </div>
+                        
+                        <div style="
+                            background: rgba(255, 255, 255, 0.03);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                        ">
+                            <h5 style="color: var(--color-text); margin-bottom: var(--space-3); text-align: center;">
+                                La carte piochée est-elle SUPÉRIEURE à votre dernière carte ?
+                            </h5>
+                            <p style="color: var(--color-text-muted); font-size: var(--text-sm); text-align: center; margin-bottom: var(--space-4);">
+                                Ordre : A(1) → 2 → 3 → ... → 10 → V → D
+                            </p>
+                            
+                            <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn--primary" onclick="handleValueComparison('superior')">
+                                    ✅ Oui, elle est supérieure
+                                </button>
+                                <button class="btn btn--secondary" onclick="handleValueComparison('inferior')">
+                                    ❌ Non, elle est inférieure ou égale
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to comparison
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Handle value comparison result
+        function handleValueComparison(result) {
+            if (result === 'superior') {
+                // Card is superior - can retry (3 tries system)
+                showRetryOption();
+            } else {
+                // Card is inferior or equal - immediate consequences
+                showHasCardsConsequences();
+            }
+        }
+        
+        // Show retry option (3 tries system)
+        function showRetryOption() {
+            // Initialize or get current tries count
+            if (!window.gameState.triesRemaining) {
+                window.gameState.triesRemaining = 3;
+            }
+            
+            // Decrement tries
+            window.gameState.triesRemaining--;
+            
+            const triesRemaining = window.gameState.triesRemaining;
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (triesRemaining <= 0) {
+                // No more tries - consequences
+                showHasCardsConsequences();
+                return;
+            }
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            🔄 Vous pouvez rejouer !
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(34, 197, 94, 0.15);
+                            border: 2px solid #22C55E;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 2.5rem; margin-bottom: var(--space-2);">🎯</div>
+                            <h3 style="color: #22C55E; margin-bottom: var(--space-2);">
+                                Carte supérieure = Nouvel essai !
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Votre carte piochée est plus forte. Défaussez-la et repiochez !
+                            </p>
+                        </div>
+                        
+                        <div style="
+                            background: rgba(245, 158, 11, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-3);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <p style="color: var(--color-warning); margin: 0; font-weight: 600;">
+                                ⚠️ Il vous reste ${triesRemaining} essai${triesRemaining > 1 ? 's' : ''} pour trouver la bonne couleur
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn--primary" onclick="retryColorGuess()">
+                                🔄 Défausser et repiocher
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Retry color guess - go back to color selection
+        function retryColorGuess() {
+            // Reset card selection
+            selectedCard = null;
+            if (window.gameState) {
+                window.gameState.drawnCard = null;
+                window.gameState.predictedColor = null;
+            }
+            
+            // Reset card selection in FlowManager
+            if (window.flowManager) {
+                window.flowManager.resetCardSelection();
+            }
+            
+            // Show color choice again
+            const verificationDisplay = document.getElementById('color-verification-display');
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = '';
+            }
+            
+            // Scroll back to color choice
+            const hasCardsFlow = document.getElementById('has-cards-flow');
+            if (hasCardsFlow) {
+                // Show the color selection for retry
+                showHasCardsColorChoice();
+            }
+        }
+        
+        // Show color choice for has cards scenario (for retries)
+        function showHasCardsColorChoice() {
+            const strategicChoiceResult = document.getElementById('strategic-choice-result');
+            const triesRemaining = window.gameState?.triesRemaining || 3;
+            
+            if (strategicChoiceResult) {
+                strategicChoiceResult.style.display = 'block';
+                strategicChoiceResult.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-top: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-3); text-align: center;">
+                            🎯 Essai ${4 - triesRemaining}/3 - Choisissez une couleur
+                        </h4>
+                        
+                        <div class="color-choices" style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                            <button class="color-choice-btn color-red" onclick="selectColorWithCards('rouge')" style="
+                                padding: var(--space-4);
+                                border-radius: var(--radius-md);
+                                border: 2px solid transparent;
+                                cursor: pointer;
+                                font-weight: 600;
+                                min-width: 120px;
+                            ">
+                                🔴 Rouge
+                            </button>
+                            <button class="color-choice-btn color-black" onclick="selectColorWithCards('noir')" style="
+                                padding: var(--space-4);
+                                border-radius: var(--radius-md);
+                                border: 2px solid transparent;
+                                cursor: pointer;
+                                font-weight: 600;
+                                min-width: 120px;
+                            ">
+                                ⚫ Noir
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll to color choice
+                setTimeout(() => {
+                    strategicChoiceResult.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Select color for has cards scenario
+        function selectColorWithCards(color) {
+            if (window.gameState) {
+                window.gameState.predictedColor = color;
+            }
+            
+            // Proceed to card selection step
+            openCardSelectionStep();
+        }
+        
+        // Show consequences for has cards scenario (failure)
+        function showHasCardsConsequences() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            const cardsCount = window.gameState?.cardsCount || 0;
+            
+            // Reset tries for next turn
+            window.gameState.triesRemaining = 3;
+            window.gameState.drinkConfirmed = false;
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            😅 Conséquences de votre échec
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(239, 68, 68, 0.15);
+                            border: 2px solid #EF4444;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-2);">🍺</div>
+                            <h3 style="color: #EF4444; margin-bottom: var(--space-2);">
+                                Buvez ${cardsCount} gorgée${cardsCount > 1 ? 's' : ''} !
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Vous aviez ${cardsCount} carte${cardsCount > 1 ? 's' : ''} posée${cardsCount > 1 ? 's' : ''}.
+                            </p>
+                        </div>
+                        
+                        <div style="
+                            background: rgba(245, 158, 11, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <h4 style="color: var(--color-warning); margin-bottom: var(--space-2);">
+                                📋 Défaussez toutes vos cartes
+                            </h4>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Votre rangée est remise à zéro. Vous repartez sans cartes.
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--primary" onclick="confirmDrinkWithCards()" id="drink-cards-btn">
+                                🍺 J'ai bu mes ${cardsCount} gorgée${cardsCount > 1 ? 's' : ''}
+                            </button>
+                            <button class="btn btn--secondary" onclick="endTurnWithCards()" id="end-turn-cards-btn" style="opacity: 0.7;">
+                                ✅ Terminer mon tour
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Confirm drink for has cards scenario
+        function confirmDrinkWithCards() {
+            const drinkBtn = document.getElementById('drink-cards-btn');
+            const endTurnBtn = document.getElementById('end-turn-cards-btn');
+            
+            if (drinkBtn && endTurnBtn) {
+                drinkBtn.textContent = '✅ Gorgées confirmées';
+                drinkBtn.disabled = true;
+                drinkBtn.style.opacity = '0.6';
+                
+                endTurnBtn.classList.remove('btn--secondary');
+                endTurnBtn.classList.add('btn--primary');
+                endTurnBtn.style.opacity = '1';
+                
+                // Mark drink as confirmed
+                if (window.gameState) {
+                    window.gameState.drinkConfirmed = true;
+                }
+                
+                // Remove any existing error message
+                const errorMsg = document.getElementById('drink-cards-error-msg');
+                if (errorMsg && errorMsg.parentNode) {
+                    errorMsg.parentNode.removeChild(errorMsg);
+                }
+            }
+        }
+        
+        // End turn for has cards scenario
+        function endTurnWithCards() {
+            const drinkConfirmed = window.gameState?.drinkConfirmed === true;
+            
+            if (!drinkConfirmed) {
+                showValidationError('drink-cards-btn', '⚠️ Vous devez d\'abord boire vos gorgées !', 'drink-cards');
+                return;
+            }
+            
+            // Reset cards count to 0 (all cards discarded)
+            if (window.gameState) {
+                window.gameState.cardsCount = 0;
+                window.gameState.drinkConfirmed = false;
+            }
+            
+            // Update display
+            updateGameStateDisplay();
+            
+            // Show turn end options
+            showTurnEndOptions();
+        }
+        
+        // Show special card flow for has cards scenario
+        function showSpecialCardFlowWithCards() {
+            // Same as no cards but in the context of having cards
+            const cardValue = selectedCard.value;
+            let specialEffect = '';
+            let detailedEffect = '';
+            let actionButtons = '';
+            let isVictoryCard = false;
+            
+            switch(cardValue) {
+                case 'R':
+                    specialEffect = '👑 ROI - JOKER AUTOMATIQUE';
+                    detailedEffect = 'Le Roi ignore complètement la couleur prédite et devient automatiquement un joker dans votre jeu. C\'est une victoire garantie !';
+                    isVictoryCard = true;
+                    actionButtons = `
+                        <button class="btn btn--primary" onclick="handleSpecialCardCompleteWithCards('R')">
+                            👑 Placer le Roi comme joker
+                        </button>
+                    `;
+                    break;
+                case 'A':
+                    specialEffect = '🃏 AS - CHOIX STRATÉGIQUE';
+                    detailedEffect = 'L\'As ignore la couleur prédite. Vous pouvez choisir de le placer comme AS=1 dans votre jeu, ou comme AS=10 chez un adversaire (remplace sa dernière carte).';
+                    isVictoryCard = true;
+                    actionButtons = `
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 id="as-choice-prompt-cards" style="
+                                color: var(--color-secondary); 
+                                margin-bottom: var(--space-4); 
+                                text-align: center;
+                            ">
+                                ⚡ Choisissez l'effet de l'As !
+                            </h4>
+                            <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn--secondary" onclick="chooseAsEffectWithCards('self')">
+                                    AS = 1 chez moi
+                                </button>
+                                <button class="btn btn--secondary" onclick="chooseAsEffectWithCards('opponent')">
+                                    AS = 10 chez adversaire
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn--secondary" onclick="confirmAsChoiceWithCards()" id="as-confirm-btn-cards" style="opacity: 0.7;">
+                            🃏 Confirmer le choix de l'As
+                        </button>
+                    `;
+                    break;
+                case 'V':
+                    specialEffect = '🃜 VALET : SHIFU-BOIS';
+                    detailedEffect = 'Le Valet déclenche un "Shifu-bois" : désignez 2 personnes qui vont effectuer un pierre-feuille-ciseaux, le perdant boit. Ensuite, défaussez le Valet et piochez une nouvelle carte.';
+                    actionButtons = `
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--secondary" onclick="confirmValetActionWithCards()" id="valet-action-btn-cards">
+                                🃜 Le Shifu-bois est terminé
+                            </button>
+                            <button class="btn btn--secondary" onclick="handleSpecialCardCompleteWithCards('V')" id="valet-continue-btn-cards" style="opacity: 0.7;">
+                                ➡️ Défausser + Repiocher
+                            </button>
+                        </div>
+                    `;
+                    break;
+                case 'D':
+                    specialEffect = '🃝 DAME : LE DERNIER QUI DIT';
+                    detailedEffect = 'La Dame déclenche le jeu «Le dernier qui dit "Pute"» boit (le mot peut être modifié si tu joues avec des enfants). Ensuite, défaussez la Dame et piochez une nouvelle carte.';
+                    actionButtons = `
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--secondary" onclick="confirmDameActionWithCards()" id="dame-action-btn-cards">
+                                🃝 Le jeu est terminé
+                            </button>
+                            <button class="btn btn--secondary" onclick="handleSpecialCardCompleteWithCards('D')" id="dame-continue-btn-cards" style="opacity: 0.7;">
+                                ➡️ Défausser + Repiocher
+                            </button>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            🃏 Carte spéciale piochée !
+                        </h4>
+                        
+                        <div style="
+                            background: ${isVictoryCard ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)'};
+                            border: 2px solid ${isVictoryCard ? '#22C55E' : '#F59E0B'};
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <h3 style="color: ${isVictoryCard ? '#22C55E' : '#F59E0B'}; margin-bottom: var(--space-2);">
+                                ${specialEffect}
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                ${detailedEffect}
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                `;
+                
+                // Scroll
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Handle special card complete for has cards scenario
+        function handleSpecialCardCompleteWithCards(cardValue) {
+            if (cardValue === 'R') {
+                // Roi: joker, doesn't add to card count for Chyster
+                showSuccessFlowWithCards();
+            } else if (cardValue === 'A') {
+                // As: check if choice was made
+                if (!window.gameState?.asChoiceWithCards) {
+                    showValidationError('as-choice-prompt-cards', '❌ Vous devez choisir un effet pour l\'As !', 'as-choice-cards');
+                    return;
+                }
+                
+                if (window.gameState.asChoiceWithCards === 'self') {
+                    // Add card to player's game
+                    window.gameState.cardsCount++;
+                    updateGameStateDisplay();
+                    checkChysterAchievement();
+                }
+                
+                window.gameState.asChoiceWithCards = null;
+                showSuccessFlowWithCards();
+            } else if (cardValue === 'V') {
+                // Valet: check if action was confirmed
+                if (!window.gameState?.valetActionConfirmedWithCards) {
+                    showValidationError('valet-action-btn-cards', '⚠️ Vous devez d\'abord confirmer le Shifu-bois !', 'valet-cards');
+                    return;
+                }
+                
+                window.gameState.valetActionConfirmedWithCards = false;
+                // Valet: discard and redraw - go back to color choice
+                retryColorGuess();
+            } else if (cardValue === 'D') {
+                // Dame: check if action was confirmed
+                if (!window.gameState?.dameActionConfirmedWithCards) {
+                    showValidationError('dame-action-btn-cards', '⚠️ Vous devez d\'abord confirmer le jeu !', 'dame-cards');
+                    return;
+                }
+                
+                window.gameState.dameActionConfirmedWithCards = false;
+                // Dame: discard and redraw - go back to color choice
+                retryColorGuess();
+            }
+        }
+        
+        // Choose As effect for has cards scenario
+        function chooseAsEffectWithCards(choice) {
+            if (window.gameState) {
+                window.gameState.asChoiceWithCards = choice;
+            }
+            
+            // Visual feedback
+            document.querySelectorAll('[onclick*="chooseAsEffectWithCards"]').forEach(btn => {
+                btn.classList.remove('btn--primary');
+                btn.classList.add('btn--secondary');
+            });
+            
+            event.target.classList.remove('btn--secondary');
+            event.target.classList.add('btn--primary');
+            
+            // Enable confirm button
+            const confirmBtn = document.getElementById('as-confirm-btn-cards');
+            if (confirmBtn) {
+                confirmBtn.classList.remove('btn--secondary');
+                confirmBtn.classList.add('btn--primary');
+                confirmBtn.style.opacity = '1';
+            }
+        }
+        
+        // Confirm As choice for has cards scenario
+        function confirmAsChoiceWithCards() {
+            if (!window.gameState?.asChoiceWithCards) {
+                showValidationError('as-choice-prompt-cards', '❌ Vous devez choisir un effet pour l\'As !', 'as-choice-cards');
+                return;
+            }
+            handleSpecialCardCompleteWithCards('A');
+        }
+        
+        // Confirm Valet action for has cards scenario
+        function confirmValetActionWithCards() {
+            const actionBtn = document.getElementById('valet-action-btn-cards');
+            const continueBtn = document.getElementById('valet-continue-btn-cards');
+            
+            if (actionBtn && continueBtn) {
+                actionBtn.textContent = '✅ Shifu-bois effectué';
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = '0.6';
+                
+                continueBtn.classList.remove('btn--secondary');
+                continueBtn.classList.add('btn--primary');
+                continueBtn.style.opacity = '1';
+                
+                if (window.gameState) {
+                    window.gameState.valetActionConfirmedWithCards = true;
+                }
+            }
+        }
+        
+        // Confirm Dame action for has cards scenario
+        function confirmDameActionWithCards() {
+            const actionBtn = document.getElementById('dame-action-btn-cards');
+            const continueBtn = document.getElementById('dame-continue-btn-cards');
+            
+            if (actionBtn && continueBtn) {
+                actionBtn.textContent = '✅ Jeu terminé';
+                actionBtn.disabled = true;
+                actionBtn.style.opacity = '0.6';
+                
+                continueBtn.classList.remove('btn--secondary');
+                continueBtn.classList.add('btn--primary');
+                continueBtn.style.opacity = '1';
+                
+                if (window.gameState) {
+                    window.gameState.dameActionConfirmedWithCards = true;
+                }
+            }
+        }
+        
+        // Show success flow for has cards scenario
+        function showSuccessFlowWithCards() {
+            // Increment card count
+            if (window.gameState) {
+                window.gameState.cardsCount++;
+            }
+            updateGameStateDisplay();
+            
+            // Check for Chyster
+            if (checkChysterAchievement()) {
+                return; // Chyster screen will be shown
+            }
+            
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: rgba(255, 255, 255, 0.05);
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-4);
+                        margin-bottom: var(--space-4);
+                    ">
+                        <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                            🎉 Bravo !
+                        </h4>
+                        
+                        <div style="
+                            background: rgba(34, 197, 94, 0.15);
+                            border: 2px solid #22C55E;
+                            border-radius: var(--radius-md);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            text-align: center;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-2);">✅</div>
+                            <h3 style="color: #22C55E; margin-bottom: var(--space-2);">
+                                Carte posée avec succès !
+                            </h3>
+                            <p style="color: var(--color-text-muted); margin: 0;">
+                                Vous avez maintenant ${window.gameState?.cardsCount || 0} carte(s) posée(s).
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button class="btn btn--primary" onclick="showTurnEndOptions()">
+                                ✅ Continuer
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Check for Chyster achievement
+        function checkChysterAchievement() {
+            const cardsCount = window.gameState?.cardsCount || 0;
+            const chysterTarget = window.gameState?.chysterTarget || 9;
+            
+            if (cardsCount >= chysterTarget) {
+                showChysterVictory();
+                return true;
+            }
+            return false;
+        }
+        
+        // Show Chyster victory screen
+        function showChysterVictory() {
+            const verificationDisplay = document.getElementById('color-verification-display');
+            
+            if (verificationDisplay) {
+                verificationDisplay.innerHTML = `
+                    <div style="
+                        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+                        border-radius: var(--radius-lg);
+                        padding: var(--space-6);
+                        margin-bottom: var(--space-4);
+                        text-align: center;
+                        border: 3px solid var(--color-primary);
+                    ">
+                        <div style="font-size: 5rem; margin-bottom: var(--space-4);">🏆🎉🏆</div>
+                        <h2 style="
+                            color: var(--color-primary); 
+                            margin-bottom: var(--space-4);
+                            font-size: 2.5rem;
+                            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+                        ">
+                            CHYSTER !!!
+                        </h2>
+                        <p style="color: var(--color-text); font-size: var(--text-xl); margin-bottom: var(--space-4);">
+                            🎊 Félicitations ! Vous avez atteint ${window.gameState?.chysterTarget || 9} cartes !
+                        </p>
+                        <p style="color: var(--color-text-muted); margin-bottom: var(--space-6);">
+                            Vous remportez la partie ! Les autres joueurs boivent cul-sec ! 🍻
+                        </p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
+                            <button class="btn btn--primary" onclick="startNewGame()" style="
+                                background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+                                font-size: var(--text-lg);
+                                padding: var(--space-4) var(--space-6);
+                            ">
+                                🎮 Nouvelle partie
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+        
+        // Start new game
+        function startNewGame() {
+            // Reset everything
+            if (window.gameState) {
+                window.gameState.cardsCount = 0;
+                window.gameState.jokersCount = 0;
+                window.gameState.drawnCard = null;
+                window.gameState.predictedColor = null;
+                window.gameState.drinkConfirmed = false;
+                window.gameState.asChoice = null;
+                window.gameState.valetActionConfirmed = false;
+                window.gameState.dameActionConfirmed = false;
+                window.gameState.triesRemaining = 3;
+            }
+            
+            changePlayer();
+        }
+        
+        // Strategic option choice handler
+        function chooseStrategicOption(option) {
+            const strategicChoiceResult = document.getElementById('strategic-choice-result');
+            
+            if (option === 'guess') {
+                // Initialize tries
+                if (window.gameState) {
+                    window.gameState.triesRemaining = 3;
+                }
+                
+                // Show color choice
+                showHasCardsColorChoice();
+            } else if (option === 'distribute') {
+                // Distribute drinks option
+                const cardsCount = window.gameState?.cardsCount || 0;
+                
+                if (strategicChoiceResult) {
+                    strategicChoiceResult.style.display = 'block';
+                    strategicChoiceResult.innerHTML = `
+                        <div style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border-radius: var(--radius-lg);
+                            padding: var(--space-4);
+                            margin-top: var(--space-4);
+                        ">
+                            <h4 style="color: var(--color-text); margin-bottom: var(--space-4); text-align: center;">
+                                🍻 Distribution de gorgées
+                            </h4>
+                            
+                            <div style="
+                                background: rgba(139, 92, 246, 0.15);
+                                border: 2px solid var(--color-primary);
+                                border-radius: var(--radius-md);
+                                padding: var(--space-4);
+                                margin-bottom: var(--space-4);
+                                text-align: center;
+                            ">
+                                <div style="font-size: 3rem; margin-bottom: var(--space-2);">🍺</div>
+                                <h3 style="color: var(--color-primary); margin-bottom: var(--space-2);">
+                                    Distribuez ${cardsCount} gorgée${cardsCount > 1 ? 's' : ''} !
+                                </h3>
+                                <p style="color: var(--color-text-muted); margin: 0;">
+                                    Choisissez un joueur qui devra boire ${cardsCount} gorgée${cardsCount > 1 ? 's' : ''}.
+                                </p>
+                            </div>
+                            
+                            <div style="
+                                background: rgba(245, 158, 11, 0.1);
+                                border-radius: var(--radius-md);
+                                padding: var(--space-4);
+                                margin-bottom: var(--space-4);
+                                text-align: center;
+                            ">
+                                <h4 style="color: var(--color-warning); margin-bottom: var(--space-2);">
+                                    ⚠️ Défaussez toutes vos cartes
+                                </h4>
+                                <p style="color: var(--color-text-muted); margin: 0;">
+                                    Après la distribution, votre rangée est remise à zéro.
+                                </p>
+                            </div>
+                            
+                            <div style="text-align: center;">
+                                <button class="btn btn--primary" onclick="confirmDistribution()">
+                                    ✅ J'ai distribué les gorgées
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        strategicChoiceResult.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' 
+                        });
+                    }, 100);
+                }
+            }
+        }
+        
+        // Confirm distribution
+        function confirmDistribution() {
+            // Reset cards count
+            if (window.gameState) {
+                window.gameState.cardsCount = 0;
+            }
+            updateGameStateDisplay();
+            
+            // Show turn end
+            showTurnEndOptions();
         }
         
         // Show failure flow specifically for "no cards" scenario
@@ -2705,6 +3610,13 @@
         // Show turn end options
         function showTurnEndOptions() {
             const verificationDisplay = document.getElementById('color-verification-display');
+            const stepColorCheck = document.getElementById('step-color-check');
+            const stepColorCheckHeader = stepColorCheck?.querySelector('.accordion-header');
+            
+            // Open step 3 accordion if not already open
+            if (stepColorCheckHeader) {
+                openAccordionSection(stepColorCheckHeader);
+            }
             
             if (verificationDisplay) {
                 verificationDisplay.innerHTML = `
@@ -2719,14 +3631,11 @@
                         </h3>
                         
                         <p style="color: var(--color-text-muted); margin-bottom: var(--space-6);">
-                            Que souhaitez-vous faire maintenant ?
+                            Passez le dispositif au joueur suivant.
                         </p>
                         
                         <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
-                            <button class="btn btn--primary" onclick="startNewTurn()">
-                                🎯 Commencer un nouveau tour
-                            </button>
-                            <button class="btn btn--secondary" onclick="changePlayer()">
+                            <button class="btn btn--primary" onclick="changePlayer()">
                                 👥 Passer au joueur suivant
                             </button>
                             <button class="btn btn--accent" onclick="showRulesReference()">
@@ -2735,6 +3644,14 @@
                         </div>
                     </div>
                 `;
+                
+                // Scroll to the turn end options on mobile
+                setTimeout(() => {
+                    verificationDisplay.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
             }
         }
         
@@ -2758,8 +3675,78 @@
         
         // Change player
         function changePlayer() {
-            alert('👥 C\'est au tour du joueur suivant !\n\nPassez-lui le dispositif pour qu\'il puisse jouer.');
-            startNewTurn();
+            // Reset game state completely
+            if (window.gameState) {
+                window.gameState.cardsCount = 0;
+                window.gameState.jokersCount = 0;
+                window.gameState.drawnCard = null;
+                window.gameState.predictedColor = null;
+                window.gameState.drinkConfirmed = false;
+                window.gameState.asChoice = null;
+                window.gameState.valetActionConfirmed = false;
+                window.gameState.dameActionConfirmed = false;
+            }
+            
+            // Reset selected card
+            selectedCard = null;
+            
+            // Reset card selection if FlowManager exists
+            if (window.flowManager) {
+                window.flowManager.resetCardSelection();
+            }
+            
+            // Reset UI to situation selector
+            const situationSelector = document.getElementById('situation-selector');
+            const stateCounters = document.getElementById('state-counters');
+            const noCardsRedirect = document.getElementById('no-cards-redirect');
+            const colorVerificationDisplay = document.getElementById('color-verification-display');
+            const noCardsFlow = document.getElementById('no-cards-flow');
+            const hasCardsFlow = document.getElementById('has-cards-flow');
+            const strategicChoiceResult = document.getElementById('strategic-choice-result');
+            
+            // Show situation selector, hide everything else
+            if (situationSelector) {
+                situationSelector.classList.remove('hide');
+                situationSelector.style.display = 'block';
+            }
+            if (stateCounters) {
+                stateCounters.style.display = 'none';
+            }
+            if (noCardsRedirect) {
+                noCardsRedirect.style.display = 'none';
+            }
+            if (colorVerificationDisplay) {
+                colorVerificationDisplay.innerHTML = '';
+            }
+            if (noCardsFlow) {
+                noCardsFlow.style.display = 'none';
+            }
+            if (hasCardsFlow) {
+                hasCardsFlow.style.display = 'none';
+            }
+            if (strategicChoiceResult) {
+                strategicChoiceResult.style.display = 'none';
+                strategicChoiceResult.innerHTML = '';
+            }
+            
+            // Close all accordion sections
+            document.querySelectorAll('.accordion-step').forEach(step => {
+                const header = step.querySelector('.accordion-header');
+                const content = step.querySelector('.accordion-content');
+                if (header && content) {
+                    header.setAttribute('aria-expanded', 'false');
+                    content.style.display = 'none';
+                }
+            });
+            
+            // Scroll to "Mon état de jeu" section
+            const gameStateTracker = document.querySelector('.game-state-tracker');
+            if (gameStateTracker) {
+                gameStateTracker.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
         }
         
         // Show rules reference
