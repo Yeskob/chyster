@@ -651,163 +651,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Special cards interactive example -->
-        <section id="special-cards" class="special-example" aria-label="Exemple carte spéciale">
-            <div class="container">
-                <h2 class="section-title">Exemple carte spéciale</h2>
-                <p class="example-intro">Démonstration interactive du comportement des cartes spéciales</p>
-                
-                <!-- Interactive demo -->
-                <div class="interactive-demo">
-                    <h3>Séquence de jeu avec exemples</h3>
-                    <p class="demo-intro">Suivez cette séquence pour comprendre le système d'essais et les cartes spéciales</p>
-                    
-                    <!-- Slider interactif -->
-                    <div class="game-slider" role="region" aria-label="Exemple de séquence de jeu">
-                        <div class="slider-container">
-                            <div class="slider-track" id="sliderTrack">
-                                <!-- Étape 1 - Premier essai -->
-                                <div class="slider-step active" data-step="1">
-                                    <div class="step-header">
-                                        <h4>Étape 1 - Premier essai</h4>
-                                        <div class="attempts-counter">
-                                            <span class="attempts-text">Essais restants :</span>
-                                            <span class="attempts-number">3/3</span>
-                                        </div>
-                                    </div>
-                                    <div class="step-content">
-                                        <div class="context-info">
-                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
-                                        </div>
-                                        <div class="prediction">
-                                            <p>Vous annoncez : <strong class="color-choice">ROUGE</strong></p>
-                                        </div>
-                                        <div class="card-reveal">
-                                            <div class="card-container">
-                                                <div class="card card--back" id="card1">
-                                                    <div class="card-front">?</div>
-                                                </div>
-                                            </div>
-                                            <button class="reveal-btn" onclick="revealCard(1, 'black', '7♠')">Retourner la carte</button>
-                                        </div>
-                                        <div class="result-message" id="result1" style="display: none;">
-                                            <span class="result-icon">❌</span>
-                                            <span class="result-text">Mauvaise couleur ! Carte noire (7♠) mais chiffre supérieur à votre précédente carte, vous pouvez rejouer, il vous reste 2 essais pour réussir à trouver la bonne couleur</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Étape 2 - Valet spécial -->
-                                <div class="slider-step" data-step="2">
-                                    <div class="step-header">
-                                        <h4>Étape 2 - Valet spécial</h4>
-                                        <div class="attempts-counter">
-                                            <span class="attempts-text">Essais restants :</span>
-                                            <span class="attempts-number">2/3</span>
-                                        </div>
-                                    </div>
-                                    <div class="step-content">
-                                        <div class="context-info">
-                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
-                                        </div>
-                                        <div class="prediction">
-                                            <p>Vous annoncez : <strong class="color-choice">NOIR</strong></p>
-                                        </div>
-                                        <div class="card-reveal">
-                                            <div class="card-container">
-                                                <div class="card card--back" id="card2">
-                                                    <div class="card-front">?</div>
-                                                </div>
-                                            </div>
-                                            <button class="reveal-btn" onclick="revealCard(2, 'red', 'V♥')">Retourner la carte</button>
-                                        </div>
-                                        <div class="result-message" id="result2" style="display: none;">
-                                            <span class="result-icon">🃏</span>
-                                            <span class="result-text">Valet ! Carte spéciale - Désignez 2 personnes pour un pierre-feuille-ciseaux, le perdant boit. Ne compte pas comme un essai → défausse et repioche.</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Étape 3 - Succès -->
-                                <div class="slider-step" data-step="3">
-                                    <div class="step-header">
-                                        <h4>Étape 3 - Succès !</h4>
-                                        <div class="attempts-counter">
-                                            <span class="attempts-text">Essais restants :</span>
-                                            <span class="attempts-number">2/3</span>
-                                        </div>
-                                    </div>
-                                    <div class="step-content">
-                                        <div class="context-info">
-                                            <p class="last-card">Votre dernière carte posée est un <strong>5 de trèfle</strong></p>
-                                        </div>
-                                        <div class="prediction">
-                                            <p>Vous annoncez : <strong class="color-choice">NOIR</strong></p>
-                                        </div>
-                                        <div class="card-reveal">
-                                            <div class="card-container">
-                                                <div class="card card--back" id="card3">
-                                                    <div class="card-front">?</div>
-                                                </div>
-                                            </div>
-                                            <button class="reveal-btn" onclick="revealCard(3, 'black', '9♠')">Retourner la carte</button>
-                                        </div>
-                                        <div class="result-message" id="result3" style="display: none;">
-                                            <span class="result-icon">✅</span>
-                                            <span class="result-text">Bonne couleur ! Vous posez la carte dans votre jeu. Votre tour est terminé, c'est au joueur suivant !</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Étape 4 - Cas d'échec total -->
-                                <div class="slider-step" data-step="4">
-                                    <div class="step-header">
-                                        <h4>Étape 4 - Cas d'échec total</h4>
-                                        <div class="attempts-counter attempts-counter--danger">
-                                            <span class="attempts-text">Essais restants :</span>
-                                            <span class="attempts-number">0/3</span>
-                                        </div>
-                                    </div>
-                                    <div class="step-content">
-                                        <div class="failure-scenario">
-                                            <h5>Si vous aviez échoué 3 fois...</h5>
-                                            <div class="failure-consequence">
-                                                <span class="result-icon">💀</span>
-                                                <p>Vous auriez bu autant de gorgées que vous aviez de cartes posées</p>
-                                                <p><strong>→ Défausse toute ta rangée (joker compris).</strong></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Navigation du slider -->
-                        <div class="slider-nav">
-                            <button class="slider-btn slider-btn--prev" onclick="previousStep()" aria-label="Étape précédente">
-                                ‹ Précédent
-                            </button>
-                            <div class="slider-indicators">
-                                <span class="indicator active" data-step="1" onclick="goToStep(1)"></span>
-                                <span class="indicator" data-step="2" onclick="goToStep(2)"></span>
-                                <span class="indicator" data-step="3" onclick="goToStep(3)"></span>
-                                <span class="indicator" data-step="4" onclick="goToStep(4)"></span>
-                            </div>
-                            <button class="slider-btn slider-btn--next" onclick="nextStep()" aria-label="Étape suivante">
-                                Suivant ›
-                            </button>
-                        </div>
-                        
-                        <div class="slider-actions">
-                            <button class="btn btn--secondary" onclick="resetDemo()">
-                                🔄 Rejouer la séquence
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- Mobile-first footer -->
@@ -828,188 +671,10 @@
     <!-- Scripts optimized for mobile -->
     <script src="js/mobile-app.js" defer></script>
     
-    <!-- Interactive slider script -->
+    <!-- Main game script -->
     <script>
-        let currentStep = 1;
-        const totalSteps = 4;
-        let revealedCards = new Set();
-
-        function updateSliderPosition() {
-            const track = document.getElementById('sliderTrack');
-            if (track) {
-                const translateX = -(currentStep - 1) * 25; // 25% per step
-                track.style.transform = `translateX(${translateX}%)`;
-            }
-        }
-
-        function updateNavigation() {
-            // Update buttons
-            const prevBtn = document.querySelector('.slider-btn--prev');
-            const nextBtn = document.querySelector('.slider-btn--next');
-            
-            if (prevBtn) prevBtn.disabled = currentStep === 1;
-            if (nextBtn) nextBtn.disabled = currentStep === totalSteps;
-            
-            // Update indicators
-            document.querySelectorAll('.indicator').forEach((indicator, index) => {
-                const isActive = index + 1 === currentStep;
-                indicator.classList.toggle('active', isActive);
-            });
-            
-            // Update step visibility
-            document.querySelectorAll('.slider-step').forEach((step, index) => {
-                const isActive = index + 1 === currentStep;
-                step.classList.toggle('active', isActive);
-            });
-        }
-
-        function goToStep(stepNumber) {
-            if (stepNumber < 1 || stepNumber > totalSteps) return;
-            currentStep = stepNumber;
-            updateSliderPosition();
-            updateNavigation();
-            
-            // Auto-reveal card after a short delay if not already revealed
-            setTimeout(() => {
-                autoRevealCard(stepNumber);
-            }, 800);
-        }
-
-        function autoRevealCard(stepNumber) {
-            // Only auto-reveal for steps 1, 2, and 3 (not the failure scenario step 4)
-            if (stepNumber >= 1 && stepNumber <= 3) {
-                const cardId = `card${stepNumber}`;
-                const resultId = `result${stepNumber}`;
-                const card = document.getElementById(cardId);
-                const result = document.getElementById(resultId);
-                const button = document.querySelector(`#${cardId} + .card-container + .reveal-btn`) || 
-                              document.querySelector(`.slider-step[data-step="${stepNumber}"] .reveal-btn`);
-                
-                // Only auto-reveal if not already revealed
-                if (card && result && button && !revealedCards.has(stepNumber) && !button.disabled) {
-                    // Define card data for each step
-                    const cardData = {
-                        1: { color: 'black', value: '7♠' },
-                        2: { color: 'red', value: 'V♥' },
-                        3: { color: 'black', value: '9♠' }
-                    };
-                    
-                    const data = cardData[stepNumber];
-                    if (data) {
-                        revealCardInternal(stepNumber, data.color, data.value, button);
-                    }
-                }
-            }
-        }
-
-        function revealCardInternal(cardNumber, color, cardValue, button) {
-            const card = document.getElementById(`card${cardNumber}`);
-            const result = document.getElementById(`result${cardNumber}`);
-            
-            if (!card || !result || !button) return;
-            
-            // Disable button
-            button.disabled = true;
-            button.textContent = 'Carte révélée';
-            
-            // Add revealed card to set
-            revealedCards.add(cardNumber);
-            
-            // Animate card flip
-            setTimeout(() => {
-                // Update card content
-                const cardFront = card.querySelector('.card-front');
-                cardFront.textContent = cardValue;
-                cardFront.classList.add(color === 'red' ? 'card-front--red' : 'card-front--black');
-                
-                // Flip card
-                card.classList.add('card--flipped');
-                
-                // Show result with appropriate styling
-                result.style.display = 'block';
-                result.classList.remove('result-message--success', 'result-message--error', 'result-message--special');
-                
-                if (cardValue.includes('V')) {
-                    result.classList.add('result-message--special');
-                } else if (cardNumber === 1) {
-                    result.classList.add('result-message--error');
-                } else if (cardNumber === 3) {
-                    result.classList.add('result-message--success');
-                }
-                
-            }, 200);
-        }
-
-        function nextStep() {
-            if (currentStep < totalSteps) {
-                goToStep(currentStep + 1);
-            }
-        }
-
-        function previousStep() {
-            if (currentStep > 1) {
-                goToStep(currentStep - 1);
-            }
-        }
-
-        function revealCard(cardNumber, color, cardValue) {
-            const button = event.target;
-            // Use the internal reveal function for manual reveals too
-            revealCardInternal(cardNumber, color, cardValue, button);
-        }
-
-        function resetDemo() {
-            currentStep = 1;
-            revealedCards.clear();
-            
-            // Reset all cards
-            document.querySelectorAll('.card').forEach(card => {
-                card.classList.remove('card--flipped');
-                const cardFront = card.querySelector('.card-front');
-                cardFront.textContent = '?';
-                cardFront.classList.remove('card-front--red', 'card-front--black');
-            });
-            
-            // Hide all result messages
-            document.querySelectorAll('.result-message').forEach(result => {
-                result.style.display = 'none';
-            });
-            
-            // Reset buttons
-            document.querySelectorAll('.reveal-btn').forEach(btn => {
-                btn.disabled = false;
-                btn.textContent = 'Retourner la carte';
-            });
-            
-            updateSliderPosition();
-            updateNavigation();
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.target.closest('.game-slider')) {
-                switch (e.key) {
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        previousStep();
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        nextStep();
-                        break;
-                }
-            }
-        });
-
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            updateSliderPosition();
-            updateNavigation();
-            // Auto-reveal the first card after a short delay
-            setTimeout(() => {
-                autoRevealCard(1);
-            }, 1000);
-            
             // Initialize game state tracker
             initGameStateTracker();
             
@@ -3053,9 +2718,42 @@
             return false;
         }
         
-        // Show Chyster victory screen
+        // Check if Chyster Royale (all cards same color)
+        function isChysterRoyale() {
+            // In a real implementation, we would track card colors
+            // For now, we'll use a flag that could be set during gameplay
+            return window.gameState?.isRoyale || false;
+        }
+        
+        // Get number of players from the player selector
+        function getPlayerCount() {
+            const playerCountInput = document.getElementById('player-count');
+            return parseInt(playerCountInput?.value) || 4;
+        }
+        
+        // Generate player options for dropdown
+        function generatePlayerOptions() {
+            const playerCount = getPlayerCount();
+            let options = '<option value="">-- Sélectionner un joueur --</option>';
+            for (let i = 1; i <= playerCount; i++) {
+                options += `<option value="player${i}">Joueur ${i}</option>`;
+            }
+            return options;
+        }
+        
+        // Show Chyster victory screen with powers
         function showChysterVictory() {
             const verificationDisplay = document.getElementById('color-verification-display');
+            const cardsCount = window.gameState?.cardsCount || 0;
+            const isRoyale = isChysterRoyale();
+            const multiplier = isRoyale ? 2 : 1;
+            const sipsToGive = cardsCount * multiplier;
+            const destructionsAllowed = isRoyale ? 2 : 1;
+            
+            // Store Chyster info for executeChyster
+            window.gameState.chysterSips = sipsToGive;
+            window.gameState.chysterDestructions = destructionsAllowed;
+            window.gameState.chysterPowerUsed = false;
             
             if (verificationDisplay) {
                 verificationDisplay.innerHTML = `
@@ -3066,6 +2764,7 @@
                         margin-bottom: var(--space-4);
                         text-align: center;
                         border: 3px solid var(--color-primary);
+                        animation: pulse 1s ease-in-out 3;
                     ">
                         <div style="font-size: 5rem; margin-bottom: var(--space-4);">🏆🎉🏆</div>
                         <h2 style="
@@ -3076,21 +2775,126 @@
                         ">
                             CHYSTER !!!
                         </h2>
+                        
+                        ${isRoyale ? `
+                        <div style="
+                            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 184, 0, 0.2));
+                            border: 3px solid gold;
+                            border-radius: var(--radius-lg);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                            animation: glow 1s ease-in-out infinite alternate;
+                        ">
+                            <div style="font-size: 3rem;">👑✨👑</div>
+                            <h3 style="color: gold; margin: var(--space-2) 0;">CHYSTER ROYALE !</h3>
+                            <p style="color: var(--color-text); margin: 0;">
+                                Toutes vos cartes sont de la même couleur !<br>
+                                <strong>Effets x2 !</strong>
+                            </p>
+                        </div>
+                        ` : ''}
+                        
                         <p style="color: var(--color-text); font-size: var(--text-xl); margin-bottom: var(--space-4);">
                             🎊 Félicitations ! Vous avez atteint ${window.gameState?.chysterTarget || 9} cartes !
                         </p>
-                        <p style="color: var(--color-text-muted); margin-bottom: var(--space-6);">
-                            Vous remportez la partie ! Les autres joueurs boivent cul-sec ! 🍻
-                        </p>
                         
-                        <div style="display: flex; flex-direction: column; gap: var(--space-3); align-items: center;">
-                            <button class="btn btn--primary" onclick="startNewGame()" style="
+                        <div style="
+                            background: rgba(255, 255, 255, 0.05);
+                            border-radius: var(--radius-lg);
+                            padding: var(--space-4);
+                            margin-bottom: var(--space-4);
+                        ">
+                            <h3 style="color: var(--color-text); margin-bottom: var(--space-4);">
+                                💥 Choisissez votre pouvoir Chyster :
+                            </h3>
+                            
+                            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                                <!-- Option 1: Distribution -->
+                                <div id="chyster-power-distribute" style="
+                                    background: rgba(139, 92, 246, 0.15);
+                                    border: 2px solid var(--color-primary);
+                                    border-radius: var(--radius-md);
+                                    padding: var(--space-4);
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                " onclick="selectChysterPower('distribute')">
+                                    <div style="display: flex; align-items: center; gap: var(--space-3); justify-content: center;">
+                                        <span style="font-size: 2rem;">🍻</span>
+                                        <div>
+                                            <h4 style="color: var(--color-primary); margin: 0;">Distribution</h4>
+                                            <p style="color: var(--color-text-muted); margin: 0; font-size: var(--text-sm);">
+                                                Distribuez <strong>${sipsToGive} gorgées</strong> à un joueur
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Option 2: Destruction -->
+                                <div id="chyster-power-destroy" style="
+                                    background: rgba(239, 68, 68, 0.15);
+                                    border: 2px solid #EF4444;
+                                    border-radius: var(--radius-md);
+                                    padding: var(--space-4);
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+                                " onclick="selectChysterPower('destroy')">
+                                    <div style="display: flex; align-items: center; gap: var(--space-3); justify-content: center;">
+                                        <span style="font-size: 2rem;">💣</span>
+                                        <div>
+                                            <h4 style="color: #EF4444; margin: 0;">Destruction</h4>
+                                            <p style="color: var(--color-text-muted); margin: 0; font-size: var(--text-sm);">
+                                                Détruisez le jeu de <strong>${destructionsAllowed} adversaire${destructionsAllowed > 1 ? 's' : ''}</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Target selection (hidden until power is selected) -->
+                        <div id="chyster-target-section" style="display: none;">
+                            <div style="
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: var(--radius-md);
+                                padding: var(--space-4);
+                                margin-bottom: var(--space-4);
+                            ">
+                                <label style="color: var(--color-text); display: block; margin-bottom: var(--space-2);">
+                                    🎯 Choisissez votre cible :
+                                </label>
+                                <select id="chyster-target-select" style="
+                                    width: 100%;
+                                    padding: var(--space-3);
+                                    border-radius: var(--radius-md);
+                                    border: 2px solid var(--color-primary);
+                                    background: var(--color-dark);
+                                    color: var(--color-text);
+                                    font-size: var(--text-base);
+                                    cursor: pointer;
+                                ">
+                                    ${generatePlayerOptions()}
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn--primary" onclick="executeChyster()" style="
                                 background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
                                 font-size: var(--text-lg);
                                 padding: var(--space-4) var(--space-6);
+                                width: 100%;
                             ">
-                                🎮 Nouvelle partie
+                                ⚡ Activer le pouvoir Chyster !
                             </button>
+                        </div>
+                        
+                        <div style="
+                            background: rgba(245, 158, 11, 0.1);
+                            border-radius: var(--radius-md);
+                            padding: var(--space-3);
+                            margin-top: var(--space-4);
+                        ">
+                            <p style="color: var(--color-warning); margin: 0; font-size: var(--text-sm);">
+                                📢 <em>Rappel : Le dealer doit mélanger le paquet après chaque Chyster !</em>
+                            </p>
                         </div>
                     </div>
                 `;
@@ -3102,6 +2906,207 @@
                     });
                 }, 100);
             }
+        }
+        
+        // Select Chyster power (distribute or destroy)
+        function selectChysterPower(power) {
+            window.gameState.selectedChysterPower = power;
+            
+            // Visual feedback
+            const distributeDiv = document.getElementById('chyster-power-distribute');
+            const destroyDiv = document.getElementById('chyster-power-destroy');
+            const targetSection = document.getElementById('chyster-target-section');
+            
+            if (distributeDiv && destroyDiv) {
+                if (power === 'distribute') {
+                    distributeDiv.style.border = '3px solid var(--color-primary)';
+                    distributeDiv.style.boxShadow = '0 0 15px rgba(139, 92, 246, 0.4)';
+                    destroyDiv.style.border = '2px solid #EF4444';
+                    destroyDiv.style.boxShadow = 'none';
+                    destroyDiv.style.opacity = '0.5';
+                } else {
+                    destroyDiv.style.border = '3px solid #EF4444';
+                    destroyDiv.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.4)';
+                    distributeDiv.style.border = '2px solid var(--color-primary)';
+                    distributeDiv.style.boxShadow = 'none';
+                    distributeDiv.style.opacity = '0.5';
+                }
+            }
+            
+            // Show target selection
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        // Execute the Chyster power
+        function executeChyster() {
+            const targetSelect = document.getElementById('chyster-target-select');
+            const selectedTarget = targetSelect?.value;
+            const selectedPower = window.gameState?.selectedChysterPower;
+            
+            if (!selectedTarget) {
+                // Show error if no target selected
+                targetSelect.style.border = '2px solid var(--color-danger)';
+                targetSelect.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    targetSelect.style.animation = '';
+                }, 500);
+                return;
+            }
+            
+            if (!selectedPower) {
+                alert('Veuillez d\'abord choisir un pouvoir (Distribution ou Destruction)');
+                return;
+            }
+            
+            const verificationDisplay = document.getElementById('color-verification-display');
+            const isRoyale = isChysterRoyale();
+            const sips = window.gameState?.chysterSips || 0;
+            const targetName = targetSelect.options[targetSelect.selectedIndex].text;
+            
+            if (verificationDisplay) {
+                if (selectedPower === 'distribute') {
+                    verificationDisplay.innerHTML = `
+                        <div style="
+                            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(139, 92, 246, 0.2));
+                            border-radius: var(--radius-lg);
+                            padding: var(--space-6);
+                            text-align: center;
+                            border: 3px solid #22C55E;
+                        ">
+                            <div style="font-size: 5rem; margin-bottom: var(--space-4);">🍻💀🍻</div>
+                            <h2 style="color: #22C55E; margin-bottom: var(--space-4);">
+                                Pouvoir activé !
+                            </h2>
+                            <div style="
+                                background: rgba(139, 92, 246, 0.2);
+                                border-radius: var(--radius-md);
+                                padding: var(--space-4);
+                                margin-bottom: var(--space-4);
+                            ">
+                                <p style="color: var(--color-text); font-size: var(--text-xl); margin: 0;">
+                                    <strong>${targetName}</strong> doit boire
+                                </p>
+                                <p style="color: var(--color-primary); font-size: 3rem; font-weight: 700; margin: var(--space-2) 0;">
+                                    ${sips} GORGÉES !
+                                </p>
+                                ${isRoyale ? '<p style="color: gold; margin: 0;">👑 Bonus Chyster Royale x2 !</p>' : ''}
+                            </div>
+                            
+                            <button class="btn btn--primary" onclick="finishChyster()" style="
+                                font-size: var(--text-lg);
+                                padding: var(--space-4) var(--space-6);
+                            ">
+                                ✅ C'est fait ! Nouvelle partie
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    verificationDisplay.innerHTML = `
+                        <div style="
+                            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(139, 92, 246, 0.2));
+                            border-radius: var(--radius-lg);
+                            padding: var(--space-6);
+                            text-align: center;
+                            border: 3px solid #EF4444;
+                        ">
+                            <div style="font-size: 5rem; margin-bottom: var(--space-4);">💣💥💣</div>
+                            <h2 style="color: #EF4444; margin-bottom: var(--space-4);">
+                                Destruction activée !
+                            </h2>
+                            <div style="
+                                background: rgba(239, 68, 68, 0.2);
+                                border-radius: var(--radius-md);
+                                padding: var(--space-4);
+                                margin-bottom: var(--space-4);
+                            ">
+                                <p style="color: var(--color-text); font-size: var(--text-xl); margin: 0;">
+                                    Le jeu de <strong>${targetName}</strong> est détruit !
+                                </p>
+                                <p style="color: #EF4444; font-size: var(--text-lg); margin: var(--space-2) 0;">
+                                    Toutes ses cartes + jokers sont défaussés !
+                                </p>
+                                ${isRoyale ? '<p style="color: gold; margin: 0;">👑 Bonus Chyster Royale : Vous pouvez détruire un 2ème joueur !</p>' : ''}
+                            </div>
+                            
+                            ${isRoyale && !window.gameState?.secondDestructionDone ? `
+                            <div style="margin-bottom: var(--space-4);">
+                                <label style="color: var(--color-text); display: block; margin-bottom: var(--space-2);">
+                                    🎯 Choisissez votre 2ème cible :
+                                </label>
+                                <select id="chyster-second-target" style="
+                                    width: 100%;
+                                    padding: var(--space-3);
+                                    border-radius: var(--radius-md);
+                                    border: 2px solid #EF4444;
+                                    background: var(--color-dark);
+                                    color: var(--color-text);
+                                    margin-bottom: var(--space-3);
+                                ">
+                                    ${generatePlayerOptions()}
+                                </select>
+                                <button class="btn btn--secondary" onclick="executeSecondDestruction()" style="width: 100%;">
+                                    💣 Détruire le 2ème joueur
+                                </button>
+                            </div>
+                            ` : ''}
+                            
+                            <button class="btn btn--primary" onclick="finishChyster()" style="
+                                font-size: var(--text-lg);
+                                padding: var(--space-4) var(--space-6);
+                            ">
+                                ✅ Terminer et commencer une nouvelle partie
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                verificationDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        // Execute second destruction for Chyster Royale
+        function executeSecondDestruction() {
+            const secondTarget = document.getElementById('chyster-second-target');
+            if (!secondTarget?.value) {
+                secondTarget.style.border = '2px solid var(--color-danger)';
+                secondTarget.style.animation = 'shake 0.5s ease';
+                setTimeout(() => { secondTarget.style.animation = ''; }, 500);
+                return;
+            }
+            
+            window.gameState.secondDestructionDone = true;
+            const targetName = secondTarget.options[secondTarget.selectedIndex].text;
+            
+            // Show confirmation
+            const confirmDiv = document.createElement('div');
+            confirmDiv.style.cssText = `
+                background: rgba(239, 68, 68, 0.3);
+                border-radius: var(--radius-md);
+                padding: var(--space-3);
+                margin-bottom: var(--space-4);
+                text-align: center;
+            `;
+            confirmDiv.innerHTML = `<p style="color: #EF4444; margin: 0;">💥 ${targetName} est aussi détruit !</p>`;
+            
+            secondTarget.parentElement.replaceWith(confirmDiv);
+        }
+        
+        // Finish Chyster and start new game
+        function finishChyster() {
+            // Reset Chyster-specific state
+            if (window.gameState) {
+                window.gameState.selectedChysterPower = null;
+                window.gameState.chysterSips = 0;
+                window.gameState.chysterDestructions = 0;
+                window.gameState.secondDestructionDone = false;
+                window.gameState.isRoyale = false;
+            }
+            
+            // Start new game
+            startNewGame();
         }
         
         // Start new game
