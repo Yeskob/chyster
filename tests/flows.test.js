@@ -7,7 +7,8 @@ const {
     incrementCardCount,
     startGuessing,
     decrementTries,
-    resetGameState
+    resetGameState,
+    handleSpecialCardWithCards
 } = require('../js/game-logic');
 
 describe('Game Flow Transitions', () => {
@@ -81,6 +82,44 @@ describe('Game Flow Transitions', () => {
             // Roi is a joker, should not increment cardsCount
             // (no action needed, cardsCount stays the same)
             expect(state.cardsCount).toBe(3);
+        });
+
+        test('Valet (V) should NOT decrement tries - returns to color choice', () => {
+            let state = initializeGameState();
+            state.cardsCount = 3;
+            state.triesRemaining = 2; // Player has 2 tries left
+            
+            // Valet flow should NOT touch tries
+            const result = handleSpecialCardWithCards(state, 'V');
+            
+            // Tries should remain unchanged!
+            expect(result.newState.triesRemaining).toBe(2);
+            expect(result.action).toBe('retry-color');
+        });
+
+        test('Dame (D) should NOT decrement tries - returns to color choice', () => {
+            let state = initializeGameState();
+            state.cardsCount = 5;
+            state.triesRemaining = 1; // Player has only 1 try left
+            
+            // Dame flow should NOT touch tries
+            const result = handleSpecialCardWithCards(state, 'D');
+            
+            // Tries should remain unchanged!
+            expect(result.newState.triesRemaining).toBe(1);
+            expect(result.action).toBe('retry-color');
+        });
+
+        test('Roi (R) increments jokers count but not cards count', () => {
+            let state = initializeGameState();
+            state.cardsCount = 4;
+            state.jokersCount = 0;
+            
+            const result = handleSpecialCardWithCards(state, 'R');
+            
+            expect(result.newState.cardsCount).toBe(4); // Unchanged
+            expect(result.newState.jokersCount).toBe(1); // Incremented
+            expect(result.action).toBe('success');
         });
     });
 
